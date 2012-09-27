@@ -1,0 +1,461 @@
+@font-face {
+    font-family: 'CPMono_v07_Plain';
+    src: url('../font/CPMono_v07_Plain.otf');
+}
+
+body {
+	background: #fff;
+	color: #000;
+	font-family: Verdana, Arial, sans-serif;
+	width:980px;
+}
+
+#top-bar button.script-status{
+	margin:10px;
+}
+button.script-status{
+	width: 200px;
+	float: right;
+	clear: right;
+}
+
+button#maintenance{
+	width: 200px;
+	float: right;
+	clear:right;
+	margin: 10px 10px 10px 10px;
+}
+
+button#refresh-beer-chart{
+	height: 20px;
+	width: 20px;
+	margin: 5px;
+	float: right;
+}
+
+button#refresh-beer-chart span.ui-icon{
+	top:8px;
+	left:0;
+}
+
+/* Control Panel */
+.google-visualization-table-td{
+	text-align: center !important;
+}
+
+#controls{
+	position:relative;
+	left: 0;
+	top: 0;
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+#controls button{
+	width: 140px;
+	display: block;
+	text-align: left;
+}
+
+
+#profileTableDiv{
+	/*width: 375px;
+	height: 280px; must be inline*/
+	display: block;
+	overflow: auto;
+}
+
+#profileChartDiv{
+	/*width: 400px;
+	height: 280px; replaced by inline*/
+	display: block;
+}
+
+#status-message{
+	width: 400px;
+	padding: 0.5em 0.8em;
+	float: right;
+}
+
+#status-message p{
+	margin: 0;
+}
+
+
+#control-bar-text{
+	margin: 0px 2px;
+	width: 100%;
+	height: 18px;
+	display: block;
+	clear: both;
+}
+
+#status-text{
+	float: right;
+	width: 420px;
+}
+
+#set-mode-text{
+	margin-left: 2px;
+	float: left;
+}
+
+#beer-chart{
+	/*width:960px;
+	height:400px;*/ /*replaced by inline */
+	padding: 5px;
+	float: left;
+}
+
+#prev-beer-chart{
+	/*width:960px;
+	height:400px;*/ /*replaced by inline */
+	padding: 5px;
+	float: left;
+}
+
+#beer-panel{
+	width: 980px;
+	height: 540px;
+	margin-bottom: 10px;
+}
+
+#top-bar{
+	width: 968px;
+	height: 104px;
+	margin: 5px;
+}
+
+#control-panel{
+	width: 976px;
+	height: 350px;
+	overflow:auto;
+}
+
+.temperature{
+	font-family: 'CPMono_v07_Plain', sans-serif;
+	font-size: 5em;
+	float: right;
+}
+.temp-container{
+	width: 175px;
+	float: left;
+}
+
+
+.degree{
+	font-family: 'CPMono_v07_Plain', sans-serif;
+	font-size: 2em;
+	float: right;
+	clear: right;
+	margin-right: 5px;
+}
+
+.temp-display{
+	border: #555 solid 2px;
+	overflow:auto;
+	width:240px;
+	margin-left: 330px;
+	margin-top: 40px;
+}
+
+.temp-up{
+	float: right;
+	clear: right;
+	margin: 5px;
+}
+.temp-down{
+	float: right;
+	clear: right;
+	margin: 5px;
+}
+
+/* LCD display styling */
+@font-face {
+    font-family: '5x8LCDHD44780UA02Regular';
+    src: url('../font/5x8_lcd_hd44780u_a02-webfont.eot');
+    src: url('../font/5x8_lcd_hd44780u_a02-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/5x8_lcd_hd44780u_a02-webfont.woff') format('woff'),
+         url('../font/5x8_lcd_hd44780u_a02-webfont.ttf') format('truetype'),
+         url('../font/5x8_lcd_hd44780u_a02-webfont.svg#5x8LCDHD44780UA02Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+.lcddisplay {
+	width: 240px;
+	height: 80px;
+	padding: 5px 16px;
+	float: left;
+	clear: none;
+	margin: 5px;
+
+	background: #000000; /* Old browsers */
+	background: -moz-linear-gradient(top, #000000 2%, #2b2b2b 11%, #212121 54%, #212121 92%, #000000 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#000000), color-stop(11%,#2b2b2b), color-stop(54%,#212121), color-stop(92%,#212121), color-stop(100%,#000000)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); /* W3C */
+	-webkit-box-shadow: inset 1px 1px 5px #333333;
+	-moz-box-shadow: inset 1px 1px 5px #333333;
+	box-shadow: inset 1px 1px 5px #333333;
+	font-size: 16px;
+	line-height: 1.2em;
+	font-weight: normal;
+	font-style: normal;
+
+	border: 2px solid #333;
+	font-family: '5x8LCDHD44780UA02Regular';
+	color: #FFFF00;
+	white-space:pre;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+#maintenance-panel #beer-selector{
+	margin-bottom: 20px;
+}
+
+#profile-control #controls button{
+	margin-bottom: 5px;
+}
+
+
+#maintenance-panel .setting-container{
+	clear: both;
+	padding:10px;
+	margin: 20px 15px;
+}
+
+.ui-dialog{
+	overflow: auto;
+}
+
+#maintenance-panel .setting-container .setting-name{
+	float: left;
+	clear: none;
+	font-weight: bold;
+	margin-top: 5px;
+}
+
+#maintenance-panel .section-explanation{
+	float: left;
+	clear: both;
+	width: 710px;
+	margin-top: 30px;
+	margin-left: 25px;
+}
+
+#maintenance-panel .setting-container .explanation{
+	clear: left;
+	float:left;
+	width: 320px;
+}
+
+
+#advanced-settings .setting-container select,
+#advanced-settings .setting-container input{
+	position: absolute;
+	float: left;
+	left: 400px;
+}
+
+#settings .setting-container select,
+#settings .setting-container input{
+	position: absolute;
+	float: left;
+	left: 300px;
+}
+
+#maintenance-panel #settings-container{
+	height: 130px;
+}
+
+#maintenance-panel .apply-button{
+	position: absolute;
+	float: left;
+	left: 700px;
+}
+
+#advanced-settings .send-button{
+	position: absolute;
+	float: left;
+	left: 600px;
+	margin-top: 0;
+}
+
+#control-constants-container,
+#control-settings-container{
+	padding-bottom: 15px;
+	margin-bottom: 15px;
+	overflow: auto;
+}
+
+#maintenance-panel .container-title{
+    float: left;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+#maintenance-panel .header button{
+	float: right;
+}
+
+.algorithm-container{
+	margin-bottom: 10px;
+}
+
+.equation{
+	margin: 15px;
+	height: 4em;
+	clear: left;
+}
+
+.equation .cv,
+.equation .cs,
+.equation .cc{
+	float: left;
+}
+
+.on-off-parameters .cv,
+.on-off-parameters .cs,
+.on-off-parameters .cc{
+	float: left;
+	margin: 15px;
+}
+
+.on-off-parameters .negPeak{
+	clear: left;
+}
+.on-off-parameters .posPeak{
+	clear: left;
+}
+.on-off-parameters .coolEstimator{
+	clear: left;
+}
+
+
+#control-algorithm .name{
+	float: left;
+	border: solid 1px;
+	text-align: center;
+	font-weight: bold;
+}
+
+#control-algorithm .val{
+	float: left;
+	clear: left;
+	border: solid 1px;
+	border-top: 0;
+	border-color: #aaaaaa;
+	text-align: center;
+	font-size: 2em;
+	min-height: 1.2em;
+	font-weight: bold;
+}
+
+#control-algorithm .cc .name{
+	border-color: #aaaaaa;
+	background-color: #8CCCEC;
+}
+#control-algorithm .cv .name{
+	border-color: #aaaaaa;
+	background-color: #FFA039;
+}
+#control-algorithm .cs .name{
+	border-color: #aaaaaa;
+	background-color: #FFAAAA;
+}
+
+.equation .name,
+.equation .val{
+	width: 180px;
+}
+.on-off-parameters .name,
+.on-off-parameters .val{
+	width: 240px;
+}
+
+.equation .operator{
+	float: left;
+	font-size:3em;
+	width: 50px;
+	text-align: center;
+}
+.equation .multiply{
+	margin-top: 0.3em;
+}
+.equation .equals{
+	margin-top: 0.12em;
+}
+.equation .plus{
+	margin-top: 0.15em;
+}
+
+.sum-line{
+	float: left;
+	margin-left: 480px;
+}
+.sum-line .plus{
+	font-size: 3em;
+	font-weight: bold;
+	float: left;
+	width: 50px;
+	text-align: center;
+}
+.sum-line .line{
+	width: 180px;
+	margin-top: 1em;
+	float: left;
+	border: solid 2px;
+}
+
+.equation .beerSetting{
+	margin-left: 234px;
+}
+
+#control-algorithm .help-panel{
+	width: 230px;
+	float: right;
+	border: solid 1px;
+	border-color: #aaaaaa;
+	margin-right: 15px;
+	margin-top: 15px;
+}
+
+.help-panel p{
+	margin: 15px;
+}
+
+#logo-container{
+	float: left;
+	clear: none;
+	display: block;
+	margin-left: 100px;
+	margin-top: 10px;
+	width: 260px;
+	text-align: center;
+}
+
+#logo-container span#beername{
+	float: left;
+	display: block;
+	line-height: 0.5em;
+	color: #ddd;
+	text-shadow: #333 1px 1px 1px;
+	width: inherit;
+	text-align: center;
+}
+
+.logo-placeholder a{
+	display:block;
+	font-size: 20px;
+	font-weight: bold;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	width: inherit;
+}
