@@ -105,10 +105,11 @@ function startScript(){
 function refreshLcd(){
 	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
 		if(lcdText != "error"){
-			$('#lcd').html(lcdText);
+			lcdText = lcdText.replace(/(\r\n|\n|\r)/gm,""); // remove all newlines
+			$('#lcd .lcd-text').html(lcdText);
 		}
 		else{
-			$('#lcd').html("Error: script <BR>not responding");
+			$('#lcd .lcd-text').html("Error: script <BR>not responding");
 		}
 		window.setTimeout(checkScriptStatus,5000);
 	});

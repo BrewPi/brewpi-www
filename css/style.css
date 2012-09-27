@@ -216,6 +216,11 @@ button#refresh-beer-chart span.ui-icon{
 	border-radius: 2px;
 }
 
+.lcddisplay .lcd-text{
+	float: left;
+	clear: none;
+}
+
 #maintenance-panel #beer-selector{
 	margin-bottom: 20px;
 }
