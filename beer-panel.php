@@ -21,7 +21,7 @@
 	<div id="lcd" class="lcddisplay"><span class="lcd-text"><br>Live display<br>Waiting to update..</span></div>
 	<div id="logo-container">
 		<div class="logo-placeholder">
-			<a href="http://forum.brewpi.com/discussion/5/we-need-a-logo">BrewPi Logo goes here</a>
+			<a href="http://forum.brewpi.com/discussion/6/we-need-a-logo">BrewPi Logo goes here</a>
 		</div>
 		<span id="beername">Fermenting: <?php echo $beerName;?></span>
 	</div>
