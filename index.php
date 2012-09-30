@@ -19,7 +19,7 @@
 
 <?php
 
-$settings = file_get_contents('/var/www/wwwSettings.json');
+$settings = file_get_contents('wwwSettings.json');
 if($settings == false){
 	die("Cannot open settings file");
 }
