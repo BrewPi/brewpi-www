@@ -32,6 +32,11 @@ function drawBeerChart(beerToDraw, div){
 					dataType:"json",
 					async: false
 					}).responseText;
+			if(jsonData == ''){
+				// skip empty responses
+				continue;
+			}
+
 			var evalledJsonData = eval("("+jsonData+")");
 			//document.write(jsonData + "<br>");
 			if(first){
