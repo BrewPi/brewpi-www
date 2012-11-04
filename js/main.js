@@ -185,4 +185,7 @@ $(document).ready(function(){
 	loadControlPanel();
 	checkScriptStatus(); //will call refreshLcd and alternate between the two
 	drawBeerChart(beerName, 'beer-chart');
+	receiveControlConstants();
+	receiveControlSettings();
+	receiveControlVariables();
 });

@@ -32,7 +32,7 @@ function drawBeerChart(beerToDraw, div){
 					dataType:"json",
 					async: false
 					}).responseText;
-			if(jsonData == ''){
+			if(jsonData === ''){
 				// skip empty responses
 				continue;
 			}

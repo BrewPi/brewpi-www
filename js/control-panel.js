@@ -118,16 +118,16 @@ function loadControlPanel(){
 
 function tempUp(temp){
 	temp = temp+0.1;
-	if(temp>30.0){
-		temp = 4.0;
+	if(temp > controlConstants['tempSettingMax']){
+		temp = controlConstants['tempSettingMin'];
 	}
 	return temp;
 }
 
 function tempDown(temp){
 	temp = temp-0.1;
-	if(temp< 4.0){
-		temp = 30.0;
+	if(temp < controlConstants['tempSettingMin']){
+		temp = controlConstants['tempSettingMax'];
 	}
 	return temp;
 }
