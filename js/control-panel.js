@@ -235,13 +235,13 @@ $(document).ready(function(){
 		}
 	});
 
-	$("button#fridge-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"} }).bind({
+	$("button#fridge-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"}	}).bind({
 		mousedown: function() {
-			beerTemp=tempDown(beerTemp);
-			$("#fridge-temp span.temperature").text(String(beerTemp.toFixed(1)));
+			fridgeTemp=tempDown(fridgeTemp);
+			$("#fridge-temp span.temperature").text(String(fridgeTemp.toFixed(1)));
 			fridgeTempDownTimeOut = window.setInterval(function(){
-				fridgeTemp=tempDown(beerTemp);
-				$("#fridge-temp span.temperature").text(String(beerTemp.toFixed(1)));
+				fridgeTemp=tempDown(fridgeTemp);
+				$("#fridge-temp span.temperature").text(String(fridgeTemp.toFixed(1)));
 			}, 100);
 		},
 		mouseup: function(){
