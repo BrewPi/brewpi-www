@@ -20,8 +20,8 @@
 <?php
 	$beerName = $_POST["beername"];
 	$fileNames = array();
-  	$currentBeerDir = '/data/' . $beerName;
-  	$handle = opendir($_SERVER['DOCUMENT_ROOT'] . $currentBeerDir);
+  	$currentBeerDir = 'data/' . $beerName;
+  	$handle = opendir($currentBeerDir);
   	if($handle == false){
   		die("Cannot retrieve beer files directory: " . $currentBeerDir);
   	}
