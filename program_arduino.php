@@ -15,6 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// Set instance root
+$instanceRoot = getcwd();
+
+// Read config settings
+if(file_exists('config.php')) {
+	require_once('config.php');
+}
+else {
+	die('ERROR: Unable to open required file (config.php)');
+}
 ?>
 
 <?php
@@ -38,14 +49,14 @@ if ($_FILES["file"]["error"] > 0){
 ?>
 <!DOCTYPE html>
 <head>
-  <title>UberFridge programming arduino!</title>
+  <title>BrewPi programming arduino!</title>
 </head>
 <body style="font-family: Arial;border: 0 none;">
 <?php
 $fileName = $_FILES["file"]["name"];
 echo "Uploaded " . $fileName . " (size: " . ($_FILES["file"]["size"]) . " bytes)<br />";
 $tempFileName = $_FILES["file"]["tmp_name"];
-if(move_uploaded_file($tempFileName, '/var/www/uploads/' . $fileName)){
+if(move_uploaded_file($tempFileName, "$instanceRoot/uploads/" . $fileName)){
 	// succes!
 }
 else{
@@ -80,7 +91,7 @@ function open_socket()
 		return false;
 	}
 	else{
-		if(socket_connect($sock, '/home/brewpi/BEERSOCKET')){
+		if(socket_connect($sock, "$GLOBALS[scriptPath]/BEERSOCKET")){
 			socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => 15, 'usec' => 0));
 			return $sock;
 		}

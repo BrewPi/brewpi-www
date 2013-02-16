@@ -15,6 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// Read config settings
+if(file_exists('config.php')) {
+	require_once('config.php');
+}
+else {
+	die('ERROR: Unable to open required file (config.php)');
+}
 ?>
 
 <div style="font-family: Arial;">
@@ -22,7 +30,7 @@
 <h3>stderr:</h3>
 <div id="stderr" style="background:black; overflow:auto; height:200px; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px">
 	<?php
-		$file = file('/home/brewpi/logs/stderr.txt');
+		$file = file("$scriptPath/logs/stderr.txt");
 		foreach($file as $line) {
 			echo $line . "<br>";
 		}
@@ -31,7 +39,7 @@
 <h3>stdout:</h3>
 <div id="stdout" style="background:black; overflow:auto; height:200px; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px">
 	<?php
-	$file = file('/home/brewpi/logs/stdout.txt');
+	$file = file("$scriptPath/logs/stdout.txt");
 	foreach($file as $line) {
 		echo $line . "<br>";
 	}

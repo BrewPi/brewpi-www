@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// Set instance root
+$instanceRoot = getcwd();
 ?>
 
 <?php
 	# remove do not run file. Cron will start the script within one minute
-	unlink('/var/www/do_not_run_brewpi')
+	unlink("$instanceRoot/do_not_run_brewpi")
 ?>
