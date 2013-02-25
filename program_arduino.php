@@ -69,7 +69,7 @@ else{
 <?php
 $sock = open_socket();
 if($sock !== false){
-	socket_write($sock, "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$fileName\",\"eraseEEPROM\":$eraseEEPROM}", 1024);
+	socket_write($sock, "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"eraseEEPROM\":$eraseEEPROM}", 1024);
 	$avrdudeOutput = socket_read($sock, 4096);
 	socket_close($sock);
 }
