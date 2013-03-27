@@ -102,8 +102,8 @@ function loadControlPanel(){
 			default:
 				statusMessage("error","Invalid mode ("+mode+") received");
 		}
-		beerTemp = controlSettings.beerSetting;
-		fridgeTemp = controlSettings.fridgeSetting;
+		beerTemp = controlSettings.beerSet;
+		fridgeTemp = controlSettings.fridgeSet;
 		// beer and fridge temp can be null when not active (off mode)
 		if(beerTemp === null){
 			beerTemp = 20.0;
@@ -118,16 +118,16 @@ function loadControlPanel(){
 
 function tempUp(temp){
 	temp = temp+0.1;
-	if(temp > controlConstants['tempSettingMax']){
-		temp = controlConstants['tempSettingMin'];
+	if(temp > controlConstants['tempSetMax']){
+		temp = controlConstants['tempSetMin'];
 	}
 	return temp;
 }
 
 function tempDown(temp){
 	temp = temp-0.1;
-	if(temp < controlConstants['tempSettingMin']){
-		temp = controlConstants['tempSettingMax'];
+	if(temp < controlConstants['tempSetMin']){
+		temp = controlConstants['tempSetMax'];
 	}
 	return temp;
 }

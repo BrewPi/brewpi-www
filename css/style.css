@@ -339,7 +339,7 @@ button#refresh-beer-chart span.ui-icon{
 .on-off-parameters .posPeak{
 	clear: left;
 }
-.on-off-parameters .coolEstimator{
+.on-off-parameters .coolEst{
 	clear: left;
 }
 
@@ -419,7 +419,7 @@ button#refresh-beer-chart span.ui-icon{
 	border: solid 2px;
 }
 
-.equation .beerSetting{
+.equation .beerSet{
 	margin-left: 234px;
 }
 
