@@ -265,22 +265,22 @@
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Heating target upper bound</span><input type="text" name="heatingTargetH" class="cc heatingTargetH">
+			<span class="setting-name">Heating target upper bound</span><input type="text" name="heatTargetH" class="cc heatingTargetH">
 			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Heating target lower bound</span><input type="text" name="heatingTargetL" class="cc heatingTargetL">
+			<span class="setting-name">Heating target lower bound</span><input type="text" name="heatTargetL" class="cc heatingTargetL">
 			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooling target upper bound</span><input type="text" name="coolingTargetH" class="cc coolingTargetH">
+			<span class="setting-name">Cooling target upper bound</span><input type="text" name="coolTargetH" class="cc coolingTargetH">
 			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooling target lower bound</span><input type="text" name="coolingTargetL" class="cc coolingTargetL">
+			<span class="setting-name">Cooling target lower bound</span><input type="text" name="coolTargetL" class="cc coolingTargetL">
 			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
