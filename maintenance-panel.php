@@ -344,6 +344,7 @@ function echoFilterSelect($filterName){
 
 # slope filters are updated every 12 seconds, so have different delay time
 function echoSlopeFilterSelect($filterName){
+	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
 	echo "<option value=0>   1.8 minutes</option>"; // a=4,		b=0,	delay time = 3
 	echo "<option value=1>   3.6 minutes</option>"; // a=6,		b=1,	delay time = 6
 	echo "<option value=2>   7.8 minutes</option>"; // a=8,		b=2,	delay time = 13
