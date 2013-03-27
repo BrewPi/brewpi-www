@@ -245,6 +245,7 @@ button#refresh-beer-chart span.ui-icon{
 	clear: none;
 	font-weight: bold;
 	margin-top: 5px;
+	width: 320px;
 }
 
 #maintenance-panel .section-explanation{
@@ -253,6 +254,7 @@ button#refresh-beer-chart span.ui-icon{
 	width: 710px;
 	margin-top: 30px;
 	margin-left: 25px;
+	margin-bottom: 30px;
 }
 
 #maintenance-panel .setting-container .explanation{
