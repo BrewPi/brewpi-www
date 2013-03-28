@@ -91,10 +91,9 @@
 	<div class="algorithm-container ui-helper-reset ui-helper-clearfix ui-widget-content ui-corner-all">
 		<div class="help-panel">
 			<p>
-				The red values are control settings, they determine the fridge behavior.
-				The overshoot estimators are updated automatically. The fridge setting too in beer/profile mode.
+				The red values are control settings. The beer setting is set by the profile or constant. The fridge setting is set by PID or constant.
 				</br>
-				The orange values are control variables. These are intermediate results that eventually determine the fridge setting.
+				The orange values are control variables. These are intermediate results of the fridge setting calculation.
 				</br>
 				The blue values are constants, they never change automatically.
 			</p>
@@ -140,7 +139,7 @@
 			<p>
 				The heater and cooler are controlled by a predictive on-off algorithm.
 				BrewPi estimates the overshoot that would happen when it would go to IDLE. When that lands on the target temperature, it goes to IDLE.
-				The overshoot is estimated as time active in seconds / 3600 * estimator.
+				The overshoot is estimated as time active in hours * estimator.
 				BrewPi detects the actual peaks and compares them to the prediction to automatically adjusts the estimators.
 				You can change them manually in 'advanced settings' when they are far off.
 			</p>
