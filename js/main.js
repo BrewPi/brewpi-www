@@ -108,7 +108,6 @@ function refreshLcd(){
 			lcdText = JSON.parse(lcdText);
 			for (var i = lcdText.length - 1; i >= 0; i--) {
 				$('#lcd .lcd-text #lcd-line-' + i).html(lcdText[i]);
-				console.log(lcdText[i]);
 			};
 		}
 		else{
