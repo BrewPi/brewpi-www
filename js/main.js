@@ -105,11 +105,15 @@ function startScript(){
 function refreshLcd(){
 	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
 		if(lcdText != "error"){
-			lcdText = lcdText.replace(/(\r\n|\n|\r)/gm,""); // remove all newlines
-			$('#lcd .lcd-text').html(lcdText);
+			lcdText = JSON.parse(lcdText);
+			for (var i = lcdText.length - 1; i >= 0; i--) {
+				$('#lcd .lcd-text #lcd-line-' + i).html(lcdText[i]);
+				console.log(lcdText[i]);
+			};
 		}
 		else{
-			$('#lcd .lcd-text').html("Error: script <BR>not responding");
+			$('#lcd .lcd-text #lcd-line-0').html("Error: script")
+			$('#lcd .lcd-text #lcd-line-1').html("not responding");
 		}
 		window.setTimeout(checkScriptStatus,5000);
 	});
