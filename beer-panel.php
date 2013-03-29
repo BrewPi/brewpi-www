@@ -25,9 +25,7 @@
 		<span class="lcd-line" id="lcd-line-3"></span>
 	</div>
 	<div id="logo-container">
-		<div class="logo-placeholder">
-			<a href="http://forum.brewpi.com/discussion/6/we-need-a-logo">BrewPi Logo goes here</a>
-		</div>
+		<img src="brewpi_logo.png">
 		<span id="beername">Fermenting: <?php echo $beerName;?></span>
 	</div>
 	<button class="script-status ui-state-error"></button>

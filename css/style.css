@@ -452,10 +452,9 @@ button#refresh-beer-chart span.ui-icon{
 	float: left;
 	display: block;
 	line-height: 0.5em;
-	color: #ddd;
-	text-shadow: #333 1px 1px 1px;
+	color: #000;
 	width: inherit;
-	text-align: center;
+	margin-top: 10px;
 }
 
 .logo-placeholder a{
