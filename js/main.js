@@ -104,17 +104,21 @@ function startScript(){
 
 function refreshLcd(){
 	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
-		if(lcdText != "error"){
-			lcdText = JSON.parse(lcdText);
+		try
+		{
+		   	lcdText = JSON.parse(lcdText);
 			for (var i = lcdText.length - 1; i >= 0; i--) {
 				$('#lcd .lcd-text #lcd-line-' + i).html(lcdText[i]);
 			};
+			window.setTimeout(checkScriptStatus,5000);
 		}
-		else{
-			$('#lcd .lcd-text #lcd-line-0').html("Error: script")
-			$('#lcd .lcd-text #lcd-line-1').html("not responding");
+		catch(e)
+		{
+		   alert(lcdText);
+		   $('#lcd .lcd-text #lcd-line-0').html("Cannot connect to");
+		   $('#lcd .lcd-text #lcd-line-1').html("script. Refresh");
+		   $('#lcd .lcd-text #lcd-line-2').html("page to try again");
 		}
-		window.setTimeout(checkScriptStatus,5000);
 	});
 }
 

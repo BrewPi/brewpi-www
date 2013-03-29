@@ -146,10 +146,12 @@ function open_socket()
 			return $sock;
 		}
 		else{
-			// will end up on the LCD, don't print the error.
-			echo "Not connected";
+			echo "Cannot connect to script, please make sure that it is running.\n";
+			echo "If you have set up the CRON job, try clicking the 'Start script' button\n";
+			echo "and wait for CRON to start the python script.\n";
+			echo "If that does not work, check the log files for errors.\n\n";
 			// when debugging, uncomment this:
-			// echo socket_strerror(socket_last_error($sock));
+			echo "Error message: " . socket_strerror(socket_last_error($sock));
 			return false;
 		}
 	}
