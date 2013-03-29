@@ -118,6 +118,7 @@ function refreshLcd(){
 		   $('#lcd .lcd-text #lcd-line-0').html("Cannot connect to");
 		   $('#lcd .lcd-text #lcd-line-1').html("script. Refresh");
 		   $('#lcd .lcd-text #lcd-line-2').html("page to try again");
+		   $('#lcd .lcd-text #lcd-line-3').html(" ");
 		}
 	});
 }
