@@ -25,7 +25,7 @@
 	<li><a href="#advanced-settings"><span>Advanced Settings</span></a></li>
 	<li><a href="#reprogram-arduino"><span>Reprogram Arduino</span></a></li>
 	<!--kinda dirty to have buttons in the ul, but the ul is styled as a nice header by jQuery UI -->
-	<button class="script-status"</button>
+	<button class="script-status"></button>
 </ul>
 <div id="reprogram-arduino">
 	<div class="script-warning ui-widget-content ui-corner-all" style="padding:5px;">
