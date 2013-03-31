@@ -442,9 +442,9 @@ button#refresh-beer-chart span.ui-icon{
 	float: left;
 	clear: none;
 	display: block;
-	margin-left: 100px;
+	margin-left: 4px;
 	margin-top: 10px;
-	width: 260px;
+	width: 450px;
 	text-align: center;
 }
 
