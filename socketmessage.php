@@ -16,6 +16,8 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('socket_open.php');
+
 // Read config settings
 if(file_exists('config.php')) {
 	require_once('config.php');
@@ -132,28 +134,5 @@ if($sock !== false){
 			break;
 	}
 	socket_close($sock);
-}
-
-function open_socket()
-{
-	$sock = socket_create(AF_UNIX, SOCK_STREAM, 0);
-	if ($sock === false) {
-		return false;
-	}
-	else{
-		if(socket_connect($sock, "$GLOBALS[scriptPath]/BEERSOCKET")){
-			socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => 15, 'usec' => 0));
-			return $sock;
-		}
-		else{
-			echo "Cannot connect to script, please make sure that it is running.\n";
-			echo "If you have set up the CRON job, try clicking the 'Start script' button\n";
-			echo "and wait for CRON to start the python script.\n";
-			echo "If that does not work, check the log files for errors.\n\n";
-			// when debugging, uncomment this:
-			echo "Error message: " . socket_strerror(socket_last_error($sock));
-			return false;
-		}
-	}
 }
 ?>
