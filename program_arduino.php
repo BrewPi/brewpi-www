@@ -16,8 +16,12 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('socket_open.php');
+
+
 // Set instance root
-$instanceRoot = getcwd();
+$instanceRoot = str_replace("\\", "/", getcwd());
+
 
 // Read config settings
 if(file_exists('config.php')) {
@@ -69,7 +73,8 @@ else{
 <?php
 $sock = open_socket();
 if($sock !== false){
-	socket_write($sock, "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"eraseEEPROM\":$eraseEEPROM}", 1024);
+    $cmd = "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"eraseEEPROM\":$eraseEEPROM}";
+	socket_write($sock, $cmd, 1024);
 	$avrdudeOutput = socket_read($sock, 4096);
 	socket_close($sock);
 }
@@ -83,25 +88,5 @@ if($sock !== false){
 </div>
 </body>
 </html>
-<?php
-function open_socket()
-{
-	$sock = socket_create(AF_UNIX, SOCK_STREAM, 0);
-	if ($sock === false) {
-		return false;
-	}
-	else{
-		if(socket_connect($sock, "$GLOBALS[scriptPath]/BEERSOCKET")){
-			socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => 15, 'usec' => 0));
-			return $sock;
-		}
-		else{
-			echo "Not connected";
-			# echo socket_strerror(socket_last_error($sock));
-			return false;
-		}
-	}
-}
-?>
 
 
