@@ -28,7 +28,6 @@ else {
 	die('ERROR: Unable to open required file (config.php)');
 }
 ?>
-
 <?php
 
 error_reporting(E_ALL ^ E_WARNING);

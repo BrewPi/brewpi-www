@@ -87,6 +87,9 @@ function loadControlPanel(){
 	drawProfileChart();
 	drawProfileTable();
 	receiveControlSettings(function(){
+        if(window.controlSettings == {}){
+            return;
+        }
 		switch(window.controlSettings.mode){
 			case 'p':
 				$('#control-panel').tabs( "select" , 0);

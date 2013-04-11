@@ -25,6 +25,9 @@ var controlVariables = {};
 function receiveControlConstants(){
     "use strict";
 	$.post('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
+        if(controlConstantsJSON === ''){
+            return;
+        }
 		window.controlConstants = jQuery.parseJSON(controlConstantsJSON);
 		for (var i in window.controlConstants) {
 			if($('select[name="'+i+'"]').length){
@@ -41,6 +44,9 @@ function receiveControlConstants(){
 function receiveControlSettings(callback){
     "use strict";
 	$.post('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
+        if(controlSettingsJSON === ''){
+            return;
+        }
         window.controlSettings = jQuery.parseJSON(controlSettingsJSON);
 		for (var i in controlSettings) {
 			if($('select[name="'+i+'"]').length){
@@ -61,6 +67,9 @@ function receiveControlSettings(callback){
 function receiveControlVariables(){
     "use strict";
 	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
+        if(controlVariablesJSON === ''){
+            return;
+        }
         window.controlVariables = jQuery.parseJSON(controlVariablesJSON);
 		for (var i in window.controlVariables) {
 			$('.cv.'+i+' .val').text(window.controlVariables[i]);
