@@ -16,7 +16,9 @@
  */
 
 $(document).ready(function(){
-//Maintenance Panel
+    "use strict";
+
+    //Maintenance Panel
 	$('#maintenance-panel')
 	.dialog({
 		autoOpen: false,
@@ -50,7 +52,8 @@ $(document).ready(function(){
 	});
 
 	$("#advanced-settings .send-button").button({	icons: {primary: "ui-icon-check" } }).click(function(){
-		if($(this).parent().children("select").length){ // check for existance
+		var jsonString;
+        if($(this).parent().children("select").length){ // check for existance
 			jsonString = "{\"" + $(this).parent().children("select").attr("name") + "\":\"" + $(this).parent().children("select").val() + "\"}";
 		}
 		else if($(this).parent().children("input").length){ // check for existance
@@ -60,7 +63,7 @@ $(document).ready(function(){
 			return;
 		}
 		$.post('socketmessage.php', {messageType: "setParameters", message: jsonString});
-		if($(this).parent().children("select").attr("name") == "tempFormat"){
+		if($(this).parent().children("select").attr("name") === "tempFormat"){
 			// if temperature format is updated, reload all settings in new format and update fields
 			reloadControlConstantsFromArduino();
 			reloadControlSettingsFromArduino();

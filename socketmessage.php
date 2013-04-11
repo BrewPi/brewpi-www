@@ -16,6 +16,8 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* to make sockets work on windows, uncomment extension=php_sockets.dll in php.ini */
+
 require_once('socket_open.php');
 
 // Read config settings

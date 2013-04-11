@@ -1,5 +1,5 @@
 <?php
 	// Configure the path of the BrewPi script for this instance of the
 	// web interface.  Do not include the trailing / on the path.
-	$scriptPath = '/home/brewpi'
+	$scriptPath = '/home/brewpi';
 ?>
