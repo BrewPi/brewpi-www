@@ -106,20 +106,19 @@ function refreshLcd(){
 	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
 		try
 		{
-		   	lcdText = JSON.parse(lcdText);
+			lcdText = JSON.parse(lcdText);
 			for (var i = lcdText.length - 1; i >= 0; i--) {
 				$('#lcd .lcd-text #lcd-line-' + i).html(lcdText[i]);
-			};
-			window.setTimeout(checkScriptStatus,5000);
+			}
 		}
 		catch(e)
 		{
-		   document.write(lcdText);
-		   $('#lcd .lcd-text #lcd-line-0').html("Cannot connect to");
-		   $('#lcd .lcd-text #lcd-line-1').html("script. Refresh");
-		   $('#lcd .lcd-text #lcd-line-2').html("page to try again");
-		   $('#lcd .lcd-text #lcd-line-3').html(" ");
+            $('#lcd .lcd-text #lcd-line-0').html("Cannot receive");
+            $('#lcd .lcd-text #lcd-line-1').html("LCD text from");
+            $('#lcd .lcd-text #lcd-line-2').html("Python script");
+            $('#lcd .lcd-text #lcd-line-3').html(" ");
 		}
+        window.setTimeout(checkScriptStatus,5000);
 	});
 }
 
