@@ -143,8 +143,14 @@ function applySettings(){
 	"use strict";
 	//Check which tab is open
 	if($("#profile-control").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
-		statusMessage("highlight","Mode set to beer profile");
+        // upload profile to pi
+        $.post('socketmessage.php', {messageType: "uploadProfile", message: ""}, function(answer){
+           if(answer !==''){
+               statusMessage("highlight", answer);
+           }
+        });
+        // set mode to profile
+        $.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
 	}
 	else if($("#beer-constant-control").hasClass('ui-tabs-hide') === false){
 		$.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
@@ -173,12 +179,6 @@ $(document).ready(function(){
 
 	$("#controls button#edit").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
 		window.open("https://docs.google.com/spreadsheet/ccc?key=" + window.googleDocsKey);
-	});
-
-	$("#controls button#upload").button({ icons: {primary: "ui-icon-arrowthickstop-1-n"}}).click(function(){
-		$.post('socketmessage.php', {messageType: "uploadProfile", message: ""}, function(answer){
-			statusMessage("highlight", answer);
-		});
 	});
 
 	$("button#apply-settings").button({ icons: {primary: "ui-icon-check"} })	.click(function(){
