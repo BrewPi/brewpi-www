@@ -147,7 +147,7 @@ function checkScriptStatus(){
     "use strict";
 	$.post('socketmessage.php', {messageType: "checkScript", message: ""}, function(answer){
 		if(answer !== prevScriptStatus){
-			if(answer===1){
+			if(answer==='1'){
 				$(".script-status span.ui-icon").removeClass("ui-icon-alert").addClass("ui-icon-check");
 				$(".script-status").removeClass("ui-state-error").addClass("ui-state-default");
 				$(".script-status span.ui-button-text").text("Script running");
