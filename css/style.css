@@ -221,6 +221,11 @@ button#refresh-beer-chart span.ui-icon{
 	white-space: pre;
 }
 
+#maintenance-panel{
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
 #maintenance-panel #beer-selector{
 	margin-bottom: 20px;
 }
