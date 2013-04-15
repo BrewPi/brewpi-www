@@ -146,7 +146,8 @@ function refreshLcd(){
 function checkScriptStatus(){
     "use strict";
 	$.post('socketmessage.php', {messageType: "checkScript", message: ""}, function(answer){
-		if(answer !== prevScriptStatus){
+        answer = answer.replace(/\s/g, ''); //strip all whitespace, including newline.
+        if(answer !== prevScriptStatus){
 			if(answer==='1'){
 				$(".script-status span.ui-icon").removeClass("ui-icon-alert").addClass("ui-icon-check");
 				$(".script-status").removeClass("ui-state-error").addClass("ui-state-default");
