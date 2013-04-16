@@ -46,7 +46,7 @@ if($sock !== false){
 		case "checkScript":
 			socket_write($sock, "ack", 1024);
 			$answer = socket_read($sock, 1024);
-			if($answer = "ack"){
+			if($answer == "ack"){
 				echo 1;
 			}
 			else{
