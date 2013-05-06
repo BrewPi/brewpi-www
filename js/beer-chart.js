@@ -17,18 +17,20 @@
 
 /* Give name of the beer to display and div to draw the graph in */
 function drawBeerChart(beerToDraw, div){
+    "use strict";
 	var beerChart;
 	var beerData;
 	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer){
 		var combinedJson;
 		var first = true;
 		var files = eval(answer);
-		//document.write(files);
-		//alert(fileNames.length);
-		for(i=0;i<files.length;i++){
-			filelocation = files[i];
+		if(typeof files === 'undefined'){
+            return;
+        }
+		for(var i=0;i<files.length;i++){
+			var fileLocation = files[i];
 			var jsonData = $.ajax({
-					url: filelocation,
+					url: fileLocation,
 					dataType:"json",
 					async: false
 					}).responseText;
@@ -38,7 +40,6 @@ function drawBeerChart(beerToDraw, div){
 			}
 
 			var evalledJsonData = eval("("+jsonData+")");
-			//document.write(jsonData + "<br>");
 			if(first){
 				combinedJson = evalledJsonData;
 				first = false;
@@ -53,7 +54,7 @@ function drawBeerChart(beerToDraw, div){
 			'displayAnnotations': true,
 			'scaleType': 'maximized',
 			'displayZoomButtons': false,
-			'allValuesSuffix': "\u00B0 " + tempFormat,
+			'allValuesSuffix': "\u00B0 " + window.tempFormat,
 			'numberFormats': "##.00",
 			'displayAnnotationsFilter' : true});
 	});

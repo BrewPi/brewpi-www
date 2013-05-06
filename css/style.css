@@ -184,13 +184,10 @@ button#refresh-beer-chart span.ui-icon{
 
 
 .lcddisplay {
-	width: 240px;
-	height: 80px;
-	padding: 5px 16px;
+	width: 280px;
+	height: 90px;
 	float: left;
-	clear: none;
 	margin: 5px;
-
 	background: #000000; /* Old browsers */
 	background: -moz-linear-gradient(top, #000000 2%, #2b2b2b 11%, #212121 54%, #212121 92%, #000000 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#000000), color-stop(11%,#2b2b2b), color-stop(54%,#212121), color-stop(92%,#212121), color-stop(100%,#000000)); /* Chrome,Safari4+ */
@@ -202,23 +199,31 @@ button#refresh-beer-chart span.ui-icon{
 	-webkit-box-shadow: inset 1px 1px 5px #333333;
 	-moz-box-shadow: inset 1px 1px 5px #333333;
 	box-shadow: inset 1px 1px 5px #333333;
-	font-size: 16px;
-	line-height: 1.2em;
-	font-weight: normal;
-	font-style: normal;
-
 	border: 2px solid #333;
-	font-family: '5x8LCDHD44780UA02Regular';
-	color: #FFFF00;
-	white-space:pre;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	border-radius: 2px;
 }
 
 .lcddisplay .lcd-text{
-	float: left;
-	clear: none;
+	float:left;
+	margin: 5px 16px;
+}
+
+.lcd-line{
+	float:left;
+	clear:left;
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;	
+	font-family: '5x8LCDHD44780UA02Regular';
+	color: #FFFF00;
+	white-space: pre;
+}
+
+#maintenance-panel{
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
 #maintenance-panel #beer-selector{
@@ -245,6 +250,7 @@ button#refresh-beer-chart span.ui-icon{
 	clear: none;
 	font-weight: bold;
 	margin-top: 5px;
+	width: 320px;
 }
 
 #maintenance-panel .section-explanation{
@@ -253,6 +259,7 @@ button#refresh-beer-chart span.ui-icon{
 	width: 710px;
 	margin-top: 30px;
 	margin-left: 25px;
+	margin-bottom: 30px;
 }
 
 #maintenance-panel .setting-container .explanation{
@@ -339,7 +346,7 @@ button#refresh-beer-chart span.ui-icon{
 .on-off-parameters .posPeak{
 	clear: left;
 }
-.on-off-parameters .coolEstimator{
+.on-off-parameters .coolEst{
 	clear: left;
 }
 
@@ -419,7 +426,7 @@ button#refresh-beer-chart span.ui-icon{
 	border: solid 2px;
 }
 
-.equation .beerSetting{
+.equation .beerSet{
 	margin-left: 234px;
 }
 
@@ -440,9 +447,9 @@ button#refresh-beer-chart span.ui-icon{
 	float: left;
 	clear: none;
 	display: block;
-	margin-left: 100px;
+	margin-left: 4px;
 	margin-top: 10px;
-	width: 260px;
+	width: 450px;
 	text-align: center;
 }
 
@@ -450,10 +457,9 @@ button#refresh-beer-chart span.ui-icon{
 	float: left;
 	display: block;
 	line-height: 0.5em;
-	color: #ddd;
-	text-shadow: #333 1px 1px 1px;
+	color: #000;
 	width: inherit;
-	text-align: center;
+	margin-top: 10px;
 }
 
 .logo-placeholder a{

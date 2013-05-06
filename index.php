@@ -44,9 +44,9 @@ $profileKey = $settingsArray["profileKey"];
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
-			tempFormat = <?php echo "'$tempFormat'" ?>;
-			googleDocsKey = <?php echo "\"$profileKey\""?>;
-			beerName = <?php echo "\"$beerName\""?>;
+			window.tempFormat = <?php echo "'$tempFormat'" ?>;
+			window.googleDocsKey = <?php echo "\"$profileKey\""?>;
+			window.beerName = <?php echo "\"$beerName\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>

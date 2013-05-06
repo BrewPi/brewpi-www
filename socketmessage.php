@@ -16,6 +16,10 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* to make sockets work on windows, uncomment extension=php_sockets.dll in php.ini */
+
+require_once('socket_open.php');
+
 // Read config settings
 if(file_exists('config.php')) {
 	require_once('config.php');
@@ -24,7 +28,6 @@ else {
 	die('ERROR: Unable to open required file (config.php)');
 }
 ?>
-
 <?php
 
 error_reporting(E_ALL ^ E_WARNING);
@@ -43,7 +46,7 @@ if($sock !== false){
 		case "checkScript":
 			socket_write($sock, "ack", 1024);
 			$answer = socket_read($sock, 1024);
-			if($answer = "ack"){
+			if($answer == "ack"){
 				echo 1;
 			}
 			else{
@@ -132,26 +135,5 @@ if($sock !== false){
 			break;
 	}
 	socket_close($sock);
-}
-
-function open_socket()
-{
-	$sock = socket_create(AF_UNIX, SOCK_STREAM, 0);
-	if ($sock === false) {
-		return false;
-	}
-	else{
-		if(socket_connect($sock, "$GLOBALS[scriptPath]/BEERSOCKET")){
-			socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => 15, 'usec' => 0));
-			return $sock;
-		}
-		else{
-			// will end up on the LCD, don't print the error.
-			echo "Not connected";
-			// when debugging, uncomment this:
-			// echo socket_strerror(socket_last_error($sock));
-			return false;
-		}
-	}
 }
 ?>

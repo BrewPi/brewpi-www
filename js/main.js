@@ -15,38 +15,47 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-prevScriptStatus=-1;
 
-controlConstants = {};
-controlSettings = {};
-controlVariables = {};
+var prevScriptStatus=-1;
+
+var controlConstants = {};
+var controlSettings = {};
+var controlVariables = {};
 
 function receiveControlConstants(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
-		controlConstants = jQuery.parseJSON(controlConstantsJSON);
-		for (var i in controlConstants) {
+        if(controlConstantsJSON === ''){
+            return;
+        }
+		window.controlConstants = jQuery.parseJSON(controlConstantsJSON);
+		for (var i in window.controlConstants) {
 			if($('select[name="'+i+'"]').length){
-				$('select[name="'+i+'"]').val(controlConstants[i]);
+				$('select[name="'+i+'"]').val(window.controlConstants[i]);
 			}
 			if($('input[name="'+i+'"]').length){
-				$('input[name="'+i+'"]').val(controlConstants[i]);
+				$('input[name="'+i+'"]').val(window.controlConstants[i]);
 			}
-			$('.cc.'+i+' .val').text(controlConstants[i]);
+			$('.cc.'+i+' .val').text(window.controlConstants[i]);
 		}
 	});
 }
 
 function receiveControlSettings(callback){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
-		controlSettings = jQuery.parseJSON(controlSettingsJSON);
+        if(controlSettingsJSON === ''){
+            return;
+        }
+        window.controlSettings = jQuery.parseJSON(controlSettingsJSON);
 		for (var i in controlSettings) {
 			if($('select[name="'+i+'"]').length){
-				$('select[name="'+i+'"]').val(controlSettings[i]);
+				$('select[name="'+i+'"]').val(window.controlSettings[i]);
 			}
 			if($('input[name="'+i+'"]').length){
-				$('input[name="'+i+'"]').val(controlSettings[i]);
+				$('input[name="'+i+'"]').val(window.controlSettings[i]);
 			}
-			$('.cs.'+i+' .val').text(controlSettings[i]);
+			$('.cs.'+i+' .val').text(window.controlSettings[i]);
 		}
 		// execute optional callback function
 		if (callback && typeof(callback) === "function") {
@@ -56,69 +65,90 @@ function receiveControlSettings(callback){
 }
 
 function receiveControlVariables(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
-		controlVariables = jQuery.parseJSON(controlVariablesJSON);
-		for (var i in controlVariables) {
-			$('.cv.'+i+' .val').text(controlVariables[i]);
+        if(controlVariablesJSON === ''){
+            return;
+        }
+        window.controlVariables = jQuery.parseJSON(controlVariablesJSON);
+		for (var i in window.controlVariables) {
+			$('.cv.'+i+' .val').text(window.controlVariables[i]);
 		}
-		$('.cv.pid-result .val').text(Math.round(1000*(controlVariables['p']+controlVariables['i']+controlVariables['d']))/1000);
+		$('.cv.pid-result .val').text(Math.round(1000*(window.controlVariables['p']+window.controlVariables['i']+window.controlVariables['d']))/1000);
 	});
 }
 
 function loadDefaultControlSettings(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "loadDefaultControlSettings", message: ""}, function(){
 		receiveControlSettings();
 	});
 }
 
 function loadDefaultControlConstants(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "loadDefaultControlConstants", message: ""}, function(){
 		receiveControlConstants();
 	});
 }
 function reloadControlConstantsFromArduino(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "refreshControlConstants", message: ""}, function(){
 		receiveControlConstants();
 	});
 }
 
 function reloadControlSettingsFromArduino(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "refreshControlSettings", message: ""}, function(){
 		receiveControlSettings();
 	});
 }
 
 function reloadControlVariablesFromArduino(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "refreshControlVariables", message: ""}, function(){
 		receiveControlVariables();
 	});
 }
 
 function stopScript(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "stopScript", message: ""}, function(){});
 }
 
 function startScript(){
+    "use strict";
 	$.get('start_script.php');
 }
 
 function refreshLcd(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
-		if(lcdText != "error"){
-			lcdText = lcdText.replace(/(\r\n|\n|\r)/gm,""); // remove all newlines
-			$('#lcd .lcd-text').html(lcdText);
+		try
+		{
+			lcdText = JSON.parse(lcdText);
+			for (var i = lcdText.length - 1; i >= 0; i--) {
+				$('#lcd .lcd-text #lcd-line-' + i).html(lcdText[i]);
+			}
 		}
-		else{
-			$('#lcd .lcd-text').html("Error: script <BR>not responding");
+		catch(e)
+		{
+			$('#lcd .lcd-text #lcd-line-0').html("Cannot receive");
+			$('#lcd .lcd-text #lcd-line-1').html("LCD text from");
+			$('#lcd .lcd-text #lcd-line-2').html("Python script");
+			$('#lcd .lcd-text #lcd-line-3').html(" ");
 		}
 		window.setTimeout(checkScriptStatus,5000);
 	});
 }
 
 function checkScriptStatus(){
+    "use strict";
 	$.post('socketmessage.php', {messageType: "checkScript", message: ""}, function(answer){
-		if(answer !=prevScriptStatus){
-			if(answer==1){
+        answer = answer.replace(/\s/g, ''); //strip all whitespace, including newline.
+        if(answer !== prevScriptStatus){
+			if(answer==='1'){
 				$(".script-status span.ui-icon").removeClass("ui-icon-alert").addClass("ui-icon-check");
 				$(".script-status").removeClass("ui-state-error").addClass("ui-state-default");
 				$(".script-status span.ui-button-text").text("Script running");
@@ -165,10 +195,11 @@ function checkScriptStatus(){
 		window.setTimeout(refreshLcd, 5000); //alternate refreshing script and lcd
 	});
 }
-
 google.load('visualization', '1', {packages: ['annotatedtimeline', 'table']});
 
 $(document).ready(function(){
+    "use strict";
+
 	$('#maintenance-panel').tabs();
 
 	$("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).click(function(){
@@ -179,13 +210,14 @@ $(document).ready(function(){
 	$(".script-status span.ui-button-text").text("Checking script..");
 
 	$("button#refresh-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
-		drawBeerChart(beerName, 'beer-chart');
+		drawBeerChart(window.beerName, 'beer-chart');
 	});
 
 	loadControlPanel();
-	checkScriptStatus(); //will call refreshLcd and alternate between the two
-	drawBeerChart(beerName, 'beer-chart');
-	receiveControlConstants();
+	drawBeerChart(window.beerName, 'beer-chart');
+
+    receiveControlConstants();
 	receiveControlSettings();
 	receiveControlVariables();
+    checkScriptStatus(); //will call refreshLcd and alternate between the two
 });

@@ -38,7 +38,6 @@
 	<div id="controls">
 		<button id="refresh">Refresh</button>
 		<button id="edit">Edit profile</button>
-		<button id="upload">Upload Profile</button>
 	</div>
 	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
 	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right"></div>

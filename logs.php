@@ -24,9 +24,12 @@ else {
 	die('ERROR: Unable to open required file (config.php)');
 }
 ?>
-
+<div id="log-buttons" style="clear:both">
+    <button id="refresh-logs" style="float:right">Refresh</button>
+    <button id="erase-logs" style="float:right">Erase logs</button>
+</div>
 <div style="font-family: Arial;">
-<button id="refresh-logs" style="float:right">Refresh</button>
+
 <h3>stderr:</h3>
 <div id="stderr" style="background:black; overflow:auto; height:200px; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px">
 	<?php
@@ -58,5 +61,9 @@ else {
 	$("#refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).click(function(){
 		$('#maintenance-panel').tabs( "load" , 1);
 	});
+    $("#erase-logs").button({ icons: {primary: "ui-icon-trash"}	}).click(function(){
+        $.get('erase_logs.php');
+        $('#maintenance-panel').tabs( "load" , 1);
+    });
 </script>
 </div>
