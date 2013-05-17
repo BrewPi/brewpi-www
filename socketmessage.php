@@ -27,8 +27,6 @@ if(file_exists('config.php')) {
 else {
 	die('ERROR: Unable to open required file (config.php)');
 }
-?>
-<?php
 
 function startsWith($haystack, $needle)
 {

@@ -221,3 +221,4 @@ $(document).ready(function(){
 	receiveControlVariables();
     checkScriptStatus(); //will call refreshLcd and alternate between the two
 });
+

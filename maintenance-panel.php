@@ -18,14 +18,16 @@
 ?>
 
 <ul>
+	<button class="script-status"></button>
 	<li><a href="#settings"><span class="setting-name">Settings</span></a></li>
 	<li><a href="logs.php"><span>Log files</span></a></li>
 	<li><a href="previous_beers.php"><span>Previous Beers</span></a></li>
 	<li><a href="#control-algorithm"><span>Control Algorithm</span></a></li>
 	<li><a href="#advanced-settings"><span>Advanced Settings</span></a></li>
 	<li><a href="#reprogram-arduino"><span>Reprogram Arduino</span></a></li>
+	<li><a href="#device-config"><span>Device Configuration</span></a></li>
 	<!--kinda dirty to have buttons in the ul, but the ul is styled as a nice header by jQuery UI -->
-	<button class="script-status"></button>
+
 </ul>
 <div id="reprogram-arduino">
 	<div class="script-warning ui-widget-content ui-corner-all" style="padding:5px;">
@@ -326,6 +328,20 @@
 		</div>
 	</div>
 </div>
+
+<div id="device-config">
+	<div class="settings-container ui-widget-content ui-corner-all">
+		<div class="console-box" id="device-console">
+			<span>Script output will appear here</span>
+		</div>
+
+		<label for="read-values">Read values</label><input type="checkbox" name="read-values" id="read-values"/>
+		<label for="only-unassigned">Only unassigned devices</label><input type="checkbox" name="only-unassigned" id="only-unassigned"/>
+		<button class="refresh-device-list">Refresh device list</button>
+		<button class="get-device-list">Get device list</button>
+	</div>
+</div>
+
 
 <?php
 function echoFilterSelect($filterName){

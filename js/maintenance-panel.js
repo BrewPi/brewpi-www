@@ -93,4 +93,66 @@ $(document).ready(function(){
 
 	$(".cv.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
 		.click(reloadControlVariablesFromArduino);
+
+    initDeviceConfiguration();
 });
+
+function initDeviceConfiguration(){
+    "use strict";
+    $(".refresh-device-list").button({icons: {primary: "ui-icon-refresh" } })
+            .click(refreshDeviceList);
+    $(".get-device-list").button({icons: {primary: "ui-icon-arrowthickstop-1-s" } })
+        .click(getDeviceList);
+}
+
+function getDeviceList(){
+    "use strict";
+    $.post('socketmessage.php', {messageType: "getDeviceList", message: ""}, function(response){
+        try
+        {
+            response = response.replace(/\s/g, ''); //strip all whitespace, including newline.
+            var deviceList = JSON.parse(response);
+            $("#device-console span").html(parseDeviceList(deviceList));
+        }
+        catch(e)
+        {
+            $("#device-console span").html("Cannot parse JSON:" + e);
+        }
+    });
+}
+
+function refreshDeviceList(){
+    "use strict";
+    var parameters = "";
+    if ($('#read-values').is(":checked")){
+        parameters += "v:1";
+    }
+    if ($('#only-unassigned').is(":checked")){
+        parameters += "u:1";
+    }
+
+    $.post('socketmessage.php', {messageType: "refreshDeviceList", message: parameters});
+}
+
+
+function parseDeviceList(deviceList){
+    // temporary test function, just print devices to a string
+    // "use strict";
+
+    var output = "";
+    //output += JSON.stringify(deviceList);
+
+    for (var i = 0; i < deviceList.length; i++) {
+        var device = deviceList[i];
+
+        output += "Device " + i.toString() + ", ";
+        output += "function " + device.f.toString() + ", ";
+        output += "type " + device.h.toString() + ", ";
+        if((typeof device.v !== "undefined") ){
+            output += "value " + device.v.toString();
+        }
+
+        output += '<br>';
+    }
+    return output;
+}

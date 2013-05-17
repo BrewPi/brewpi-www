@@ -215,7 +215,7 @@ button#refresh-beer-chart span.ui-icon{
 	clear:left;
 	font-size: 16px;
 	font-weight: normal;
-	font-style: normal;	
+	font-style: normal;
 	font-family: '5x8LCDHD44780UA02Regular';
 	color: #FFFF00;
 	white-space: pre;
@@ -225,6 +225,30 @@ button#refresh-beer-chart span.ui-icon{
     padding-left: 1px;
     padding-right: 1px;
 }
+
+#maintenance-panel ul.ui-tabs-nav li{
+    margin: 2px;
+    width: 180px;
+    text-align: center;
+}
+
+#maintenance-panel ul.ui-tabs-nav li a{
+    width: inherit;
+    padding-left: 0;
+}
+
+#maintenance-panel ul.ui-tabs-nav li:nth-child(6n) {
+    clear: left;
+}
+
+.console-box{
+    width: inherit;
+    height: 200px;
+    margin: 10px 40px;
+    border: solid 1px;
+    padding: 10px;
+}
+
 
 #maintenance-panel #beer-selector{
 	margin-bottom: 20px;
