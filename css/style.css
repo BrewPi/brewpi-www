@@ -249,6 +249,20 @@ button#refresh-beer-chart span.ui-icon{
     padding: 10px;
 }
 
+#maintenance-panel .device-list-container .header button{
+    float: right;
+}
+
+#maintenance-panel .refresh-options-container{
+    float: right;
+    display: block;
+}
+
+#maintenance-panel .refresh-options-container refresh-option{
+    float: right;
+    display: block;
+}
+
 
 #maintenance-panel #beer-selector{
 	margin-bottom: 20px;

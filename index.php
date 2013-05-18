@@ -49,6 +49,7 @@ $profileKey = $settingsArray["profileKey"];
 			window.beerName = <?php echo "\"$beerName\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/device-config.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>

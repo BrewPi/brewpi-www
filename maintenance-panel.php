@@ -335,10 +335,23 @@
 			<span>Script output will appear here</span>
 		</div>
 
-		<label for="read-values">Read values</label><input type="checkbox" name="read-values" id="read-values"/>
-		<label for="only-unassigned">Only unassigned devices</label><input type="checkbox" name="only-unassigned" id="only-unassigned"/>
-		<button class="refresh-device-list">Refresh device list</button>
-		<button class="get-device-list">Get device list</button>
+
+		<div class="device-list-container">
+			<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+				<span class='container-title'>Device List</span>
+				<div class="refresh-options-container">
+					<div class="refresh-option">
+						<label for="read-values">Read values</label><input type="checkbox" name="read-values" id="read-values"/>
+					</div>
+					<div class="refresh-option">
+						<label for="only-unassigned">Only unassigned devices</label><input type="checkbox" name="only-unassigned" id="only-unassigned"/>
+					</div>
+				</div>
+				<button class="refresh-device-list">Refresh device list</button>
+				<button class="get-device-list">Get device list</button>
+			</div>
+			<div class="device-list"></div>
+		</div>
 	</div>
 </div>
 
