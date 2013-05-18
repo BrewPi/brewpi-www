@@ -56,16 +56,33 @@ function parseDeviceList(deviceList){
 function addDeviceToDeviceList(device){
     "use strict";
     var $newDevice = $("<div class='device-container' id='device-" + device.nr.toString() + "'></div>");
+
     $newDevice.append("<span class='device-name'>Device " + device.nr.toString() +"</span>");
     /*$newDevice.append("<div class='device-function'> Function "+ device.f.toString() + "</div>");*/
-    $newDevice.append(generateSelect(getDeviceChamberList(), device.c));
-    $newDevice.append(generateSelect(getDeviceBeerList(), device.b));
-    $newDevice.append(generateSelect(getDeviceSlotList(), device.i));
-    $newDevice.append(generateSelect(getDeviceFunctionList(), device.f));
-    $newDevice.append(generateSelect(getDeviceHwTypeList(), device.h));
-    $newDevice.append(generateSelect(getDeviceTypeList(), device.t));
-    $newDevice.append(generateSelect(getDevicePinList(), device.p));
-    $newDevice.append(generateSelect([{ val: 0, text: 'not inverted'}, {val: 1, text: 'inverted'}], device.x));
+    if((typeof device.c !== "undefined") ){
+        $newDevice.append(generateSelect(getDeviceChamberList(), device.c));
+    }
+    if((typeof device.b !== "undefined") ){
+        $newDevice.append(generateSelect(getDeviceBeerList(), device.b));
+    }
+    if((typeof device.i !== "undefined") ){
+        $newDevice.append(generateSelect(getDeviceSlotList(), device.i));
+    }
+    if((typeof device.f !== "undefined") ){
+        $newDevice.append(generateSelect(getDeviceFunctionList(), device.f));
+    }
+    if((typeof device.h !== "undefined") ){
+        $newDevice.append(generateSelect(getDeviceHwTypeList(), device.h));
+    }
+    if((typeof device.t !== "undefined") ){
+        $newDevice.append(generateSelect(getDeviceTypeList(), device.t));
+    }
+    if((typeof device.p !== "undefined") ){
+        $newDevice.append(generateSelect(getDevicePinList(), device.p));
+    }
+    if((typeof device.x !== "undefined") ){
+        $newDevice.append(generateSelect([{ val: 0, text: 'not inverted'}, {val: 1, text: 'inverted'}], device.x));
+    }
     if((typeof device.a !== "undefined") ){
         $newDevice.append("<span class='onewire-address'>" + device.a + "</span>");
     }
