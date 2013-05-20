@@ -39,9 +39,9 @@ function refreshDeviceList(){
 
 function parseDeviceList(deviceList){
     "use strict";
+    $(".device-list").empty();
     // output is just for testing now
     var output = "";
-
     for (var i = 0; i < deviceList.length; i++) {
         var device = deviceList[i];
         device.nr = i;
@@ -59,41 +59,81 @@ function addDeviceToDeviceList(device){
 
     $newDevice.append("<span class='device-name'>Device " + device.nr.toString() +"</span>");
     /*$newDevice.append("<div class='device-function'> Function "+ device.f.toString() + "</div>");*/
+    if((typeof device.i !== "undefined") ){
+        $newDevice.append(generateDeviceSettingContainer(
+            "Device slot",
+            "device-slot",
+            generateSelect(getDeviceSlotList(), device.i)));
+    }
     if((typeof device.c !== "undefined") ){
-        $newDevice.append(generateSelect(getDeviceChamberList(), device.c));
+        $newDevice.append(generateDeviceSettingContainer(
+            "Assigned to",
+            "chamber",
+            generateSelect(getDeviceChamberList(), device.c)));
     }
     if((typeof device.b !== "undefined") ){
-        $newDevice.append(generateSelect(getDeviceBeerList(), device.b));
-    }
-    if((typeof device.i !== "undefined") ){
-        $newDevice.append(generateSelect(getDeviceSlotList(), device.i));
+        $newDevice.append(generateDeviceSettingContainer(
+            "Assigned to",
+            "beer",
+            generateSelect(getDeviceBeerList(), device.b)));
     }
     if((typeof device.f !== "undefined") ){
-        $newDevice.append(generateSelect(getDeviceFunctionList(), device.f));
+        $newDevice.append(generateDeviceSettingContainer(
+            "Function",
+            "function",
+            generateSelect(getDeviceFunctionList(), device.f)));
     }
     if((typeof device.h !== "undefined") ){
-        $newDevice.append(generateSelect(getDeviceHwTypeList(), device.h));
+        $newDevice.append(generateDeviceSettingContainer(
+            "Hardware type",
+            "hardware-type",
+            generateSelect(getDeviceHwTypeList(), device.h)));
     }
     if((typeof device.t !== "undefined") ){
-        $newDevice.append(generateSelect(getDeviceTypeList(), device.t));
+        $newDevice.append(generateDeviceSettingContainer(
+            "Device type",
+            "device-type",
+            generateSelect(getDeviceTypeList(), device.t)));
     }
     if((typeof device.p !== "undefined") ){
-        $newDevice.append(generateSelect(getDevicePinList(), device.p));
+        $newDevice.append( generateDeviceSettingContainer(
+            "Arduino Pin",
+            "arduino-pin",
+            generateSelect(getDevicePinList(), device.p)));
     }
     if((typeof device.x !== "undefined") ){
-        $newDevice.append(generateSelect([{ val: 0, text: 'not inverted'}, {val: 1, text: 'inverted'}], device.x));
+        $newDevice.append(generateDeviceSettingContainer(
+            "Pin type",
+            "pin-type",
+            generateSelect([{ val: 0, text: 'not inverted'}, {val: 1, text: 'inverted'}], device.x,"device-setting")));
     }
     if((typeof device.a !== "undefined") ){
-        $newDevice.append("<span class='onewire-address'>" + device.a + "</span>");
+        $newDevice.append(generateDeviceSettingContainer(
+            "OneWire Address",
+            "onewire-address",
+            "<span class='onewire-address device-setting'>" + device.a + "</span>"));
     }
     if((typeof device.n !== "undefined") ){
-        $newDevice.append(generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.x));
+        $newDevice.append(generateDeviceSettingContainer(
+            "DS2413 pin",
+            "ds2413-pin",
+            generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.n, "device-setting")));
     }
     if((typeof device.v !== "undefined") ){
-        $newDevice.append("<span class='device-value'>" + device.v + "</span>");
+        $newDevice.append(generateDeviceSettingContainer(
+            "Value",
+            "device-value",
+            "<span class='device-value device-setting'>" + device.v + "</span>"));
     }
+    // add apply button
+    var $applyButton = $("<button class='apply'>Apply</button>");
+    $applyButton.button({icons: {primary: "ui-icon-check" } });
+    $applyButton.appendTo($newDevice);
     // add the device to the device list div
     $newDevice.appendTo(".device-list");
+    $applyButton.click(function(){
+        applyDeviceSettings(device.nr);
+    });
 }
 
 function getDeviceFunctionList(){
@@ -199,7 +239,7 @@ function getDeviceChamberList(){
     var maxChambers = 1;
     var list = [ {val: 0, text: 'Unassigned'}];
     for(var i = 1; i <= maxChambers; i++){
-        list.push({val: i, text: i.toString()});
+        list.push({val: i, text: "Chamber " + i.toString()});
     }
     return list;
 }
@@ -209,7 +249,7 @@ function getDeviceBeerList(){
     var maxBeers = 1;
     var list = [ {val: 0, text: 'Chamber device'}];
     for(var i = 1; i <= maxBeers; i++){
-        list.push({val: i, text: i.toString()});
+        list.push({val: i, text: "Beer " + i.toString()});
     }
     return list;
 }
@@ -224,14 +264,61 @@ function getDeviceCalibrateList(){
     return list;
 }
 
-function generateSelect(list, selected){
+function generateSelect(list, selected, className){
     "use strict";
     var sel = $('<select>');
     $(list).each(function() {
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
     sel.val(selected);
+    sel.addClass(className);
     return sel;
 }
 
+function generateDeviceSettingContainer(name, className, content){
+    "use strict";
+    var $settingContainer = $("<div class='device-setting-container'/>");
+    $settingContainer.append("<span class='setting-name'>" + name + "</span>");
+    $settingContainer.append(content);
+    $settingContainer.addClass(className);
+    return $settingContainer;
+}
 
+function applyDeviceSettings(deviceNr){
+    "use strict";
+    var configString = getDeviceConfigString(deviceNr);
+
+    // $.post('socketmessage.php', {messageType: "apply-device", message: String($("select#interval").val())});
+
+    $("#device-console span").html("Config command U:" + configString);
+}
+
+function getDeviceConfigString(deviceNr){
+    "use strict";
+    var configString =  "{";
+    var $deviceContainer = $("#device-" + deviceNr.toString());
+
+    configString = addToConfigString(configString,"i", $deviceContainer.find(".device-slot select").val());
+    configString = addToConfigString(configString,"c", $deviceContainer.find(".chamber select").val());
+    configString = addToConfigString(configString,"b", $deviceContainer.find(".beer select").val());
+    configString = addToConfigString(configString,"f", $deviceContainer.find(".function select").val());
+    configString = addToConfigString(configString,"h", $deviceContainer.find(".hardware-type select").val());
+    configString = addToConfigString(configString,"p", $deviceContainer.find(".arduino-pin select").val());
+    configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
+    configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
+    configString = addToConfigString(configString,"h", $deviceContainer.find(".ds2431-pin select").val());
+
+    configString += "}";
+    return configString;
+}
+
+function addToConfigString(configString, key, value){
+    if(value !== undefined){
+        if(configString !== "{"){
+            configString += ",";
+        }
+
+        configString += key + ":" + value;
+    }
+    return configString;
+}

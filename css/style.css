@@ -264,6 +264,36 @@ button#refresh-beer-chart span.ui-icon{
 }
 
 
+#maintenance-panel .device-container{
+    margin: 10px;
+    padding: 5px 10px;
+    border: solid 1px;
+    display: block;
+    float: left;
+}
+
+.device-name{
+    clear: both;
+    float: left;
+    padding: 5px;
+}
+
+.device-container .device-setting-container{
+    width: 150px;
+    padding: 5px;
+    float: left;
+}
+
+.device-container .device-setting-container *{
+    float: left;
+    clear: left;
+
+}
+
+.device-container .device-setting-container:nth-child(5n+2){
+    clear: left;
+}
+
 #maintenance-panel #beer-selector{
 	margin-bottom: 20px;
 }
