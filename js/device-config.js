@@ -93,7 +93,7 @@ function addDeviceToDeviceList(device){
         $newDevice.append(generateDeviceSettingContainer(
             "Device type",
             "device-type",
-            generateSelect(getDeviceTypeList(), device.t)));
+            spanFromList(getDeviceTypeList(), device.t)));
     }
     if((typeof device.p !== "undefined") ){
         $newDevice.append( generateDeviceSettingContainer(
@@ -146,7 +146,7 @@ function getDeviceFunctionList(){
         {val : 3, text: 'Chamber Cooler'},
         {val : 4, text: 'Chamber Light'},
         {val : 5, text: 'Chamber Temp'},
-        {val : 6, text: 'Ambient Temp'},
+        {val : 6, text: 'Room Temp'},
         {val : 7, text: 'Chamber Fan'},
         /*{val : 8, text: 'Chamber Reserved 1'},*/
         {val : 9, text: 'Beer Temp'}/*,
@@ -190,11 +190,11 @@ function getDevicePinList(){
     var list = [
         {val : 0, text: '0'},
         {val : 1, text: '1'},
-        {val : 2, text: '2'},
+        {val : 2, text: '2 (Act 3)'},
         {val : 3, text: '3'},
-        {val : 4, text: '4'},
-        {val : 5, text: '5'},
-        {val : 6, text: '6'},
+        {val : 4, text: '4 (Door)'},
+        {val : 5, text: '5 (Act 2)'},
+        {val : 6, text: '6 (Act 1)'},
         {val : 7, text: '7'},
         {val : 8, text: '8'},
         {val : 9, text: '9'},
@@ -207,18 +207,17 @@ function getDevicePinList(){
         {val: 19, text: 'A1'},
         {val: 20, text: 'A2'},
         {val: 21, text: 'A3'},
-        {val: 22, text: 'A4'},
-        {val: 23, text: 'A5'}
+        {val: 22, text: 'A4 (OneWire)'},
+        {val: 23, text: 'A5 (Act 4)'}
 
-        /* Standard TODO: automatically switch
+        /* Analog pins for Uno TODO: automatically switch
         {val: 14 text: 'A0'},
         {val: 15 text: 'A1'},
         {val: 16 text: 'A2'},
         {val: 17 text: 'A3'},
-        {val: 18 text: 'A4'},
-        {val: 19 text: 'A5'},
-        {val: 20 text: 'A6'},
-        {val: 21 text: 'A7'}                  */
+        {val: 18 text: 'A4 (OneWire)'},
+        {val: 19 text: 'A5 (Act 4)'},
+        */
 
     ];
     return list;
@@ -264,15 +263,24 @@ function getDeviceCalibrateList(){
     return list;
 }
 
-function generateSelect(list, selected, className){
+function generateSelect(list, selected){
     "use strict";
     var sel = $('<select>');
     $(list).each(function() {
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
     sel.val(selected);
-    sel.addClass(className);
     return sel;
+}
+
+function spanFromList(list, selected){
+    "use strict";
+    var spanText = "undefined";
+    if(list[selected] !== undefined){
+        spanText = list[selected].text;
+    }
+    var $span = $("<span>" + spanText + "</span>");
+    return $span;
 }
 
 function generateDeviceSettingContainer(name, className, content){
@@ -288,9 +296,9 @@ function applyDeviceSettings(deviceNr){
     "use strict";
     var configString = getDeviceConfigString(deviceNr);
 
-    // $.post('socketmessage.php', {messageType: "apply-device", message: String($("select#interval").val())});
+    $.post('socketmessage.php', {messageType: "applyDevice", message: configString});
 
-    $("#device-console span").html("Config command U:" + configString);
+    $("#device-console span").html("Config command sent, U:" + configString);
 }
 
 function getDeviceConfigString(deviceNr){
@@ -307,13 +315,16 @@ function getDeviceConfigString(deviceNr){
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
     configString = addToConfigString(configString,"h", $deviceContainer.find(".ds2431-pin select").val());
+    //configString = addToConfigString(configString,"d", 0); // hardwire deactivate for now
+    //configString = addToConfigString(configString,"j", 0); // hardwire calibration for now
 
     configString += "}";
     return configString;
 }
 
 function addToConfigString(configString, key, value){
-    if(value !== undefined){
+    "use strict";
+    if(value !== undefined && value !== ""){
         if(configString !== "{"){
             configString += ",";
         }
