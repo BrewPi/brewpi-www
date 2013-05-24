@@ -1,0 +1,48 @@
+
+
+.dygraph-legend {
+    /* dygraph sets styles directly inline on the element. That's a bit nasty.*/
+
+    width: 100% !important;
+    background-color: transparent !important;
+    left:auto !important;
+    position:inherit !important;
+    text-align:right !important;
+}
+
+#beer-chart-label {
+    font-size:11px;
+    font-weight: normal;
+    font-variant: normal;
+    text-align: right;
+    margin-right:40px;
+}
+
+#beer-chart-controls {
+    text-align: right;
+}
+
+.beerTemp {
+    color:rgb(70,132,238);
+}
+.beerSet {
+    color:rgb(220,57,18);
+}
+.fridgeTemp {
+    color:rgb(255, 153, 0);
+}
+.fridgeSet {
+    color:rgb(0, 128, 0);
+}
+.roomTemp {
+    color:rgb(73,66,204);
+}
+.state {
+    color:rgb(153,0,153);
+}
+
+
+
+
+
+

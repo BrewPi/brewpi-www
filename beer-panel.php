@@ -31,5 +31,20 @@
 	<button class="script-status ui-state-error"></button>
 	<button id="maintenance">Maintenance panel</button>
 </div>
+<div id="beer-chart-controls" style="visibility: hidden">
+    <p><b>Display: </b>
+        <input type=checkbox id=0 onClick="change(this)" checked>
+        <label class="beerTemp" for="0">Beer Temp</label>
+        <input type=checkbox id=1 onClick="change(this)" checked>
+        <label class="beerSet" for="1">Beer Set</label>
+        <input type=checkbox id=2 onClick="change(this)" checked>
+        <label class="fridgeTemp" for="2">Fridge Temp</label>
+        <input type=checkbox id=3 onClick="change(this)" checked>
+        <label class="fridgeSet" for="3">Fridge Set</label>
+        <input type=checkbox id=4 onClick="change(this)" checked>
+        <label class="roomTemp" for="4">Room Temp</label>
+    </p>
+</div>
+<div id="beer-chart-label"></div>
 <div id="beer-chart" style="width:930px; height:400px;"></div>
 <button id="refresh-beer-chart"></button>
