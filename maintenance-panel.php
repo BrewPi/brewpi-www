@@ -326,6 +326,16 @@
 			<span class="explanation">The fridge slope filter is not used in the current version.</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
+		<div class="setting-container">
+			<span class="setting-name">Use light as heater</span> <?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
+			<span class="explanation">The fridge slope filter is not used in the current version.</span>
+			<button class="send-button">Send to Arduino</button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Fridge slope filter delay time</span> <?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
+			<span class="explanation">The fridge slope filter is not used in the current version.</span>
+			<button class="send-button">Send to Arduino</button>
+		</div>
 	</div>
 </div>
 
@@ -350,6 +360,7 @@
 				<button class="refresh-device-list">Refresh device list</button>
 				<button class="get-device-list">Get device list</button>
 			</div>
+			<div class ="spinner-position"></div>
 			<div class="device-list"></div>
 		</div>
 	</div>

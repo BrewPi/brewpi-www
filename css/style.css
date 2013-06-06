@@ -243,29 +243,42 @@ button#refresh-beer-chart span.ui-icon{
 
 .console-box{
     width: inherit;
-    height: 200px;
+    min-height: 100px;
     margin: 10px 40px;
     border: solid 1px;
     padding: 10px;
 }
 
+#maintenance-panel .device-list-container{
+    width: 99%;
+    margin: auto;
+    min-height: 200px;
+    overflow: auto;
+}
+
 #maintenance-panel .device-list-container .header button{
     float: right;
+    width: inherit;
 }
+
+#maintenance-panel .device-list-container .spinner-position{
+    position:absolute;
+    top:350px;
+    left:50%;
+}
+
 
 #maintenance-panel .refresh-options-container{
     float: right;
-    display: block;
 }
 
 #maintenance-panel .refresh-options-container refresh-option{
     float: right;
-    display: block;
 }
 
 
 #maintenance-panel .device-container{
-    margin: 10px;
+    margin: 10px 40px;
     padding: 5px 10px;
     border: solid 1px;
     display: block;

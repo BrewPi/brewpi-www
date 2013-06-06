@@ -93,6 +93,4 @@ $(document).ready(function(){
 
 	$(".cv.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
 		.click(reloadControlVariablesFromArduino);
-
-    initDeviceConfiguration();
 });

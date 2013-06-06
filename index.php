@@ -42,6 +42,7 @@ $profileKey = $settingsArray["profileKey"];
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="js/spin.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;

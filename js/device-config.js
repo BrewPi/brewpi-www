@@ -7,24 +7,58 @@ function initDeviceConfiguration(){
         .click(getDeviceList);
 }
 
+var deviceListTimeout = 0;
+var deviceListTimeoutCounter = 0;
+var deviceListSpinner;
+var deviceList = {};
+var deviceListMaxRequests = 20;
+var deviceListRequestTime = 1000;
+
 function getDeviceList(){
     "use strict";
-    $.post('socketmessage.php', {messageType: "getDeviceList", message: ""}, function(response){
-        try
-        {
-            response = response.replace(/\s/g, ''); //strip all whitespace, including newline.
-            var deviceList = JSON.parse(response);
-            $("#device-console span").html(parseDeviceList(deviceList));
-        }
-        catch(e)
-        {
-            $("#device-console span").html("Cannot parse JSON:" + e);
-        }
+    $.ajax({
+        type: 'POST',
+        url: 'socketmessage.php',
+        data: {messageType: "getDeviceList", message: ""},
+        success: function(response){
+           response = response.replace(/\s/g, ''); //strip all whitespace, including newline.
+            if(response !== "{}"){
+                try
+                {
+                    deviceList = JSON.parse(response);
+                    console.log(parseDeviceList(deviceList));
+                    $("#device-console span").html("Device list updated");
+                    deviceListTimeoutCounter = 0; // stop requesting on success
+                    if(deviceListTimeout){
+                       clearTimeout(deviceListTimeout); // clear old timeout
+                    }
+                    if(deviceListSpinner !== undefined){
+                        deviceListSpinner.stop();
+                    }
+                }
+                catch(e)
+                {
+                    $("#device-console span").html("Cannot parse JSON:" + e);
+                }
+            }
+            else{
+                if(deviceListTimeoutCounter > 0){
+                    deviceListTimeoutCounter--;
+                    console.log("device list request attempt " + String(deviceListTimeoutCounter));
+                    deviceListTimeout = setTimeout(getDeviceList, deviceListRequestTime);
+                }
+            }
+        },
+        async:true
     });
 }
 
 function refreshDeviceList(){
     "use strict";
+    if(deviceListTimeout){
+        clearTimeout(deviceListTimeout); // clear old timeout
+    }
+
     var parameters = "";
     if ($('#read-values').is(":checked")){
         parameters += "v:1";
@@ -32,10 +66,17 @@ function refreshDeviceList(){
     if ($('#only-unassigned').is(":checked")){
         parameters += "u:1";
     }
+    var spinnerOpts = {};
+    deviceListSpinner = new Spinner(spinnerOpts).spin();
+    $(".device-list-container .spinner-position").append(deviceListSpinner.el);
 
     $.post('socketmessage.php', {messageType: "refreshDeviceList", message: parameters});
-}
 
+    // try max 10 times, 5000ms apart to see if it the Arduino has responded with an updated list
+    deviceListTimeoutCounter = deviceListMaxRequests;
+    deviceListTimeout = setTimeout(getDeviceList, deviceListRequestTime);
+    $(".device-list").empty();
+}
 
 function parseDeviceList(deviceList){
     "use strict";
@@ -209,16 +250,13 @@ function getDevicePinList(){
         {val: 21, text: 'A3'},
         {val: 22, text: 'A4 (OneWire)'},
         {val: 23, text: 'A5 (Act 4)'}
-
-        /* Analog pins for Uno TODO: automatically switch
-        {val: 14 text: 'A0'},
-        {val: 15 text: 'A1'},
-        {val: 16 text: 'A2'},
-        {val: 17 text: 'A3'},
-        {val: 18 text: 'A4 (OneWire)'},
-        {val: 19 text: 'A5 (Act 4)'},
-        */
-
+        /*// Analog pins for Uno TODO: automatically switch
+        {val: 14, text: 'A0'},
+        {val: 15, text: 'A1'},
+        {val: 16, text: 'A2'},
+        {val: 17, text: 'A3'},
+        {val: 18, text: 'A4 (OneWire)'},
+        {val: 19, text: 'A5 (Act 4)'}*/
     ];
     return list;
 }
@@ -329,7 +367,11 @@ function addToConfigString(configString, key, value){
             configString += ",";
         }
 
-        configString += key + ":" + value;
+        configString += "\"" + key + "\"" + ":" + "\"" + value + "\"";
     }
     return configString;
 }
+
+$(document).ready(function(){
+    initDeviceConfiguration();
+});
