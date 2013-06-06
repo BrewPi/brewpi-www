@@ -186,3 +186,7 @@ function drawBeerChart(beerToDraw, div){
 function change(el) {
     beerChart.setVisibility(el.id, el.checked);
 }
+
+function change(el) {
+    beerChart.setVisibility(el.id, el.checked);
+}
