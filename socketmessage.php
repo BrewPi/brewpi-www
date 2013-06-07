@@ -51,7 +51,7 @@ if($sock !== false){
 	if(isset($data) && $data != ""){
 		switch($messageType){
 			default:
-				socket_write($sock, $messageType . "=" . $data, 1024);
+				socket_write($sock, $messageType . "=" . $data, 4096);
 				break;
 		}
 	}
@@ -59,8 +59,8 @@ if($sock !== false){
 		// message without a data argument
 		switch($messageType){
 			case "checkScript":
-				socket_write($sock, "ack", 1024);
-				$answer = socket_read($sock, 1024);
+				socket_write($sock, "ack", 4096);
+				$answer = socket_read($sock, 4096);
 				if($answer == "ack"){
 					echo 1;
 				}
@@ -69,8 +69,8 @@ if($sock !== false){
 				}
 				break;
 			case "lcd":
-				socket_write($sock, "lcd", 1024);
-				$lcdText = socket_read($sock, 1024);
+				socket_write($sock, "lcd", 4096);
+				$lcdText = socket_read($sock, 4096);
 				if($lcdText !== false){
 					echo str_replace(chr(0xB0), "&deg;", $lcdText); // replace degree sign with &Deg
 				}
@@ -80,11 +80,11 @@ if($sock !== false){
 				break;
 			default:
 				// just pass the command to the socket and read the answer if needed
-				socket_write($sock, $messageType, 1024);
+				socket_write($sock, $messageType, 4096);
 
 				if(startsWith($messageType, "get") || $messageType == "uploadProfile"){
 					// return data expected, read from socket
-					echo socket_read($sock, 1024);
+					echo socket_read($sock, 4096);
 				}
 		}
 	}

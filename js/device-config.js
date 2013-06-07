@@ -11,6 +11,7 @@ var deviceListTimeout = 0;
 var deviceListTimeoutCounter = 0;
 var deviceListSpinner;
 var deviceList = {};
+var pinList = {};
 var deviceListMaxRequests = 20;
 var deviceListRequestTime = 1000;
 
@@ -25,9 +26,13 @@ function getDeviceList(){
             if(response !== "{}"){
                 try
                 {
-                    deviceList = JSON.parse(response);
-                    console.log(parseDeviceList(deviceList));
-                    $("#device-console span").html("Device list updated");
+                    var deviceAndPinList = JSON.parse(response);
+                    deviceList = deviceAndPinList.deviceList;
+                    pinList = deviceAndPinList.pinList;
+                    console.log(parseDeviceList(deviceList, pinList));
+                    $("#device-console span").html("Device list updated for Arduino " +
+                                                    deviceAndPinList.board + " with a " +
+                                                    deviceAndPinList.shield + " shield");
                     deviceListTimeoutCounter = 0; // stop requesting on success
                     if(deviceListTimeout){
                        clearTimeout(deviceListTimeout); // clear old timeout
@@ -38,13 +43,12 @@ function getDeviceList(){
                 }
                 catch(e)
                 {
-                    $("#device-console span").html("Cannot parse JSON:" + e);
+                    $("#device-console span").html("Error while receiving device configuration: " + e);
                 }
             }
             else{
                 if(deviceListTimeoutCounter > 0){
                     deviceListTimeoutCounter--;
-                    console.log("device list request attempt " + String(deviceListTimeoutCounter));
                     deviceListTimeout = setTimeout(getDeviceList, deviceListRequestTime);
                 }
             }
@@ -78,7 +82,7 @@ function refreshDeviceList(){
     $(".device-list").empty();
 }
 
-function parseDeviceList(deviceList){
+function parseDeviceList(deviceList, pinList){
     "use strict";
     $(".device-list").empty();
     // output is just for testing now
@@ -89,12 +93,12 @@ function parseDeviceList(deviceList){
         output += "Parsing device: ";
         output += JSON.stringify(device);
         output += '<br>';
-        addDeviceToDeviceList(device);
+        addDeviceToDeviceList(device, pinList);
     }
     return output;
 }
 
-function addDeviceToDeviceList(device){
+function addDeviceToDeviceList(device, pinList){
     "use strict";
     var $newDevice = $("<div class='device-container' id='device-" + device.nr.toString() + "'></div>");
 
@@ -136,12 +140,6 @@ function addDeviceToDeviceList(device){
             "device-type",
             spanFromList(getDeviceTypeList(), device.t)));
     }
-    if((typeof device.p !== "undefined") ){
-        $newDevice.append( generateDeviceSettingContainer(
-            "Arduino Pin",
-            "arduino-pin",
-            generateSelect(getDevicePinList(), device.p)));
-    }
     if((typeof device.x !== "undefined") ){
         $newDevice.append(generateDeviceSettingContainer(
             "Pin type",
@@ -166,6 +164,21 @@ function addDeviceToDeviceList(device){
             "device-value",
             "<span class='device-value device-setting'>" + device.v + "</span>"));
     }
+    // Do pins last, because they depend on the device function
+    var pinTypes;
+    if((typeof device.p !== "undefined") ){
+        if((typeof device.f !== "undefined") ){
+            pinTypes = functionToPinTypes(device.f);
+        }
+        else{
+            pinTypes = functionToPinTypes(0); // use device none
+        }
+        $newDevice.append( generateDeviceSettingContainer(
+            "Arduino Pin",
+            "arduino-pin",
+            generateSelect(getDevicePinList(pinList, pinTypes), device.p)));
+    }
+
     // add apply button
     var $applyButton = $("<button class='apply'>Apply</button>");
     $applyButton.button({icons: {primary: "ui-icon-check" } });
@@ -175,6 +188,34 @@ function addDeviceToDeviceList(device){
     $applyButton.click(function(){
         applyDeviceSettings(device.nr);
     });
+}
+
+function functionToPinTypes(functionType){
+    "use strict";
+    var pinTypes;
+    switch(functionType){
+        case 0: // none
+            pinTypes = ['free', 'act', 'onewire', 'door'];
+            break;
+        case 1: // door
+            pinTypes = ['free', 'door'];
+            break;
+        case 2: // heat
+        case 3: // cool
+        case 4: // light
+        case 7: // fan
+            pinTypes = ['free', 'door', 'act'];
+            break;
+        case 5: // chamber temp
+        case 6: // room temp
+        case 9: // beer temp
+            pinTypes = ['onewire'];
+            break;
+        default: // unknown function
+            pinTypes = [];
+            break;
+    }
+    return pinTypes;
 }
 
 function getDeviceFunctionList(){
@@ -225,39 +266,14 @@ function getDeviceTypeList(){
     return list;
 }
 
-function getDevicePinList(){
+function getDevicePinList(pinList, pinTypes){
     "use strict";
-    // currently unsupported/unused devices commented out
-    var list = [
-        {val : 0, text: '0'},
-        {val : 1, text: '1'},
-        {val : 2, text: '2 (Act 3)'},
-        {val : 3, text: '3'},
-        {val : 4, text: '4 (Door)'},
-        {val : 5, text: '5 (Act 2)'},
-        {val : 6, text: '6 (Act 1)'},
-        {val : 7, text: '7'},
-        {val : 8, text: '8'},
-        {val : 9, text: '9'},
-        {val : 10, text: '10'},
-        {val : 11, text: '11'},
-        {val : 12, text: '12'},
-        {val : 13, text: '13'},
-        // Analog pins for leonardo
-        {val: 18, text: 'A0'},
-        {val: 19, text: 'A1'},
-        {val: 20, text: 'A2'},
-        {val: 21, text: 'A3'},
-        {val: 22, text: 'A4 (OneWire)'},
-        {val: 23, text: 'A5 (Act 4)'}
-        /*// Analog pins for Uno TODO: automatically switch
-        {val: 14, text: 'A0'},
-        {val: 15, text: 'A1'},
-        {val: 16, text: 'A2'},
-        {val: 17, text: 'A3'},
-        {val: 18, text: 'A4 (OneWire)'},
-        {val: 19, text: 'A5 (Act 4)'}*/
-    ];
+    var list = [ {val: 0, text: 'Unassigned'}];
+    for (var i=0; i<pinList.length; i++) {
+        if(-1 !== $.inArray(pinList[i].type, pinTypes)){
+            list.push({val: pinList[i].val, text: pinList[i].text.toString()});
+        }
+    }
     return list;
 }
 
@@ -290,7 +306,7 @@ function getDeviceBeerList(){
     }
     return list;
 }
-
+/*
 function getDeviceCalibrateList(){
     "use strict";
     var minCalibrate = 1;
@@ -299,7 +315,7 @@ function getDeviceCalibrateList(){
         list.push({val: i, text: i.toString()});
     }
     return list;
-}
+} */
 
 function generateSelect(list, selected){
     "use strict";
@@ -373,5 +389,7 @@ function addToConfigString(configString, key, value){
 }
 
 $(document).ready(function(){
+    "use strict";
+
     initDeviceConfiguration();
 });
