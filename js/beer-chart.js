@@ -167,14 +167,14 @@ function paintBackgroundImpl(canvas, area, g) {
         return;
     var blocks = findStateBlocks(g, rowStart, rowEnd);    // rowEnd is exclusive
 
-    var startCoord = 0;                     // start drawing from 0 - the far left
+    var startX = 0;                     // start drawing from 0 - the far left
     for (i = 0; i < blocks.length; i++) {
         var block = blocks[i];
         var row = block.row;              // where this state run ends
         var t = getTime(g, row);          // convert to time. Using time ensures the display matches the plotted resolution
                                           // of the graph.
         var r = (t - timeStart) / (timeEnd - timeStart);   // as a fraction of the entire display
-        var endCoord = Math.floor(area.x + (area.w * r));
+        var endX = Math.floor(area.x + (area.w * r));
 
         var state = STATES[parseInt(block.state)];
         if (state===undefined)
@@ -182,15 +182,16 @@ function paintBackgroundImpl(canvas, area, g) {
         var borderColor = (state.waiting || state.extending) ? setAlphaFactor(state.color, 0.5) : undefined;
         var bgColor = (state.waiting) ? bgColor = colorIdle : state.color;
         canvas.fillStyle = bgColor;
-        canvas.fillRect(startCoord, area.y, endCoord-startCoord, area.h);
+        canvas.fillRect(startX, area.y, endX-startX, area.h);
         if (borderColor!==undefined) {
-            lineWidth = 6;
+            lineWidth = 2;
             canvas.lineWidth = lineWidth;
             canvas.strokeStyle = borderColor;
-            canvas.strokeRect(startCoord+lineWidth/2, area.y+lineWidth/2, endCoord-startCoord-lineWidth, area.h-lineWidth);
+            if (endX-startX>lineWidth)
+                canvas.strokeRect(startX+lineWidth/2, area.y+lineWidth/2, endX-startX-lineWidth, area.h-lineWidth);
         }
 
-        startCoord = endCoord;
+        startX = endX;
     }
 }
 
@@ -249,7 +250,7 @@ function drawBeerChart(beerToDraw, div){
             var chart = new Dygraph.GVizChart(document.getElementById(div));
             chart.draw(
                     beerData, {
-                    colors: [ 'rgb(70,132,238)', 'rgb(220,57,18)', 'rgb(255, 153, 0)', 'rgb(0, 128, 0)', 'rgb(73,66,204)', 'rgb(153,0,153)' ],
+                    colors: [ 'rgb(255, 153, 0)', 'rgb(255, 192, 102)', 'rgb(70,132,238)', 'rgb(138, 177, 244)', '#aaa', 'rgb(153,0,153)' ],
                     axisLabelFontSize:12,
                     animatedZooms: true,
                     gridLineColor:'#ccc',
@@ -260,16 +261,28 @@ function drawBeerChart(beerToDraw, div){
                     displayAnnotationsFilter:true,
                     labelsDivStyles: { 'textAlign': 'right' },
                     //showRangeSelector: true,
-                    strokeWidth: 0.7,
+                    strokeWidth: 2,
+
+                    "Beer setting" : {
+//                        strokePattern: [ 5, 5 ],
+                        strokeWidth: 1
+                    },
+                    "Fridge setting" : {
+//                        strokePattern: [ 5, 5 ],
+                        strokeWidth: 1
+                    },
+                    "Room temp" : {
+                        strokeWidth: 1
+                    },
                     axes: {
                         y : { valueFormatter: tempFormat }
                     },
-                    highlightCircleSize: 2,
+/*                    highlightCircleSize: 2,
                     highlightSeriesOpts: {
-                        strokeWidth: 1,
+                        strokeWidth: 1.5,
                         strokeBorderWidth: 1,
                         highlightCircleSize: 5
-                    },
+                    },                        */
 
                     underlayCallback: paintBackground
                 }
