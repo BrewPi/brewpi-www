@@ -25,6 +25,7 @@ var colorIdle = "white";
 
 var TIME_COLUMN = 0;        // time is the first column of data
 var STATE_COLUMN = 6;       // state is currently the 6th column of data.
+var STATE_LINE_WIDTH = 5;
 
 /**
  * The states of the temp controller algorithm, and their presentation attributes.
@@ -179,18 +180,19 @@ function paintBackgroundImpl(canvas, area, g) {
         var state = STATES[parseInt(block.state)];
         if (state===undefined)
             state = STATES[0];
-        var borderColor = (state.waiting || state.extending) ? setAlphaFactor(state.color, 0.5) : undefined;
-        var bgColor = (state.waiting) ? bgColor = colorIdle : state.color;
+        //var borderColor = (state.waiting || state.extending) ? setAlphaFactor(state.color, 0.5) : undefined;
+        //var bgColor = (state.waiting) ? bgColor = colorIdle : state.color;
+        var bgColor = state.color;
         canvas.fillStyle = bgColor;
-        canvas.fillRect(startX, area.y, endX-startX, area.h);
-        if (borderColor!==undefined) {
+        canvas.fillRect(startX, area.y, endX-startX, area.y+STATE_LINE_WIDTH);
+/*        if (borderColor!==undefined) {
             lineWidth = 2;
             canvas.lineWidth = lineWidth;
             canvas.strokeStyle = borderColor;
             if (endX-startX>lineWidth)
                 canvas.strokeRect(startX+lineWidth/2, area.y+lineWidth/2, endX-startX-lineWidth, area.h-lineWidth);
         }
-
+  */
         startX = endX;
     }
 }
@@ -230,59 +232,59 @@ function drawBeerChart(beerToDraw, div){
 		}
 		var beerData = new google.visualization.DataTable(combinedJson);
 
-            var tempFormat = function(y) {
-                return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
-            };
+        var tempFormat = function(y) {
+            return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
+        };
 
-            var chart = new Dygraph.GVizChart(document.getElementById(div));
-            chart.draw(
-                    beerData, {
-                    colors: [ 'rgb(255, 153, 0)', 'rgb(255, 192, 102)', 'rgb(70,132,238)', 'rgb(138, 177, 244)', '#aaa', 'rgb(153,0,153)' ],
-                    axisLabelFontSize:12,
-                    animatedZooms: true,
-                    gridLineColor:'#ccc',
-                    gridLineWidth:'0.1px',
-                    labelsDiv: document.getElementById(div+"-label"),
-                    legend: 'always',
-                    displayAnnotations:true,
-                    displayAnnotationsFilter:true,
-                    labelsDivStyles: { 'textAlign': 'right' },
-                    //showRangeSelector: true,
-                    strokeWidth: 2,
+        var chart = new Dygraph.GVizChart(document.getElementById(div));
+        chart.draw(
+                beerData, {
+                colors: [ 'rgb(255, 153, 0)', 'rgb(255, 192, 102)', 'rgb(70,132,238)', 'rgb(138, 177, 244)', '#aaa', 'rgb(153,0,153)' ],
+                axisLabelFontSize:12,
+                animatedZooms: true,
+                gridLineColor:'#ccc',
+                gridLineWidth:'0.1px',
+                labelsDiv: document.getElementById(div+"-label"),
+                legend: 'always',
+                displayAnnotations:true,
+                displayAnnotationsFilter:true,
+                labelsDivStyles: { 'textAlign': 'right' },
+                //showRangeSelector: true,
+                strokeWidth: 2,
 
-                    "Beer setting" : {
+                "Beer setting" : {
 //                        strokePattern: [ 5, 5 ],
-                        strokeWidth: 1
-                    },
-                    "Fridge setting" : {
+                    strokeWidth: 1
+                },
+                "Fridge setting" : {
 //                        strokePattern: [ 5, 5 ],
-                        strokeWidth: 1
-                    },
-                    "Room temp" : {
-                        strokeWidth: 1
-                    },
-                    axes: {
-                        y : { valueFormatter: tempFormat }
-                    },
+                    strokeWidth: 1
+                },
+                "Room temp" : {
+                    strokeWidth: 1
+                },
+                axes: {
+                    y : { valueFormatter: tempFormat }
+                },
 /*                    highlightCircleSize: 2,
-                    highlightSeriesOpts: {
-                        strokeWidth: 1.5,
-                        strokeBorderWidth: 1,
-                        highlightCircleSize: 5
-                    },                        */
+                highlightSeriesOpts: {
+                    strokeWidth: 1.5,
+                    strokeBorderWidth: 1,
+                    highlightCircleSize: 5
+                },                        */
 
-                    underlayCallback: paintBackground
-                }
-            );
-
-            beerChart = chart.date_graph;
-            beerChart.setVisibility(5, 0);  // turn off state
-
-            var controls = document.getElementById('beer-chart-controls');
-            if (controls) {
-                controls.style.visibility="visible";
+                underlayCallback: paintBackground
             }
+        );
+
+        beerChart = chart.date_graph;
+        beerChart.setVisibility(5, 0);  // turn off state
+
+        var controls = document.getElementById('beer-chart-controls');
+        if (controls) {
+            controls.style.visibility="visible";
         }
+    }
     )
 }
 
