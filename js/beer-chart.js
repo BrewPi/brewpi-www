@@ -229,19 +229,6 @@ function drawBeerChart(beerToDraw, div){
 			}
 		}
 		var beerData = new google.visualization.DataTable(combinedJson);
-		var useGViz = false;
-
-        if (useGViz) {
-            beerChart = new google.visualization.AnnotatedTimeLine(document.getElementById(div));
-            beerChart.draw(beerData, {
-                'displayAnnotations': true,
-                'scaleType': 'maximized',
-                'displayZoomButtons': false,
-                'allValuesSuffix': "\u00B0 " + window.tempFormat,
-                'numberFormats': "##.00",
-                'displayAnnotationsFilter' : true});
-        }
-        else {
 
             var tempFormat = function(y) {
                 return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
@@ -296,7 +283,7 @@ function drawBeerChart(beerToDraw, div){
                 controls.style.visibility="visible";
             }
         }
-    });
+    )
 }
 
 function change(el) {

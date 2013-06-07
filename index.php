@@ -50,7 +50,7 @@ $profileKey = $settingsArray["profileKey"];
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>
-        <script type="text/javascript" src="js/dygraph-combined.js"></script>
+        <script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>
         <script type="text/javascript" src="js/beer-chart.js"></script>
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
