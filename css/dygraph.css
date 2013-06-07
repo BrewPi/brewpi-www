@@ -11,37 +11,47 @@
 }
 
 #beer-chart-label {
-    font-size:11px;
     font-weight: normal;
-    font-variant: normal;
     text-align: right;
-    margin-right:40px;
 }
 
 #beer-chart-controls {
     text-align: right;
+    font-weight:normal;
+}
+#beer-chart-controls  LABEL {
+    font-weight: bold;
 }
 
 .beerTemp {
-    color:rgb(70,132,238);
-}
-.beerSet {
-    color:rgb(220,57,18);
-}
-.fridgeTemp {
     color:rgb(255, 153, 0);
 }
+.beerSet {
+    color:rgb(255, 192, 102);
+}
+.fridgeTemp {
+    color:rgb(70,132,238);
+}
 .fridgeSet {
-    color:rgb(0, 128, 0);
+    color:rgb(138, 177, 244);
 }
 .roomTemp {
-    color:rgb(73,66,204);
+    color:#aaa;
 }
 .state {
     color:rgb(153,0,153);
 }
 
+#chart-container {
+    height:500px;
+    width:960px;
 
+}
+
+#beer-chart {
+    width: 900px;
+    height:350px;
+}
 
 
 
