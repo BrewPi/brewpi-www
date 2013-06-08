@@ -19,9 +19,15 @@
 
 var beerChart;
 
-var colorCool = "rgba(64, 64, 255, 0.15)";
-var colorHeat = "rgba(255, 64, 64, 0.15)";
 var colorIdle = "white";
+var colorCool = "rgba(0, 0, 255, 0.4)";
+var colorHeat = "rgba(255, 0, 0, 0.4)";
+var colorWaitingHeat = "rgba(255, 0, 0, 0.2)";
+var colorWaitingCool = "rgba(0, 0, 255, 0.2)";
+var colorHeatingMinTime = "rgba(255, 0, 0, 0.6)";
+var colorCoolingMinTime = "rgba(0, 0, 255, 0.6)";
+var colorWaitingPeakDetect = "rgba(0, 0, 0, 0.2)";
+
 
 var TIME_COLUMN = 0;        // time is the first column of data
 var STATE_COLUMN = 6;       // state is currently the 6th column of data.
@@ -37,11 +43,11 @@ var STATES = [
     { name: "DOOR_OPEN", color:"#eee", doorOpen:true },
     { name: "HEATING", color:colorHeat },
     { name: "COOLING", color:colorCool },
-    { name: "WAITING_TO_COOL", color:colorCool, waiting:true  },
-    { name: "WAITING_TO_HEAT", color:colorHeat, waiting:true  },
-    { name: "WAITING_FOR_PEAK_DETECT", color:colorIdle, waiting:true },
-    { name: "COOLING_MIN_TIME", color:colorCool, extending:true },
-    { name: "HEATING_MIN_TIME", color:colorHeat, extending:true }
+    { name: "WAITING_TO_COOL", color:colorWaitingCool, waiting:true  },
+    { name: "WAITING_TO_HEAT", color:colorWaitingHeat, waiting:true  },
+    { name: "WAITING_FOR_PEAK_DETECT", color:colorWaitingPeakDetect, waiting:true },
+    { name: "COOLING_MIN_TIME", color:colorCoolingMinTime, extending:true },
+    { name: "HEATING_MIN_TIME", color:colorHeatingMinTime, extending:true }
 ];
 
 
@@ -184,7 +190,7 @@ function paintBackgroundImpl(canvas, area, g) {
         //var bgColor = (state.waiting) ? bgColor = colorIdle : state.color;
         var bgColor = state.color;
         canvas.fillStyle = bgColor;
-        canvas.fillRect(startX, area.y, endX-startX, area.y+STATE_LINE_WIDTH);
+        canvas.fillRect(startX, area.h-5, endX-startX, area.h);
 /*        if (borderColor!==undefined) {
             lineWidth = 2;
             canvas.lineWidth = lineWidth;
