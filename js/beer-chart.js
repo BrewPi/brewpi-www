@@ -52,7 +52,10 @@ var STATES = [
 
 
 CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen) {
-    if (dashLen == undefined) dashLen = 2;
+    "use strict";
+    if (dashLen === undefined){
+        dashLen = 2;
+    }
 
     this.beginPath();
     this.moveTo(x1, y1);
@@ -67,9 +70,9 @@ CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen
     while (q++ < dashes) {
         x1 += dashX;
         y1 += dashY;
-        this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x1, y1);
+        this[q % 2 === 0 ? 'moveTo' : 'lineTo'](x1, y1);
     }
-    this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x2, y2);
+    this[q % 2 === 0 ? 'moveTo' : 'lineTo'](x2, y2);
 
     this.stroke();
     this.closePath();
@@ -77,6 +80,7 @@ CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen
 
 
 function setAlphaFactor(rgba) {
+    "use strict";
     return rgba;
 }
 
@@ -87,11 +91,14 @@ function setAlphaFactor(rgba) {
  * @returns The state, if defined for that time.
  */
 function getState(g, row) {
+    "use strict";
     return (row>= g.numRows()) ? 0 : g.getValue(row, STATE_COLUMN);
 }
 function getTime(g, row) {
-    if (row>= g.numRows())
+    "use strict";
+    if (row>= g.numRows()){
         row = g.numRows()-1;
+    }
     return g.getValue(row, TIME_COLUMN);
 }
 
@@ -104,6 +111,7 @@ function getTime(g, row) {
  *  the value of start.
  */
 function findStateBlocks(g, start, end) {
+    "use strict";
     var result = [];
     var state = getState(g, start);             // current state
     var newState;
@@ -128,6 +136,7 @@ function findStateBlocks(g, start, end) {
  * the corresponding index.
  */
 function findDataRow(g, time) {
+    "use strict";
     var low = 0, high = g.numRows() - 1;
     var mid, comparison;
 
@@ -149,6 +158,7 @@ function findDataRow(g, time) {
 
 
 function paintBackground(canvas, area, g) {
+    "use strict";
     canvas.save();
     try {
         paintBackgroundImpl(canvas, area, g);
@@ -160,7 +170,7 @@ function paintBackground(canvas, area, g) {
 }
 
 function paintBackgroundImpl(canvas, area, g) {
-
+    "use strict";
     // find the time series range corresponding to what is visible
     var timeRange = [g.toDataXCoord(area.x), g.toDataXCoord(area.x + area.w)];
     var timeStart = timeRange[0];     // millis since epoch
@@ -170,12 +180,13 @@ function paintBackgroundImpl(canvas, area, g) {
     // to be sure the range is included
     var rowStart = Math.max(findDataRow(g, timeStart)-1,0);
     var rowEnd = findDataRow(g, timeEnd)+1;
-    if (rowStart == null || rowEnd == null)
+    if (rowStart === null || rowEnd === null){
         return;
+    }
     var blocks = findStateBlocks(g, rowStart, rowEnd);    // rowEnd is exclusive
 
     var startX = 0;                     // start drawing from 0 - the far left
-    for (i = 0; i < blocks.length; i++) {
+    for (var i = 0; i < blocks.length; i++) {
         var block = blocks[i];
         var row = block.row;              // where this state run ends
         var t = getTime(g, row);          // convert to time. Using time ensures the display matches the plotted resolution
@@ -183,14 +194,14 @@ function paintBackgroundImpl(canvas, area, g) {
         var r = (t - timeStart) / (timeEnd - timeStart);   // as a fraction of the entire display
         var endX = Math.floor(area.x + (area.w * r));
 
-        var state = STATES[parseInt(block.state)];
-        if (state===undefined)
+        var state = STATES[parseInt(block.state, 10)];
+        if (state === undefined){
             state = STATES[0];
+        }
         //var borderColor = (state.waiting || state.extending) ? setAlphaFactor(state.color, 0.5) : undefined;
         //var bgColor = (state.waiting) ? bgColor = colorIdle : state.color;
-        var bgColor = state.color;
-        canvas.fillStyle = bgColor;
-        canvas.fillRect(startX, area.h-5, endX-startX, area.h);
+        canvas.fillStyle = state.color;
+        canvas.fillRect(startX, area.h-STATE_LINE_WIDTH, endX-startX, area.h);
 /*        if (borderColor!==undefined) {
             lineWidth = 2;
             canvas.lineWidth = lineWidth;
@@ -207,7 +218,7 @@ function paintBackgroundImpl(canvas, area, g) {
 /* Give name of the beer to display and div to draw the graph in */
 function drawBeerChart(beerToDraw, div){
     "use strict";
-	var beerData;
+    var beerData;
 	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer) {
 		var combinedJson;
 		var first = true;
@@ -295,9 +306,10 @@ function drawBeerChart(beerToDraw, div){
             controls.style.visibility="visible";
         }
     }
-    )
+    );
 }
 
 function change(el) {
+    "use strict";
     beerChart.setVisibility(el.id, el.checked);
 }
