@@ -239,7 +239,7 @@ function drawBeerChart(beerToDraw, div){
         var chart = new Dygraph.GVizChart(document.getElementById(div));
         chart.draw(
                 beerData, {
-                colors: [ 'rgb(255, 153, 0)', 'rgb(255, 192, 102)', 'rgb(70,132,238)', 'rgb(138, 177, 244)', '#aaa', 'rgb(153,0,153)' ],
+                colors: [ 'rgb(41,170,41)', 'rgb(205, 61, 98)', 'rgb(61, 154, 224)',  'rgb(245, 121, 10)', 'rgb(127,127,127)', 'rgb(153,0,153)' ],
                 axisLabelFontSize:12,
                 animatedZooms: true,
                 gridLineColor:'#ccc',
@@ -250,18 +250,22 @@ function drawBeerChart(beerToDraw, div){
                 displayAnnotationsFilter:true,
                 labelsDivStyles: { 'textAlign': 'right' },
                 //showRangeSelector: true,
-                strokeWidth: 2,
+                strokeWidth: 1,
 
                 "Beer setting" : {
 //                        strokePattern: [ 5, 5 ],
-                    strokeWidth: 1
+//                  strokeWidth: 1
                 },
                 "Fridge setting" : {
 //                        strokePattern: [ 5, 5 ],
-                    strokeWidth: 1
+//                  strokeWidth: 1
+                },
+                "Beer temperature" : {
+//                        strokePattern: [ 5, 5 ],
+                  strokeWidth: 1.5
                 },
                 "Room temp" : {
-                    strokeWidth: 1
+//                  strokeWidth: 1
                 },
                 axes: {
                     y : { valueFormatter: tempFormat }
