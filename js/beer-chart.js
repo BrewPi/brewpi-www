@@ -280,7 +280,7 @@ function drawBeerChart(beerToDraw, div){
                 },
                 "Beer temperature" : {
 //                        strokePattern: [ 5, 5 ],
-//                  strokeWidth: 1.5
+//                  strokeWidth: 2
                 },
                 "Room temp" : {
 //                  strokeWidth: 1
@@ -306,11 +306,11 @@ function drawBeerChart(beerToDraw, div){
 
         for(var line = 0; line <= 4; line++){
             var $toggleButton = $chartContainer.find('button.toggle-line-' + line.toString());
-            var names = ['Beer temperature', 'Beer setting', 'Fridge temperature', 'Fridge setting', 'Room temp'];
+            var names = ['Beer temperature', 'Beer setting', 'Fridge temperature', 'Fridge setting', 'Room temp.'];
             if(beerChart.getPropertiesForSeries(names[line])===null){
                 // series does not exist
                 $toggleButton.css('display', 'none');
-                beerChart.setVisibility(line, false); // hides the legend on top of the graph
+                // beerChart.setVisibility(line, false); // hides the legend on top of the graph
             }
         }
         if(div === 'curr-beer-chart'){
@@ -318,6 +318,7 @@ function drawBeerChart(beerToDraw, div){
             if(controlSettings.mode !== 'f'){
                 toggleLine($('#curr-beer-chart-controls button.toggle-line-3').get(0));
             }
+            toggleLine($('#curr-beer-chart-controls button.toggle-line-4').get(0)); // hide room temp by default
         }
         else if(div === 'prev-beer-chart'){
             prevBeerChart = beerChart;

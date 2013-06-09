@@ -120,6 +120,6 @@ button.toggle-line-4{
     background-color:rgba(170, 170, 170, 0.5);
     border:1px solid rgba(170, 170, 170, 1);
 }
-button.toggle-line-4{
+button.toggle-line-4:hover{
     border:2px solid rgba(170, 170, 170, 1);
 }
