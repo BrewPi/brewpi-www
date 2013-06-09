@@ -209,12 +209,12 @@ $(document).ready(function(){
 	$(".script-status").button({	icons: {primary: "ui-icon-alert" } });
 	$(".script-status span.ui-button-text").text("Checking script..");
 
-	$("button#refresh-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
-		drawBeerChart(window.beerName, 'beer-chart');
+	$("button#refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
+		drawBeerChart(window.beerName, 'curr-beer-chart');
 	});
 
 	loadControlPanel();
-	drawBeerChart(window.beerName, 'beer-chart');
+	drawBeerChart(window.beerName, 'curr-beer-chart');
 
     receiveControlConstants();
 	receiveControlSettings();

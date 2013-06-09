@@ -17,7 +17,8 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var beerChart;
+var currBeerChart;
+var prevBeerChart;
 
 var colorIdle = "white";
 var colorCool = "rgba(0, 0, 255, 0.4)";
@@ -287,7 +288,7 @@ function drawBeerChart(beerToDraw, div){
                 axes: {
                     y : { valueFormatter: tempFormat }
                 },
-                    highlightCircleSize: 2,
+                highlightCircleSize: 2,
                 highlightSeriesOpts: {
                     strokeWidth: 1.5,
                     strokeBorderWidth: 1,
@@ -298,18 +299,60 @@ function drawBeerChart(beerToDraw, div){
             }
         );
 
-        beerChart = chart.date_graph;
-        beerChart.setVisibility(5, 0);  // turn off state
+        var beerChart = chart.date_graph;
+        beerChart.setVisibility(beerChart.indexFromSetName('State')-1, 0);  // turn off state line
+        var $chartContainer = $('#'+ div).parent();
+        $chartContainer.find('.beer-chart-controls').css('visibility','visible');
 
-        var controls = document.getElementById('beer-chart-controls');
-        if (controls) {
-            controls.style.visibility="visible";
+        for(var line = 0; line <= 4; line++){
+            var $toggleButton = $chartContainer.find('button.toggle-line-' + line.toString());
+            var names = ['Beer temperature', 'Beer setting', 'Fridge temperature', 'Fridge setting', 'Room temp'];
+            if(beerChart.getPropertiesForSeries(names[line])===null){
+                // series does not exist
+                $toggleButton.css('display', 'none');
+                beerChart.setVisibility(line, false); // hides the legend on top of the graph
+            }
+        }
+        if(div === 'curr-beer-chart'){
+            currBeerChart = beerChart;
+            if(controlSettings.mode !== 'f'){
+                toggleLine($('#curr-beer-chart-controls button.toggle-line-3').get(0));
+            }
+        }
+        else if(div === 'prev-beer-chart'){
+            prevBeerChart = beerChart;
         }
     }
     );
 }
 
-function change(el) {
+function toggleLine(el) {
     "use strict";
-    beerChart.setVisibility(el.id, el.checked);
+    var $el = $(el);
+    var $chart = $el.closest('.chart-container').find('.beer-chart');
+    var chartId = $chart.attr('id');
+    var chart;
+    if(chartId === 'curr-beer-chart'){
+        chart = currBeerChart;
+    }
+    else  if(chartId === 'prev-beer-chart'){
+        chart = prevBeerChart;
+    }
+    var lineNumber = $el.attr('class').split("line-")[1]; // id = line-n
+    var visibilityAllLines = chart.visibility();
+    var visibilityThisLine = visibilityAllLines[lineNumber];
+    var colorString = $el.css('background-color');
+    var colors = colorString.split(/[,()]+/);
+    var r = colors[1]; var g = colors[2]; var b = colors[3]; var a = colors[4];
+    var newColor;
+    visibilityThisLine = !visibilityThisLine; // toggle visibility
+
+    if(visibilityThisLine){
+        newColor = 'rgba(' + r + ',' + g + ',' + b + ',' + '0.5)';
+    }
+    else{
+        newColor = 'rgba(' + r + ',' + g + ',' + b + ',' + '0.01)'; // cannot set a to zero, causes color info to be lost
+    }
+    $el.css('background-color', newColor);
+    chart.setVisibility(lineNumber, visibilityThisLine);
 }

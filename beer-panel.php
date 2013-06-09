@@ -31,22 +31,15 @@
 	<button class="script-status ui-state-error"></button>
 	<button id="maintenance">Maintenance panel</button>
 </div>
-<div id="chart-container">
-    <div id="beer-chart-controls" style="visibility: hidden">
-        <p><span class="displayLabel">Display: </span>
-            <input type=checkbox id=0 onClick="change(this)" checked>
-            <label class="beerTemp" for="0">Beer Temp</label>
-            <input type=checkbox id=1 onClick="change(this)" checked>
-            <label class="beerSet" for="1">Beer Set</label>
-            <input type=checkbox id=2 onClick="change(this)" checked>
-            <label class="fridgeTemp" for="2">Fridge Temp</label>
-            <input type=checkbox id=3 onClick="change(this)" checked>
-            <label class="fridgeSet" for="3">Fridge Set</label>
-            <input type=checkbox id=4 onClick="change(this)" checked>
-            <label class="roomTemp" for="4">Room Temp</label>
-        </p>
-    </div>
-    <div id="beer-chart-label"></div>
-    <div id="beer-chart"></div>
-    <button id="refresh-beer-chart"></button>
+<div class="chart-container">
+    <div id="curr-beer-chart-label" class="beer-chart-label"></div>
+    <div id="curr-beer-chart" class="beer-chart"></div>
+	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
+		<button id="refresh-curr-beer-chart"></button>
+		<button class="toggle-line-0" onClick="toggleLine(this)">
+		<button class="toggle-line-1" onClick="toggleLine(this)">
+		<button class="toggle-line-2" onClick="toggleLine(this)">
+		<button class="toggle-line-3" onClick="toggleLine(this)">
+		<button class="toggle-line-4" onClick="toggleLine(this)">
+	</div>
 </div>

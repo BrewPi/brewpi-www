@@ -24,19 +24,7 @@ $(document).ready(function(){
 		autoOpen: false,
 		title: 'Maintenance Panel',
 		height: 850,
-		width: 1000,
-		open: function(){
-			// hide beer chart, because it displays through the panel in chrome
-			$('#beer-chart').css('visibility', 'hidden');
-			// show profile chart
-			$('#profileChartDiv').css('visibility', 'hidden');
-		},
-		close: function(){
-			// show beer-chart
-			$('#beer-chart').css('visibility', 'visible');
-			// show profile chart
-			$('#profileChartDiv').css('visibility', 'visible');
-		}
+		width: 1000
 	});
 
 	$("button#apply-interval").button({	icons: {primary: "ui-icon-check" } }).click(function(){

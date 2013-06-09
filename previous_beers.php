@@ -38,7 +38,17 @@
 		<button id="prev-beer-show">Show</button>
 		<button id="download-csv">Download CSV</button>
 	</div>
-	<div id="prev-beer-chart" style="width:900px; height:400px;"></div>
+	<div class="chart-container">
+		<div id="prev-beer-chart-label" class="beer-chart-label"></div>
+		<div id="prev-beer-chart" class="beer-chart"></div>
+		<div id="prev-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
+			<button class="toggle-line-0" onClick="toggleLine(this)">
+			<button class="toggle-line-1" onClick="toggleLine(this)">
+			<button class="toggle-line-2" onClick="toggleLine(this)">
+			<button class="toggle-line-3" onClick="toggleLine(this)">
+			<button class="toggle-line-4" onClick="toggleLine(this)">
+		</div>
+	</div>
 	<script>
 		$("button#prev-beer-show").button({ icons: {primary: "ui-icon-circle-triangle-e"} }).click(function(){
 			drawBeerChart(String($("select#prev-beer-name").val()), "prev-beer-chart" );
@@ -48,5 +58,5 @@
 			window.open(encodeURI(url), 'Download CSV' );
 		});
 	</script>
-</body> 
+</body>
 </html>

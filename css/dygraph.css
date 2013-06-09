@@ -1,4 +1,20 @@
+.chart-container {
+    height:500px;
+    width:960px;
+}
 
+#curr-beer-chart {
+    width: 900px;
+    height:390px;
+    float: left;
+}
+
+
+#prev-beer-chart {
+    width: 900px;
+    height:390px;
+    float: left;
+}
 
 .dygraph-legend {
     /* dygraph sets styles directly inline on the element. That's a bit nasty.*/
@@ -10,17 +26,10 @@
     text-align:right !important;
 }
 
-#beer-chart-label {
+.beer-chart-label {
     font-weight: normal;
-    text-align: right;
-}
-
-#beer-chart-controls {
-    text-align: right;
-    font-weight:normal;
-}
-#beer-chart-controls  LABEL {
-    font-weight: bold;
+    text-align: center;
+    padding: 5px 0px;
 }
 
 .beerTemp {
@@ -42,17 +51,75 @@
     color:rgb(153,0,153);
 }
 
-#chart-container {
-    height:500px;
-    width:960px;
-
+.beer-chart-controls {
+    display: block;
+    float: right;
 }
 
-#beer-chart {
-    width: 900px;
-    height:350px;
+.beer-chart-controls button{
+    height:26px;
+    width: 26px;
+    text-align: center;
+    margin-top: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+button#refresh-curr-beer-chart span.ui-icon{
+    margin-left: -2px; /* fix centering of icon for small button */
+}
+
+button.toggle-line-0,
+button.toggle-line-1,
+button.toggle-line-2,
+button.toggle-line-3,
+button.toggle-line-4{
+    width: 20px;
+    height: 20px;
+    -moz-border-radius:24px;
+    -webkit-border-radius:24px;
+    border-radius:24px;
+    display:block;
+}
+
+button.toggle-line-0{
+    background-color:rgba(41, 170, 41, 0.5);
+    border:1px solid rgba(41, 170, 41, 1);
+}
+button.toggle-line-0:hover{
+    border:2px solid rgba(41, 170, 41, 1);
 }
 
 
+button.toggle-line-1{
+    background-color:rgba(240, 100, 100, 0.5);
+    border:1px solid rgba(240, 100, 100, 1);
+}
+button.toggle-line-1:hover{
+    border:2px solid rgba(240, 100, 100, 1);
+}
+
+button.toggle-line-2{
+    background-color:rgba(89, 184, 255, 0.5);
+    border:1px solid rgba(89, 184, 255, 1);
+}
+button.toggle-line-2:hover{
+    border:2px solid rgba(89, 184, 255, 1);
+}
 
 
+button.toggle-line-3{
+    background-color:rgba(255, 161, 76, 0.5);
+    border:1px solid rgba(255, 161, 76, 1);
+}
+button.toggle-line-3:hover{
+    border:2px solid rgba(255, 161, 76, 1);
+}
+
+button.toggle-line-4{
+    background-color:rgba(170, 170, 170, 0.5);
+    border:1px solid rgba(170, 170, 170, 1);
+}
+button.toggle-line-4{
+    border:2px solid rgba(170, 170, 170, 1);
+}

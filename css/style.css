@@ -28,18 +28,6 @@ button#maintenance{
 	margin: 10px 10px 10px 10px;
 }
 
-button#refresh-beer-chart{
-	height: 20px;
-	width: 20px;
-	margin: 5px;
-	float: right;
-}
-
-button#refresh-beer-chart span.ui-icon{
-	top:8px;
-	left:0;
-}
-
 /* Control Panel */
 .google-visualization-table-td{
 	text-align: center !important;
