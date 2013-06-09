@@ -290,11 +290,14 @@ button#maintenance{
 .device-container .device-setting-container *{
     float: left;
     clear: left;
-
 }
 
 .device-container .device-setting-container:nth-child(5n+2){
     clear: left;
+}
+
+.device-list-container button.add-new-device{
+    margin: 10px 40px;
 }
 
 #maintenance-panel #beer-selector{

@@ -82,6 +82,14 @@ function refreshDeviceList(){
     $(".device-list").empty();
 }
 
+function addNewDevice(){
+    "use strict";
+    var device = {'c': 0, 'b': 0, 'd': 0, 'f': 0, 'i': -1, 'h': 1, 'p': -1, 't': 0, 'x': 0, 'nr':$("div.device-list div.device-container").length};
+    addDeviceToDeviceList(device, pinList,true);
+    //refreshDeviceList();
+    console.log(deviceList);
+}
+
 function parseDeviceList(deviceList, pinList){
     "use strict";
     $(".device-list").empty();
@@ -95,11 +103,26 @@ function parseDeviceList(deviceList, pinList){
         output += '<br>';
         addDeviceToDeviceList(device, pinList);
     }
+    if($("button.add-new-device").length<1){
+        //if button not added yet, add it
+        $('.device-list-container').append("<button class='add-new-device'>Add new device</button>");
+        $("button.add-new-device").button({	icons: {primary: "ui-icon-refresh" } })
+            .click(addNewDevice);
+    }
+
     return output;
 }
 
-function addDeviceToDeviceList(device, pinList){
+function addDeviceToDeviceList(device, pinList, addManual){
     "use strict";
+    // addManual is an optional argument that makes pin and function fully selectable (except onewire)
+    if(typeof(addManual) ==='undefined'){
+        addManual = false;
+    }
+    else{
+        addManual = true;
+    }
+
     var $newDevice = $("<div class='device-container' id='device-" + device.nr.toString() + "'></div>");
 
     $newDevice.append("<span class='device-name'>Device " + device.nr.toString() +"</span>");
@@ -122,36 +145,58 @@ function addDeviceToDeviceList(device, pinList){
             "beer",
             generateSelect(getDeviceBeerList(), device.b)));
     }
-    if((typeof device.f !== "undefined") ){
-        $newDevice.append(generateDeviceSettingContainer(
-            "Function",
-            "function",
-            generateSelect(getDeviceFunctionList(), device.f)));
-    }
+
     if((typeof device.h !== "undefined") ){
         $newDevice.append(generateDeviceSettingContainer(
             "Hardware type",
             "hardware-type",
-            generateSelect(getDeviceHwTypeList(), device.h)));
+            spanFromListVal(getDeviceHwTypeList(), device.h, 'hardware-type')));
     }
     if((typeof device.t !== "undefined") ){
         $newDevice.append(generateDeviceSettingContainer(
             "Device type",
             "device-type",
-            spanFromList(getDeviceTypeList(), device.t)));
+            spanFromListVal(getDeviceTypeList(), device.t, 'device-type')));
     }
     if((typeof device.x !== "undefined") ){
         $newDevice.append(generateDeviceSettingContainer(
             "Pin type",
             "pin-type",
-            generateSelect([{ val: 0, text: 'not inverted'}, {val: 1, text: 'inverted'}], device.x,"device-setting")));
+            generateSelect([{ val: 0, text: 'not inverted'}, {val: 1, text: 'inverted'}], device.x)));
     }
+
     if((typeof device.a !== "undefined") ){
         $newDevice.append(generateDeviceSettingContainer(
             "OneWire Address",
             "onewire-address",
             "<span class='onewire-address device-setting'>" + device.a + "</span>"));
     }
+
+    var pinType, pinSpec;
+    if(addManual){
+        pinSpec = {'val':-1, 'type':'free'};
+        $newDevice.append( generateDeviceSettingContainer(
+            "Arduino Pin",
+            "arduino-pin",
+            generateSelect(getLimitedPinList(pinList, ['free']))));
+    }
+    else{
+        if((typeof device.p !== "undefined") ){
+               pinSpec = findPinInList(pinList, device.p);
+               $newDevice.append( generateDeviceSettingContainer(
+                "Arduino Pin",
+                "arduino-pin",
+                spanFromListVal(pinList, device.p, 'arduino-pin')));
+        }
+    }
+
+    if((typeof device.f !== "undefined") ){
+        $newDevice.append(generateDeviceSettingContainer(
+            "Function",
+            "function",
+            generateSelect(getLimitedFunctionList(pinSpec.type), device.f)));
+    }
+
     if((typeof device.n !== "undefined") ){
         $newDevice.append(generateDeviceSettingContainer(
             "DS2413 pin",
@@ -164,20 +209,7 @@ function addDeviceToDeviceList(device, pinList){
             "device-value",
             "<span class='device-value device-setting'>" + device.v + "</span>"));
     }
-    // Do pins last, because they depend on the device function
-    var pinTypes;
-    if((typeof device.p !== "undefined") ){
-        if((typeof device.f !== "undefined") ){
-            pinTypes = functionToPinTypes(device.f);
-        }
-        else{
-            pinTypes = functionToPinTypes(0); // use device none
-        }
-        $newDevice.append( generateDeviceSettingContainer(
-            "Arduino Pin",
-            "arduino-pin",
-            generateSelect(getDevicePinList(pinList, pinTypes), device.p)));
-    }
+
 
     // add apply button
     var $applyButton = $("<button class='apply'>Apply</button>");
@@ -189,6 +221,36 @@ function addDeviceToDeviceList(device, pinList){
         applyDeviceSettings(device.nr);
     });
 }
+
+function findPinInList(pinList, pinNr){
+    "use strict";
+    for (var i=0; i<pinList.length; i++) {
+        if(pinList[i].val === pinNr){
+            return pinList[i];
+        }
+    }
+}
+
+function pinTypeToFunctionList(pinType){
+    "use strict";
+    var functionList=[];
+    switch(pinType){
+        case 'act':
+            functionList = [2, 3, 4, 7]; // all actuator functions
+            break;
+        case 'free':
+            functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
+            break;
+        case 'onewire':
+            functionList = [5, 6, 9];
+            break;
+        case 'door':
+            functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
+            break;
+    }
+    return functionList;
+}
+
 
 function functionToPinTypes(functionType){
     "use strict";
@@ -242,6 +304,19 @@ function getDeviceFunctionList(){
     return list;
 }
 
+function getLimitedFunctionList(pinType){
+    "use strict";
+    var fullFunctionList = getDeviceFunctionList();
+    var limitedFunctionList = pinTypeToFunctionList(pinType);
+    var list = [fullFunctionList[0]]; // always add 'None'
+    for (var i=0; i<fullFunctionList.length; i++) {
+        if(-1 !== $.inArray(fullFunctionList[i].val, limitedFunctionList)){
+            list.push(fullFunctionList[i]);
+        }
+    }
+    return list;
+}
+
 function getDeviceHwTypeList(){
     "use strict";
     // currently unsupported/unused devices commented out
@@ -266,7 +341,7 @@ function getDeviceTypeList(){
     return list;
 }
 
-function getDevicePinList(pinList, pinTypes){
+function getLimitedPinList(pinList, pinTypes){
     "use strict";
     var list = [ {val: 0, text: 'Unassigned'}];
     for (var i=0; i<pinList.length; i++) {
@@ -327,14 +402,27 @@ function generateSelect(list, selected){
     return sel;
 }
 
-function spanFromList(list, selected){
+function spanFromListVal(list, val, className){
     "use strict";
     var spanText = "undefined";
-    if(list[selected] !== undefined){
-        spanText = list[selected].text;
+    for(var i = 0; i < list.length; i++){
+        if(list[i].val === val)         {
+            spanText = list[i].text;
+        }
     }
-    var $span = $("<span>" + spanText + "</span>");
+    var $span = $("<span class='" + className + " device-setting'>" + spanText + "</span>");
     return $span;
+}
+
+function valFromListText(list, text){
+    "use strict";
+    var val=-1;
+    for(var i = 0; i < list.length; i++){
+        if(list[i].text === text)         {
+            val = list[i].val;
+        }
+    }
+    return val;
 }
 
 function generateDeviceSettingContainer(name, className, content){
@@ -364,8 +452,16 @@ function getDeviceConfigString(deviceNr){
     configString = addToConfigString(configString,"c", $deviceContainer.find(".chamber select").val());
     configString = addToConfigString(configString,"b", $deviceContainer.find(".beer select").val());
     configString = addToConfigString(configString,"f", $deviceContainer.find(".function select").val());
-    configString = addToConfigString(configString,"h", $deviceContainer.find(".hardware-type select").val());
-    configString = addToConfigString(configString,"p", $deviceContainer.find(".arduino-pin select").val());
+    configString = addToConfigString(configString,"h", valFromListText(getDeviceHwTypeList(),$deviceContainer.find("span.hardware-type").text()));
+
+    var $pinSpan = $deviceContainer.find("span.arduino-pin"); // pre-defined devices have a span
+    var $pinSelect = $deviceContainer.find(".arduino-pin select"); // new devices have a select
+    if($pinSpan.length){
+        configString = addToConfigString(configString,"p", valFromListText(pinList,$pinSpan.text()));
+    }
+    else if($pinSelect.length){
+        configString = addToConfigString(configString,"p", $pinSelect.val());
+    }
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
     configString = addToConfigString(configString,"h", $deviceContainer.find(".ds2431-pin select").val());
