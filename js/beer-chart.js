@@ -256,7 +256,7 @@ function drawBeerChart(beerToDraw, div){
         var chart = new Dygraph.GVizChart(document.getElementById(div));
         chart.draw(
                 beerData, {
-                colors: [ 'rgb(41,170,41)', 'rgb(225, 61, 61)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ],
+                colors: [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ],
                 axisLabelFontSize:12,
                 animatedZooms: true,
                 gridLineColor:'#ccc',
@@ -287,12 +287,12 @@ function drawBeerChart(beerToDraw, div){
                 axes: {
                     y : { valueFormatter: tempFormat }
                 },
-/*                    highlightCircleSize: 2,
+                    highlightCircleSize: 2,
                 highlightSeriesOpts: {
                     strokeWidth: 1.5,
                     strokeBorderWidth: 1,
                     highlightCircleSize: 5
-                },                        */
+                },
 
                 underlayCallback: paintBackground
             }
