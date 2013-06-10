@@ -199,19 +199,8 @@ google.load('visualization', '1', {packages: ['annotatedtimeline', 'table']});
 
 $(document).ready(function(){
     "use strict";
-
-	$('#maintenance-panel').tabs();
-
-	$("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).click(function(){
-		$("#maintenance-panel").dialog("open");
-	});
-
 	$(".script-status").button({	icons: {primary: "ui-icon-alert" } });
 	$(".script-status span.ui-button-text").text("Checking script..");
-
-	$("button#refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
-		drawBeerChart(window.beerName, 'curr-beer-chart');
-	});
 
 	loadControlPanel();
 	drawBeerChart(window.beerName, 'curr-beer-chart');

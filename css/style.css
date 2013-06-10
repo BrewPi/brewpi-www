@@ -90,20 +90,6 @@ button#maintenance{
 	float: left;
 }
 
-#beer-chart{
-	/*width:960px;
-	height:400px;*/ /*replaced by inline */
-	padding: 5px;
-	float: left;
-}
-
-#prev-beer-chart{
-	/*width:960px;
-	height:400px;*/ /*replaced by inline */
-	padding: 5px;
-	float: left;
-}
-
 #beer-panel{
 	width: 980px;
 	height: 540px;
@@ -214,12 +200,18 @@ button#maintenance{
 #maintenance-panel{
     padding-left: 1px;
     padding-right: 1px;
+    overflow:auto;
+    padding-bottom: 10px;
 }
 
 #maintenance-panel ul.ui-tabs-nav li{
     margin: 2px;
     width: 180px;
     text-align: center;
+}
+
+#chart-help-popup{
+    overflow: auto;
 }
 
 #maintenance-panel ul.ui-tabs-nav li a{

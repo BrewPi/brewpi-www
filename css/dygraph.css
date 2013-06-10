@@ -9,7 +9,6 @@
     float: left;
 }
 
-
 #prev-beer-chart {
     width: 900px;
     height:390px;
@@ -63,9 +62,11 @@
     margin-top: 10px;
     margin-right: auto;
     margin-left: auto;
+    display:block;
+    clear:right;
 }
 
-button#refresh-curr-beer-chart span.ui-icon{
+.beer-chart-controls button span.ui-icon{
     margin-left: -2px; /* fix centering of icon for small button */
 }
 
@@ -85,6 +86,7 @@ button.toggle-line-4{
 button.toggle-line-0{
     background-color:rgba(41, 170, 41, 0.5);
     border:1px solid rgba(41, 170, 41, 1);
+    margin-top: 30px;
 }
 button.toggle-line-0:hover{
     border:2px solid rgba(41, 170, 41, 1);
@@ -122,4 +124,29 @@ button.toggle-line-4{
 }
 button.toggle-line-4:hover{
     border:2px solid rgba(170, 170, 170, 1);
+}
+
+div.staate-info{
+    display: block;
+}
+
+div.state-info{
+    margin-top: 10px;
+}
+
+span.state-color{
+    width: 20px;
+    height: 10px;
+    margin-right: 10px;
+    display: inline-block;
+    border: 1px solid #aaa;
+    /* background-color is applied by JavaScript, because color is defined there */
+}
+
+span.state-name{
+    font-weight:bold;
+}
+
+span.state-explanation{
+    display:block;
 }

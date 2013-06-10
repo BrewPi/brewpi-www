@@ -51,7 +51,7 @@ $profileKey = $settingsArray["profileKey"];
 				include 'control-panel.php';
 			?>
 		</div>
-		<div id="maintenance-panel" style="overflow:auto; padding-bottom: 10px;">
+		<div id="maintenance-panel">
 			<?php
 				include 'maintenance-panel.php';
 			?>

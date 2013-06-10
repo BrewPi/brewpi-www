@@ -27,6 +27,12 @@ $(document).ready(function(){
 		width: 1000
 	});
 
+    $('#maintenance-panel').tabs();
+
+    $("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).click(function(){
+        $("#maintenance-panel").dialog("open");
+    });
+
 	$("button#apply-interval").button({	icons: {primary: "ui-icon-check" } }).click(function(){
 		$.post('socketmessage.php', {messageType: "interval", message: String($("select#interval").val())});
 	});

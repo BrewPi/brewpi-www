@@ -42,6 +42,7 @@
 		<div id="prev-beer-chart-label" class="beer-chart-label"></div>
 		<div id="prev-beer-chart" class="beer-chart"></div>
 		<div id="prev-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
+			<button class="chart-help"></button>
 			<button class="toggle-line-0" title="Beer temperature" onClick="toggleLine(this)">
 			<button class="toggle-line-1" title="Beer setting" onClick="toggleLine(this)">
 			<button class="toggle-line-2" title="Fridge temperature" onClick="toggleLine(this)">
@@ -50,12 +51,17 @@
 		</div>
 	</div>
 	<script>
-		$("button#prev-beer-show").button({ icons: {primary: "ui-icon-circle-triangle-e"} }).click(function(){
-			drawBeerChart(String($("select#prev-beer-name").val()), "prev-beer-chart" );
-		});
-		$("button#download-csv").button({ icons: {primary: "ui-icon-arrowthickstop-1-s"} }).click(function(){
-			var url = "data/" + String($("select#prev-beer-name").val()) + "/" + String($("select#prev-beer-name").val()) + ".csv";
-			window.open(encodeURI(url), 'Download CSV' );
+		$(document).ready(function(){
+			$("button#prev-beer-show").button({ icons: {primary: "ui-icon-circle-triangle-e"} }).click(function(){
+				drawBeerChart(String($("select#prev-beer-name").val()), "prev-beer-chart" );
+			});
+			$("button#download-csv").button({ icons: {primary: "ui-icon-arrowthickstop-1-s"} }).click(function(){
+				var url = "data/" + String($("select#prev-beer-name").val()) + "/" + String($("select#prev-beer-name").val()) + ".csv";
+				window.open(encodeURI(url), 'Download CSV' );
+			});
+			$("#prev-beer-chart-controls button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
+				$("#chart-help-popup").dialog("open");
+			});
 		});
 	</script>
 </body>

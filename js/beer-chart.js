@@ -32,7 +32,7 @@ var colorWaitingPeakDetect = "rgba(0, 0, 0, 0.2)";
 
 var TIME_COLUMN = 0;        // time is the first column of data
 var STATE_COLUMN = 6;       // state is currently the 6th column of data.
-var STATE_LINE_WIDTH = 5;
+var STATE_LINE_WIDTH = 15;
 
 /**
  * The states of the temp controller algorithm, and their presentation attributes.
@@ -357,3 +357,33 @@ function toggleLine(el) {
     $el.css('background-color', newColor);
     chart.setVisibility(lineNumber, visibilityThisLine);
 }
+
+function applyStateColors(){
+    "use strict";
+    $(".state-color.state-cooling").css('background-color',colorCool);
+    $(".state-color.state-heating").css('background-color',colorHeat);
+    $(".state-color.state-waiting-to-cool").css('background-color',colorWaitingCool);
+    $(".state-color.state-waiting-to-heat").css('background-color',colorWaitingHeat);
+    $(".state-color.state-heating-min-time").css('background-color', colorHeatingMinTime);
+    $(".state-color.state-cooling-min-time").css('background-color', colorCoolingMinTime);
+    $(".state-color.state-waiting-peak").css('background-color', colorWaitingPeakDetect);
+    $(".state-color.state-idle").css('background-color', colorIdle);
+}
+
+$(document).ready(function(){
+    $("button#refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
+        drawBeerChart(window.beerName, 'curr-beer-chart');
+    });
+
+    $('#chart-help-popup')
+        .dialog({
+            autoOpen: false,
+            height: 600,
+            width: 960
+        });
+    $("button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
+        $("#chart-help-popup").dialog("open");
+    });
+    applyStateColors();
+});
+
