@@ -342,23 +342,18 @@
 <div id="device-config">
 	<div class="settings-container ui-widget-content ui-corner-all">
 		<div class="console-box" id="device-console">
-			<span>Script output will appear here</span>
+			<span></span>
 		</div>
-
-
 		<div class="device-list-container">
 			<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 				<span class='container-title'>Device List</span>
 				<div class="refresh-options-container">
 					<div class="refresh-option">
-						<label for="read-values">Read values</label><input type="checkbox" name="read-values" id="read-values"/>
-					</div>
-					<div class="refresh-option">
-						<label for="only-unassigned">Only unassigned devices</label><input type="checkbox" name="only-unassigned" id="only-unassigned"/>
+						<input type="checkbox" name="read-values" id="read-values"/><label for="read-values">Read values</label>
 					</div>
 				</div>
 				<button class="refresh-device-list">Refresh device list</button>
-				<button class="get-device-list">Get device list</button>
+				<!--  <button class="get-device-list">Get device list</button>-->
 			</div>
 			<div class ="spinner-position"></div>
 			<div class="device-list"></div>

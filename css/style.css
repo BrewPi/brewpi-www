@@ -225,10 +225,11 @@ button#maintenance{
 
 .console-box{
     width: inherit;
-    min-height: 100px;
+    height: 100px;
     margin: 10px 40px;
     border: solid 1px;
     padding: 10px;
+    overflow: auto;
 }
 
 #maintenance-panel .device-list-container{
@@ -240,7 +241,6 @@ button#maintenance{
 
 #maintenance-panel .device-list-container .header button{
     float: right;
-    width: inherit;
 }
 
 #maintenance-panel .device-list-container .spinner-position{
@@ -249,47 +249,87 @@ button#maintenance{
     left:50%;
 }
 
+#maintenance-panel .device-list span.device-list-header{
+    display: block;
+    float: left;
+    clear: both;
+    margin: 10px 40px;
+    font-size: 1.5em;
+}
+
+#maintenance-panel .device-list span.device-list-empty-text{
+    display: block;
+    float: left;
+    clear: both;
+    margin: 10px 40px;
+}
+
+#maintenance-panel .device-list span.setting-name{
+    display: block;
+    float: left;
+    font-weight: bold;
+}
+
+#maintenance-panel .device-list span.device-setting{
+    display: block;
+    float: left;
+    clear: left;
+}
+
+#maintenance-panel .device-list span.device-name{
+    display: block;
+    float: left;
+    clear: both;
+    font-size: 1.2em;
+    color: #306fa9;
+}
 
 #maintenance-panel .refresh-options-container{
     float: right;
+    padding: 5px;
 }
-
-#maintenance-panel .refresh-options-container refresh-option{
-    float: right;
-}
-
 
 #maintenance-panel .device-container{
     margin: 10px 40px;
     padding: 5px 10px;
     border: solid 1px;
-    display: block;
     float: left;
 }
 
-.device-name{
-    clear: both;
+
+#maintenance-panel .device-name-and-apply{
     float: left;
-    padding: 5px;
+    margin: 10px 20px;
 }
 
-.device-container .device-setting-container{
+#maintenance-panel .device-name{
+    float: left;
+}
+
+#maintenance-panel .device-list button.apply{
+    float: left;
+    clear: left;
+    margin-top: 15px;
+}
+
+#maintenance-panel .device-all-settings{
+    float: left;
+    color: #555;
+}
+
+#maintenance-panel .device-container .device-setting-container{
     width: 150px;
     padding: 5px;
     float: left;
 }
 
-.device-container .device-setting-container *{
-    float: left;
-    clear: left;
-}
-
-.device-container .device-setting-container:nth-child(5n+2){
+.device-container .device-setting-container:nth-child(4n+2){
     clear: left;
 }
 
 .device-list-container button.add-new-device{
     margin: 10px 40px;
+    float: left;
 }
 
 #maintenance-panel #beer-selector{
