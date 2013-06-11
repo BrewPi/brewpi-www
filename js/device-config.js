@@ -249,10 +249,14 @@ function addDeviceToDeviceList(device, pinList, addManual){
             generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.n, "device-setting")));
     }
     if((typeof device.v !== "undefined") ){
+        var value = device.v;
+        if(parseInt(value,10)===-64){
+            value = "Disconnected";
+        }
         $settings.append(generateDeviceSettingContainer(
             "Value",
             "device-value",
-            "<span class='device-value device-setting'>" + device.v + "</span>"));
+            "<span class='device-value device-setting'>" + value + "</span>"));
     }
 }
 
