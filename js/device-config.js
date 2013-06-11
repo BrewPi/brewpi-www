@@ -250,6 +250,15 @@ function addDeviceToDeviceList(device, pinList, addManual){
     }
     if((typeof device.v !== "undefined") ){
         var value = device.v;
+        if(parseInt(device.t, 10) === 3){
+            // Device type is switch actuator
+            if(value === 0){
+                value = "Inactive";
+            }
+            else if(value ===1){
+                value = "Active";
+            }
+        }
         if(parseInt(value,10)===-64){
             value = "Disconnected";
         }
