@@ -330,6 +330,7 @@ button#maintenance{
 .device-list-container button.add-new-device{
     margin: 10px 40px;
     float: left;
+    clear: left;
 }
 
 #maintenance-panel #beer-selector{
