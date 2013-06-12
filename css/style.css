@@ -108,17 +108,21 @@ button#maintenance{
 	overflow:auto;
 }
 
-.temperature{
-	font-family: 'CPMono_v07_Plain', sans-serif;
-	font-size: 5em;
-	float: right;
+.temperature {
+	font-family: 'CPMono_v07_Plain', sans-serif !important;
+	font-size: 5em !important;
+	border: 0;
+	float: left;
+	margin-left: 10px;
+	width: 175px;
 }
 .temp-container{
 	width: 175px;
-	float: left;
 }
 
-
+.temperature-controls {
+	float: right;
+}
 .degree{
 	font-family: 'CPMono_v07_Plain', sans-serif;
 	font-size: 2em;
