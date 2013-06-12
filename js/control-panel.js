@@ -189,72 +189,44 @@ $(document).ready(function(){
 	});
 
 	// set functions to validate and mask temperature input
-	$("#beer-temp input.temperature").bind({
-		keyup: function() {
-			var temp = $("#beer-temp input.temperature").val()
-			if(temp > window.controlConstants.tempSetMin){
-				temp = window.controlConstants.tempSetMin;
-				$("#beer-temp input.temperature").val(temp)
-			}
-			if(temp > window.controlConstants.tempSetMax){
-				temp = window.controlConstants.tempSetMax;
-				$("#beer-temp input.temperature").val(temp)
-			}
-			
-			window.beerTemp=parseFloat(temp);
-		},
-		keypress: function(event) {
-			// if it is a dot, only allow one in the input
-			if (event.which == 46) {
-				if ($("#beer-temp input.temperature").val().indexOf(".") != -1) {
-					return false;
-				}
-				else
-				{
-					return true;
-				}
-			}
-			// only allow digits
-			if (event.which >= 48 && event.which <= 57) {
-				return true;
-			}
-			// ignore anything else
-			return false			
-		},
-	});
-	$("#fridge-temp input.temperature").bind({
-		keyup: function() {
-			var temp = $("#fridge-temp input.temperature").val()
-			if(temp > window.controlConstants.tempSetMin){
-				temp = window.controlConstants.tempSetMin;
-				$("#fridge-temp input.temperature").val(temp)
-			}
-			if(temp > window.controlConstants.tempSetMax){
-				temp = window.controlConstants.tempSetMax;
-				$("#fridge-temp input.temperature").val(temp)
-			}
+	$("input.temperature").each( function(){
+        $(this).keyup( function() {
+            var temp = $(this).val();
+            if(temp < window.controlConstants.tempSetMin){
+                temp = window.controlConstants.tempSetMin;
+                $(this).val(temp);
+            }
+            if(temp > window.controlConstants.tempSetMax){
+                temp = window.controlConstants.tempSetMax;
+                $(this).val(temp);
+            }
+            if($(this).parent().attr('id').localeCompare("beer-temp") !== -1){
+                window.beerTemp=parseFloat(temp);
+            }
+            else if($(this).parent().attr('id').localeCompare("fridge-temp") !== -1){
+                window.fridgeTemp=parseFloat(temp);
+            }
+        });
+        $(this).keypress(function(event) {
+            // if it is a dot, only allow one in the input
+            if (event.which === 46) {
+                if ($(this).val().indexOf(".") !== -1) {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            // only allow digits
+            if (event.which >= 48 && event.which <= 57) {
+                return true;
+            }
+            // ignore anything else
+            return false;
+        });
+    });
 
-			window.fridgeTemp=parseFloat(temp);
-		},
-		keypress: function(event) {
-			// if it is a dot, only allow one in the input
-			if (event.which == 46) {
-				if ($("#fridge-temp input.temperature").val().indexOf(".") != -1) {
-					return false;
-				}
-				else
-				{
-					return true;
-				}
-			}
-			// only allow digits
-			if (event.which >= 48 && event.which <= 57) {
-				return true;
-			}
-			// ignore anything else
-			return false			
-		},
-	});
 	//Constant temperature control buttons
 	$("button#beer-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"} }).bind({
 		mousedown: function(){
