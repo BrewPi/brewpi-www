@@ -381,6 +381,11 @@ $(document).ready(function(){
             height: 600,
             width: 960
         });
+
+    // unhide after loading
+    $("#chart-help-popup").css("visibility", "visible");
+
+
     $("button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
         $("#chart-help-popup").dialog("open");
     });

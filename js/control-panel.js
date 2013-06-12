@@ -179,6 +179,8 @@ $(document).ready(function(){
 		drawProfileChart();
 		drawProfileTable();
 	});
+    // unhide after loading
+    $("#control-panel").css("visibility", "visible");
 
 	$("#controls button#edit").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
 		window.open("https://docs.google.com/spreadsheet/ccc?key=" + window.googleDocsKey);

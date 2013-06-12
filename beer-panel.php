@@ -44,7 +44,7 @@
 		<button class="toggle-line-4" title="Room temperature" onClick="toggleLine(this)">
 	</div>
 </div>
-<div id="chart-help-popup" title="Beer graph help">
+<div id="chart-help-popup" title="Beer graph help" style="visibility: hidden">
 	<p>This chart displays all temperatures and state information logged by BrewPi.
 		Not all temperatures are shown by default, but you can toggle them with the colored dots.</p>
 	<p>Click and drag left or right to zoom horizontally, click and drag up or down to zoom vertically. Double click to zoom out.

@@ -46,12 +46,12 @@ $profileKey = $settingsArray["profileKey"];
 				include 'beer-panel.php';
 			?>
 		</div>
-		<div id="control-panel">
+		<div id="control-panel" style="visibility:hidden"> <!--// hide while loading -->
 			<?php
 				include 'control-panel.php';
 			?>
 		</div>
-		<div id="maintenance-panel">
+		<div id="maintenance-panel" style="visibility:hidden"> <!--// hide while loading -->
 			<?php
 				include 'maintenance-panel.php';
 			?>
@@ -70,9 +70,9 @@ $profileKey = $settingsArray["profileKey"];
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>
 		<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>
-		<script type="text/javascript" src="js/beer-chart.js"></script>
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
+		<script type="text/javascript" src="js/beer-chart.js"></script>
 	</body>
 </html>
 

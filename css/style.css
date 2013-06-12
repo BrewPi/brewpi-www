@@ -92,20 +92,19 @@ button#maintenance{
 
 #beer-panel{
 	width: 980px;
-	height: 540px;
 	margin-bottom: 10px;
+    float:left;
 }
 
 #top-bar{
 	width: 968px;
-	height: 104px;
 	margin: 5px;
+    float:left;
 }
 
 #control-panel{
 	width: 976px;
-	height: 350px;
-	overflow:auto;
+    float: left;
 }
 
 .temperature {

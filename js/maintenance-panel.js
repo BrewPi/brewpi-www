@@ -29,6 +29,9 @@ $(document).ready(function(){
 
     $('#maintenance-panel').tabs();
 
+    // unhide after loading
+    $("#maintenance-panel").css("visibility", "visible");
+
     $("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).click(function(){
         $("#maintenance-panel").dialog("open");
     });
