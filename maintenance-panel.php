@@ -366,12 +366,10 @@
 		<button id="auto-refresh-logs">Enable auto refresh</button>
 		<button id="refresh-logs">Refresh</button>
 	</div>
-	<div style="font-family: Arial;">
-
 	<h3>stderr:</h3>
-	<div class="stderr" style="background:black; overflow:auto; height:200px; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px"></div>
+	<div class="stderr console-box" "></div>
 	<h3>stdout:</h3>
-	<div class="stdout" style="background:black; overflow:auto; height:200px; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px"></div>
+	<div class="stdout console-box"></div>
 </div>
 
 <?php

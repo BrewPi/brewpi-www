@@ -228,12 +228,36 @@ button#maintenance{
 
 .console-box{
     width: inherit;
-    height: 100px;
+    background: black;
+    color:#bbbbbb;
+    border-color:#ADD6FF;
+    border-style:ridge;
+    border-width:5px;
+    padding: 10px 10px;
     margin: 10px 40px;
-    border: solid 1px;
-    padding: 10px;
     overflow: auto;
+    font-family: "Courrier New", monospace;
 }
+
+#view-logs .console-box{
+    height: 240px;
+}
+
+#view-logs h3{
+    margin: 10px 40px;
+}
+
+#view-logs button{
+    float: right;
+}
+#view-logs button:first-child{
+    margin-right: 40px;
+}
+
+#device-config .console-box{
+    height: 100px;
+}
+
 
 #maintenance-panel .device-list-container{
     width: 99%;
