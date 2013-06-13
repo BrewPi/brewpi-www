@@ -23,36 +23,54 @@
 	<li><a href="#view-logs"><span>View logs</span></a></li>
 	<li><a href="previous_beers.php"><span>Previous Beers</span></a></li>
 	<li><a href="#control-algorithm"><span>Control Algorithm</span></a></li>
+	<li><a href="#device-config"><span>Device Configuration</span></a></li>
 	<li><a href="#advanced-settings"><span>Advanced Settings</span></a></li>
 	<li><a href="#reprogram-arduino"><span>Reprogram Arduino</span></a></li>
-	<li><a href="#device-config"><span>Device Configuration</span></a></li>
 	<!--kinda dirty to have buttons in the ul, but the ul is styled as a nice header by jQuery UI -->
 </ul>
 <div id="reprogram-arduino">
-	<div class="script-warning ui-widget-content ui-corner-all" style="padding:5px;">
+	<div class="ui-widget-content ui-corner-all" style="padding:5px; float: left">
 		<p>Here you can upload a HEX file which will be uploaded to the Arduino by the Python script.
 			The script will automatically restart itself after programming.
 			Just hit the back button on your browser to continue running BrewPi.</p>
-		<div style="padding: 15px 0;">
-			<form action="program_arduino.php" method="post" enctype="multipart/form-data">
-				<label for="file">Hex file:</label>
-				<input type="file" name="file" id="file" /> <!-- add max file size?-->
-				<label for="boardType"> Board type:</label>
-				<select name="boardType">
-					<option value="leonardo">Leonardo</option>
-					<option value="uno">Uno</option>
-					<option value="atmega328">ATmega328 based</option>
-					<option value="diecimila">Atmega168 based</option>
-					<option value="mega2560">Mega 2560</option>
-					<option value="mega">Mega 1280</option>
-				</select>
-				<label for="eraseEEPROM"> Reset settings (clear EEPROM)</label>
-				<input type="radio" name="eraseEEPROM" value="true" checked>Yes
-				<input type="radio" name="eraseEEPROM" value="false">No
-				<input type="submit" name="Program" value="Program">
+		<div id = "program-container">
+			<!-- This form has a hidden iFrame as target, so the full page is not refreshed -->
+			<form action="program_arduino.php" method="post" enctype="multipart/form-data" target="upload-target">
+				<div id="program-options">
+					<div class="program-option">
+						<label for="file">Hex file:</label>
+						<input type="file" name="file" id="file" /> <!-- add max file size?-->
+					</div>
+					<div class="program-option">
+						<label for="boardType"> Board type:</label>
+						<select name="boardType">
+							<option value="leonardo">Leonardo</option>
+							<option value="uno">Uno</option>
+							<option value="atmega328">ATmega328 based</option>
+							<option value="diecimila">Atmega168 based</option>
+							<option value="mega2560">Mega 2560</option>
+							<option value="mega">Mega 1280</option>
+						</select>
+					</div>
+					<div class="program-option">
+						<label for="restoreSettings">Restore old settings after programming</label>
+						<input type="radio" name="restoreSettings" value="true" checked>Yes
+						<input type="radio" name="restoreSettings" value="false">No
+					</div>
+					<div class="program-option">
+						<label for="restoreDevices">Restore installed devices after programming</label>
+						<input type="radio" name="restoreDevices" value="true" checked>Yes
+						<input type="radio" name="restoreDevices" value="false">No
+					</div>
+				</div>
+				<input id="program-submit-button" type="submit" name="Program" value="Program">
 			</form>
+
+			<h3 id="program-stderr-header">Script stderr output will auto-refresh while programming if you keep this tab open</h3>
+			<div class="stderr console-box" "></div>
+			<iframe id="upload-target" name="upload-target" src="#"style="width:0;height:0;border:0px solid #fff;"></iframe>
 		</div>
-		<p>Note: the EEPROM is only preserved when the 'Preserve EEPROM' fuse is set!</p>
+
 	</div>
 </div>
 <div id="settings">

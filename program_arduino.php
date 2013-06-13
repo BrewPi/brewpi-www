@@ -16,6 +16,7 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This file is loaded into a hidden iFrame. the javascript functions are defined in maintenance-panel.js
 require_once('socket_open.php');
 
 
@@ -28,65 +29,72 @@ if(file_exists('config.php')) {
 	require_once('config.php');
 }
 else {
-	die('ERROR: Unable to open required file (config.php)');
+	$error = "Unable to open required file (config.php)";
+	?>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<?php
+	die($error);
 }
-?>
-
-<?php
 error_reporting(E_ALL);
 if(isset($_POST['boardType'])){
 	$boardType = $_POST['boardType'];
 }
 else{
-	die("boardType not specified");
+	$error = "boardType not specified!";
+	?>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<?php
+	die($error);
 }
-if(isset($_POST['eraseEEPROM'])){
-	$eraseEEPROM = $_POST['eraseEEPROM'];
+if(isset($_POST['restoreSettings'])){
+	$restoreSettings = $_POST['restoreSettings'];
 }
 else{
-	die("eraseEEPROM not specified");
+	$error = "restoreSettings not specified!";
+	?>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<?php
+	die($error);
+}
+if(isset($_POST['restoreDevices'])){
+	$restoreDevices = $_POST['restoreDevices'];
+}
+else{
+	$error = "restoreDevices not specified!";
+	?>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<?php
+	die($error);
 }
 
 if ($_FILES["file"]["error"] > 0){
-	die("Hex file error: " . $_FILES["file"]["error"]);
+	$error = "Hex file error: " . $_FILES["file"]["error"];
+	?>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<?php
+	die($error);
 }
-?>
-<!DOCTYPE html>
-<head>
-  <title>BrewPi programming arduino!</title>
-</head>
-<body style="font-family: Arial;border: 0 none;">
-<?php
 $fileName = $_FILES["file"]["name"];
-echo "Uploaded " . $fileName . " (size: " . ($_FILES["file"]["size"]) . " bytes)<br />";
 $tempFileName = $_FILES["file"]["tmp_name"];
 if(move_uploaded_file($tempFileName, "$instanceRoot/uploads/" . $fileName)){
 	// succes!
 }
 else{
-	die("cannot move uploaded file");
+	$error = "cannot move uploaded file";
+	?>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<?php
+	die($error);
 }
-
 ?>
-<p> Now requesting Python to invoke avrdude. avrdude output is displayed below. </p>
-
 <?php
 $sock = open_socket();
 if($sock !== false){
-    $cmd = "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"eraseEEPROM\":$eraseEEPROM}";
+    $cmd = "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"restoreSettings\":$restoreSettings, \"restoreDevices\":$restoreDevices}";
 	socket_write($sock, $cmd, 1024);
-	$avrdudeOutput = socket_read($sock, 4096);
+	// script will return 1 on success and 0 on failure. This blocks the post request until done
+	$programmingResult = socket_read($sock, 1024);
 	socket_close($sock);
 }
 ?>
-<h3> avrdude output: </h3>
-<div style="background-color:black; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px">
-<?php
-	echo "<pre>$avrdudeOutput</pre>";
-?>
-
-</div>
-</body>
-</html>
-
-
+<script type="text/javascript"> window.top.window.programmingDone(<?php echo $programmingResult?>)</script>

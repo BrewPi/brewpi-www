@@ -234,7 +234,6 @@ button#maintenance{
     border-style:ridge;
     border-width:5px;
     padding: 10px 10px;
-    margin: 10px 40px;
     overflow: auto;
     font-family: "Courrier New", monospace;
 }
@@ -253,6 +252,47 @@ button#maintenance{
 #view-logs button:first-child{
     margin-right: 40px;
 }
+
+#reprogram-arduino p{
+    padding: 0px 10px;
+}
+
+#program-container{
+    padding: 0 40px;
+    float: left;
+}
+
+#reprogram-arduino #program-options{
+    float: left;
+}
+
+#reprogram-arduino .program-option{
+    margin: 20px 0px;
+}
+
+#reprogram-arduino .program-option label{
+    width: 350px;
+    float: left;
+}
+
+
+#reprogram-arduino .console-box{
+    height: 400px;
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+#reprogram-arduino h3{
+    float: left;
+    clear: both;
+}
+
+#reprogram-arduino #program-submit-button{
+    float:right;
+    margin: 20px 60px;
+}
+
 
 #device-config .console-box{
     height: 100px;

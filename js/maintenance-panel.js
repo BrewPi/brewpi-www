@@ -114,6 +114,11 @@ $(document).ready(function(){
         $.get('erase_logs.php');
         $('#maintenance-panel').tabs( "load" , 1);
     });
+
+    $("input#program-submit-button").button({ icons: {primary: "ui-icon-arrowthickstop-1-n"}}).unbind('click').click(function(){
+        startAutoRefreshLogs(2000, 1, 0, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
+        $("#program-stderr-header").text("Programming... keep an eye on the output below to see the progress.");
+    });
 });
 
 function refreshLogs(refreshStdOut, refreshStdErr){
@@ -180,3 +185,14 @@ function autoRefreshLogs(refreshStdErr, refreshStdOut, tab){
     }
 }
 
+// Functions that are called in the programArduino.php file:
+
+function programmingError(string){
+    "use strict";
+    alert(string);
+}
+
+function programmingDone(string){
+    "use strict";
+    $("#program-stderr-header").text("Programming done!");
+}

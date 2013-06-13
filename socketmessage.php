@@ -90,4 +90,3 @@ if($sock !== false){
 	}
 	socket_close($sock);
 }
-?>
