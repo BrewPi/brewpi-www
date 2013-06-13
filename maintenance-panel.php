@@ -20,14 +20,13 @@
 <ul>
 	<button class="script-status"></button>
 	<li><a href="#settings"><span class="setting-name">Settings</span></a></li>
-	<li><a href="logs.php"><span>Log files</span></a></li>
+	<li><a href="#view-logs"><span>View logs</span></a></li>
 	<li><a href="previous_beers.php"><span>Previous Beers</span></a></li>
 	<li><a href="#control-algorithm"><span>Control Algorithm</span></a></li>
 	<li><a href="#advanced-settings"><span>Advanced Settings</span></a></li>
 	<li><a href="#reprogram-arduino"><span>Reprogram Arduino</span></a></li>
 	<li><a href="#device-config"><span>Device Configuration</span></a></li>
 	<!--kinda dirty to have buttons in the ul, but the ul is styled as a nice header by jQuery UI -->
-
 </ul>
 <div id="reprogram-arduino">
 	<div class="script-warning ui-widget-content ui-corner-all" style="padding:5px;">
@@ -361,6 +360,18 @@
 	</div>
 </div>
 
+<div id="view-logs">
+	<div id="log-buttons" style="clear:both">
+		<button id="refresh-logs" style="float:right">Refresh</button>
+		<button id="erase-logs" style="float:right">Erase logs</button>
+	</div>
+	<div style="font-family: Arial;">
+
+	<h3>stderr:</h3>
+	<div class="stderr" style="background:black; overflow:auto; height:200px; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px"></div>
+	<h3>stdout:</h3>
+	<div class="stdout" style="background:black; overflow:auto; height:200px; color:white; border-color:#ADD6FF; border-style:ridge; border-width:5px; padding: 10px 10px"></div>
+</div>
 
 <?php
 function echoFilterSelect($filterName){

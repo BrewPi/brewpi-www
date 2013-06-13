@@ -90,4 +90,50 @@ $(document).ready(function(){
 
 	$(".cv.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
 		.click(reloadControlVariablesFromArduino);
+
+        // create refresh button
+    $("#refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).click(function(){
+        refreshLogs(1, 1);
+    });
+    $("#erase-logs").button({ icons: {primary: "ui-icon-trash"}	}).click(function(){
+        $.get('erase_logs.php');
+        $('#maintenance-panel').tabs( "load" , 1);
+    });
 });
+
+function refreshLogs(refreshStdOut, refreshStdErr){
+    "use strict";
+    $.get('getLogs.php?stdout=' + refreshStdOut.toString() + '&stderr=' + refreshStdErr.toString(),
+        function(response){
+            if(refreshStdErr){
+                var $stderr = $('div.stderr').each(function(){
+                    if(response.stderr){
+                        $(this).html(response.stderr);
+                    }
+                    else{
+                        $(this).html("");
+                    }
+
+                    // get DOM element
+                    var div = $(this)[0];
+                    // scroll divs down to the last line
+                    div.scrollTop = div.scrollHeight;
+                });
+            }
+            if(refreshStdOut){
+                var $stdout = $('div.stdout').each(function(){
+                    if(response.stdout){
+                        $(this).html(response.stdout);
+                    }
+                    else{
+                        $(this).html("");
+                    }
+                    // get DOM element
+                    var div = $(this)[0];
+                    // scroll divs down to the last line
+                    div.scrollTop = div.scrollHeight;
+                });
+            }
+        }
+    );
+}

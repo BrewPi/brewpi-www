@@ -11,5 +11,6 @@
 
 	// Configure the path of the BrewPi script for this instance of the
 	// web interface.  Do not include the trailing / on the path.
-	# $scriptPath = '/home/brewpi';
-?>
+	$scriptPath = 'C:\Users\Elco\Dropbox\BrewPi\git\brewpi-script';
+
+	// no php closing tag, because it might cause newlines to be returned that are after the closing tag
