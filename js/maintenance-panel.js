@@ -32,23 +32,23 @@ $(document).ready(function(){
     // unhide after loading
     $("#maintenance-panel").css("visibility", "visible");
 
-    $("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).click(function(){
+    $("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).unbind('click').click(function(){
         $("#maintenance-panel").dialog("open");
     });
 
-	$("button#apply-interval").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+	$("button#apply-interval").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		$.post('socketmessage.php', {messageType: "interval", message: String($("select#interval").val())});
 	});
 
-	$("button.apply-beer-name").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+	$("button.apply-beer-name").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		$.post('socketmessage.php', {messageType: "name", message: $("input#beer-name").val()});
 	});
 
-	$("button.apply-profile-key").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+	$("button.apply-profile-key").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		$.post('socketmessage.php', {messageType: "profileKey", message: $("input#profile-key").val()});
 	});
 
-	$("#advanced-settings .send-button").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+	$("#advanced-settings .send-button").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		var jsonString;
         if($(this).parent().children("select").length){ // check for existance
 			jsonString = "{\"" + $(this).parent().children("select").attr("name") + "\":\"" + $(this).parent().children("select").val() + "\"}";
@@ -68,34 +68,49 @@ $(document).ready(function(){
 	});
 
 	$(".cc.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
-		.click(receiveControlConstants);
+		.unbind('click').click(receiveControlConstants);
 
 	$(".cc.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
-		.click(reloadControlConstantsFromArduino);
+		.unbind('click').click(reloadControlConstantsFromArduino);
 
 	$(".cc.load-defaults").button({	icons: {primary: "ui-icon-trash" } })
-		.click(loadDefaultControlConstants);
+		.unbind('click').click(loadDefaultControlConstants);
 
 	$(".cs.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
-		.click(receiveControlSettings);
+		.unbind('click').click(receiveControlSettings);
 
 	$(".cs.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
-		.click(reloadControlSettingsFromArduino);
+		.unbind('click').click(reloadControlSettingsFromArduino);
 
 	$(".cs.load-defaults").button({	icons: {primary: "ui-icon-trash" } })
-		.click(loadDefaultControlSettings);
+		.unbind('click').click(loadDefaultControlSettings);
 
 	$(".cv.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
-		.click(receiveControlVariables);
+		.unbind('click').click(receiveControlVariables);
 
 	$(".cv.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
-		.click(reloadControlVariablesFromArduino);
+		.unbind('click').click(reloadControlVariablesFromArduino);
 
-        // create refresh button
-    $("#refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).click(function(){
+    // create refresh button
+    $("#refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).unbind('click').click(function(){
         refreshLogs(1, 1);
     });
-    $("#erase-logs").button({ icons: {primary: "ui-icon-trash"}	}).click(function(){
+
+    $("button#auto-refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).unbind('click').click(function(){
+        startAutoRefreshLogs(5000, 1, 1, '#view-logs');
+        if($(this).hasClass('ui-state-default')){
+            $(this).removeClass("ui-state-default").addClass("ui-state-error");
+            $(this).find('.ui-button-text').text('Disable auto-refresh');
+            return;
+        }
+        else{
+            $(this).removeClass("ui-state-error").addClass("ui-state-default");
+            $(this).find('.ui-button-text').text('Enable auto-refresh');
+            return;
+        }
+    });
+
+    $("#erase-logs").button({ icons: {primary: "ui-icon-trash"}	}).unbind('click').click(function(){
         $.get('erase_logs.php');
         $('#maintenance-panel').tabs( "load" , 1);
     });
@@ -137,3 +152,31 @@ function refreshLogs(refreshStdOut, refreshStdErr){
         }
     );
 }
+
+var autoRefreshLogsInterval;
+function startAutoRefreshLogs(refreshTime, refreshStdErr, refreshStdOut, tab){
+    "use strict";
+    if(typeof(window.autoRefreshLogsInterval)!=='undefined'){
+        // Clear existing timers
+        window.clearInterval(window.autoRefreshLogsInterval);
+    }
+    // refresh logs immediately
+    refreshLogs(refreshStdErr,refreshStdOut);
+    // set interval to start auto refreshing
+    autoRefreshLogsInterval = window.setInterval(function(){ autoRefreshLogs(refreshStdErr, refreshStdOut, tab);}, refreshTime);
+}
+
+function autoRefreshLogs(refreshStdErr, refreshStdOut, tab){
+    "use strict";
+    if($(tab).hasClass('ui-tabs-hide')){
+        // clear interval when switched to a different tab
+        window.clearInterval(autoRefreshLogsInterval);
+        // reset button on view logs tab
+        $('button#auto-refresh-logs').removeClass("ui-state-error").addClass("ui-state-default");
+        $('button#auto-refresh-logs').find('.ui-button-text').text('Enable auto-refresh');
+    }
+    else{
+        refreshLogs(refreshStdOut, refreshStdErr); // refresh log
+    }
+}
+

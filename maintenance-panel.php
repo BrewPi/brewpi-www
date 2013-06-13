@@ -362,8 +362,9 @@
 
 <div id="view-logs">
 	<div id="log-buttons" style="clear:both">
-		<button id="refresh-logs" style="float:right">Refresh</button>
-		<button id="erase-logs" style="float:right">Erase logs</button>
+		<button id="erase-logs">Erase logs</button>
+		<button id="auto-refresh-logs">Enable auto refresh</button>
+		<button id="refresh-logs">Refresh</button>
 	</div>
 	<div style="font-family: Arial;">
 
