@@ -27,24 +27,35 @@ else {
 $response = array();
 if(isset($_GET['stdout'])){
 	if($_GET['stdout']== '1'){
-		$stdout = file_get_contents("$scriptPath/logs/stdout.txt");
-		if($stdout === false){
-			$stdout = "Cannot open log file in $scriptPath/logs/stdout.txt";
-		}
-		$stdout = str_replace(array("\r\n", "\n", "\r"), '<br />', $stdout);
+		$stdout = getEndOfFile("$scriptPath/logs/stdout.txt");
 		$response['stdout'] = utf8_decode($stdout);
 	}
 }
 if(isset($_GET['stderr'])){
 	if($_GET['stderr']== '1'){
-		$stderr = file_get_contents("$scriptPath/logs/stderr.txt");
-		if($stderr === false){
-			$stderr = "Cannot open log file in $scriptPath/logs/stderr.txt";
-		}
-		$stderr = str_replace(array("\r\n", "\n", "\r"), '<br />', $stderr);
+		$stderr = getEndOfFile("$scriptPath/logs/stderr.txt");
 		$response['stderr'] = utf8_decode($stderr);
 	}
 }
 header('Content-Type: application/json');
 echo json_encode($response);
-// no closing tag to prevent newlines
+
+function getEndOfFile($filename){
+	$output = "";
+	$fp = fopen($filename,'rb');
+	$size = filesize($filename);
+	if($fp === -1){
+		$output = "Cannot open log file $filename";
+	}
+	else{
+		if(filesize($filename)>16384){
+			fseek($fp, -16384, SEEK_END);
+			$output = fread($fp, 16384);
+		}
+		else{
+			$output = fread($fp, $size);
+		}
+	}
+	return str_replace(array("\r\n", "\n", "\r"), '<br />', $output);
+}
+// no closing tag to prevent newlines in echoed output
