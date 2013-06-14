@@ -31,15 +31,17 @@
 		  $extension = strtolower(substr(strrchr($file, '.'), 1));
 		  if($extension == 'json' ){
 		  	$jsonFile =  $currentBeerDir . '/' . $file;
-				$filenames[$i] = $jsonFile;
+				$fileNames[$i] = str_replace(".json", "", $jsonFile); // strip extension for sorting
 				$i=$i+1;
 			}
 		}
 		closedir($handle);
-		if(empty($filenames)){
+		if(empty($fileNames)){
 			echo "";
 		}
 		else{
-			echo json_encode($filenames);
+			sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
+			array_walk($fileNames, function(&$value) { $value .= '.json'; }); // add .json again
+			echo json_encode($fileNames);
 		}
 ?>
