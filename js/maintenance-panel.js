@@ -130,32 +130,57 @@ function refreshLogs(refreshStdOut, refreshStdErr){
     $.get('getLogs.php?stdout=' + refreshStdOut.toString() + '&stderr=' + refreshStdErr.toString(),
         function(response){
             if(refreshStdErr){
-                    $('div.stderr').each(function(){
+                $('div.stderr').each(function(){
+                    // get DOM element
+                    var div = $(this)[0];
+                    var scrolledDown = false;
+                    // check if div is scrolled down
+                    if(div.scrollTop === div.scrollHeight){
+                        scrolledDown = true; // if already at bottom
+                    }
+                    var wasEmpty = false;
+                    if($(this).text().length<40){
+                        // div doesnt overflow
+                        wasEmpty = true;
+                    }
+
                     if(response.stderr){
                         $(this).html(response.stderr);
                     }
                     else{
                         $(this).html("");
                     }
-
-                    // get DOM element
-                    var div = $(this)[0];
-                    // scroll divs down to the last line
-                    div.scrollTop = div.scrollHeight;
+                    if(scrolledDown || wasEmpty){
+                        // scroll divs down to the last line after refresh
+                        div.scrollTop = div.scrollHeight;
+                    }
                 });
             }
             if(refreshStdOut){
-                    $('div.stdout').each(function(){
-                    if(response.stdout){
-                        $(this).html(response.stdout);
+                $('div.stdout').each(function(){
+                    // get DOM element
+                    var div = $(this)[0];
+                    var scrolledDown = false;
+                    // check if div is scrolled down
+                    if(div.scrollTop === div.scrollHeight){
+                        scrolledDown = true; // if already at bottom
+                    }
+                    var wasEmpty = false;
+                    if($(this).text().length<40){
+                        // div doesnt overflow
+                        wasEmpty = true;
+                    }
+
+                    if(response.stderr){
+                        $(this).html(response.stderr);
                     }
                     else{
                         $(this).html("");
                     }
-                    // get DOM element
-                    var div = $(this)[0];
-                    // scroll divs down to the last line
-                    div.scrollTop = div.scrollHeight;
+                    if(scrolledDown || wasEmpty){
+                        // scroll divs down to the last line after refresh
+                        div.scrollTop = div.scrollHeight;
+                    }
                 });
             }
         }
@@ -200,3 +225,9 @@ function programmingDone(){
     "use strict";
     $("#program-stderr-header").text("Programming done!");
 }
+
+function programmingFailed(){
+    "use strict";
+    $("#program-stderr-header").text("Something went wrong! Please check the log for details!");
+}
+
