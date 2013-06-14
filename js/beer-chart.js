@@ -223,7 +223,7 @@ function drawBeerChart(beerToDraw, div){
 	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer) {
 		var combinedJson;
 		var first = true;
-		var files = eval(answer);
+		var files = $.parseJSON(answer);
 		if(typeof files === 'undefined'){
             return;
         }
@@ -238,14 +238,13 @@ function drawBeerChart(beerToDraw, div){
 				// skip empty responses
 				continue;
 			}
-
-			var evalledJsonData = eval("("+jsonData+")");
+            var parsedJsonData = $.parseJSON(jsonData);
 			if(first){
-				combinedJson = evalledJsonData;
+				combinedJson = parsedJsonData;
 				first = false;
 			}
 			else{
-				combinedJson.rows  = combinedJson.rows.concat(evalledJsonData.rows);
+				combinedJson.rows  = combinedJson.rows.concat(parsedJsonData.rows);
 			}
 		}
 		var beerData = new google.visualization.DataTable(combinedJson);
