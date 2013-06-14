@@ -214,6 +214,15 @@ $(document).ready(function(){
                 window.fridgeTemp=parseFloat(temp);
             }
         });
+        $(this).keyup(function(event) {
+            // if it is a dot, only allow one in the input
+            if (event.which === 38){
+                $(this).val(tempUp(parseFloat($(this).val())).toFixed(1));
+            }
+            else if (event.which === 40){
+                $(this).val(tempDown(parseFloat($(this).val())).toFixed(1));
+            }
+        });
     });
 
 	//Constant temperature control buttons
