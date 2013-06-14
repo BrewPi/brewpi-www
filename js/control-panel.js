@@ -87,7 +87,7 @@ function loadControlPanel(){
 	drawProfileChart();
 	drawProfileTable();
 	receiveControlSettings(function(){
-        if(window.controlSettings == {}){
+        if(window.controlSettings === {}){
             return;
         }
 		switch(window.controlSettings.mode){
@@ -119,8 +119,8 @@ function loadControlPanel(){
 		if(window.fridgeTemp === null){
 			window.fridgeTemp = 20.0;
 		}
-		$("#beer-temp span.temperature").text(String(window.beerTemp.toFixed(1)));
-		$("#fridge-temp span.temperature").text(String(window.fridgeTemp.toFixed(1)));
+		$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
+		$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
 	});
 }
 
@@ -192,8 +192,9 @@ $(document).ready(function(){
 
 	// set functions to validate and mask temperature input
 	$("input.temperature").each( function(){
-        $(this).keyup( function() {
-            var temp = $(this).val();
+        $(this).blur(function(){
+            // validate input when leaving field
+            var temp = parseFloat($(this).val());
             if(temp < window.controlConstants.tempSetMin){
                 temp = window.controlConstants.tempSetMin;
                 $(this).val(temp);
@@ -202,6 +203,10 @@ $(document).ready(function(){
                 temp = window.controlConstants.tempSetMax;
                 $(this).val(temp);
             }
+            if(isNaN(temp)){
+                temp = 20.0;
+            }
+            $(this).val(temp.toFixed(1));
             if($(this).parent().attr('id').localeCompare("beer-temp") !== -1){
                 window.beerTemp=parseFloat(temp);
             }
@@ -209,34 +214,16 @@ $(document).ready(function(){
                 window.fridgeTemp=parseFloat(temp);
             }
         });
-        $(this).keypress(function(event) {
-            // if it is a dot, only allow one in the input
-            if (event.which === 46) {
-                if ($(this).val().indexOf(".") !== -1) {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            // only allow digits
-            if (event.which >= 48 && event.which <= 57) {
-                return true;
-            }
-            // ignore anything else
-            return false;
-        });
     });
 
 	//Constant temperature control buttons
 	$("button#beer-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"} }).bind({
 		mousedown: function(){
 			window.beerTemp=tempUp(window.beerTemp);
-			$("#beer-temp input.temperature").val(String(window.beerTemp.toFixed(1)));
-			window.beerTempUpTimeOut = window.setInterval(function(){
+			$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
+			window.beerTempUpTimeOtoFixedut = window.setInterval(function(){
 				window.beerTemp=tempUp(window.beerTemp);
-				$("#beer-temp input.temperature").val(String(window.beerTemp.toFixed(1)));
+				$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){
@@ -254,10 +241,10 @@ $(document).ready(function(){
 	$("button#beer-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"} }).bind({
 		mousedown: function() {
 			window.beerTemp=tempDown(window.beerTemp);
-			$("#beer-temp input.temperature").val(String(window.beerTemp.toFixed(1)));
+			$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
 			window.beerTempDownTimeOut = window.setInterval(function(){
 				window.beerTemp=tempDown(window.beerTemp);
-				$("#beer-temp input.temperature").val(String(window.beerTemp.toFixed(1)));
+				$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){
@@ -276,10 +263,10 @@ $(document).ready(function(){
 	$("button#fridge-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"}	}).bind({
 		mousedown: function() {
 			window.fridgeTemp=tempUp(window.fridgeTemp);
-			$("#fridge-temp input.temperature").val(String(window.fridgeTemp.toFixed(1)));
+			$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
 			window.fridgeTempUpTimeOut = window.setInterval(function(){
 				window.fridgeTemp=tempUp(window.fridgeTemp);
-				$("#fridge-temp input.temperature").val(String(window.fridgeTemp.toFixed(1)));
+				$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){
@@ -297,10 +284,10 @@ $(document).ready(function(){
 	$("button#fridge-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"}	}).bind({
 		mousedown: function() {
 			window.fridgeTemp=tempDown(window.fridgeTemp);
-			$("#fridge-temp input.temperature").val(String(window.fridgeTemp.toFixed(1)));
+			$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
 			window.fridgeTempDownTimeOut = window.setInterval(function(){
 				window.fridgeTemp=tempDown(window.fridgeTemp);
-				$("#fridge-temp input.temperature").val(String(window.fridgeTemp.toFixed(1)));
+				$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){

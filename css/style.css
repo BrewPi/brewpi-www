@@ -104,6 +104,7 @@ button#maintenance{
 
 #control-panel{
 	width: 976px;
+    min-height: 360px;
     float: left;
 }
 
