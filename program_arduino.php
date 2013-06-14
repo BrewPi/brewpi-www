@@ -97,4 +97,4 @@ if($sock !== false){
 	socket_close($sock);
 }
 ?>
-<script type="text/javascript"> window.top.window.programmingDone(<?php echo $programmingResult?>)</script>
+<script type="text/javascript"> window.top.window.programmingDone()</script>

@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global google, receiveControlSettings, window.googleDocsKey, controlSettings, controlVariables */
+
 var beerTemp = 20.0;
 var fridgeTemp = 20.0;
 
@@ -62,24 +65,25 @@ function handleProfileTableQueryResponse(response){
 
 function statusMessage(messageType, messageText){
 	"use strict";
-	$("#status-message").removeClass("ui-state-error ui-state-default ui-state-highlight");
-	$("#status-message p span#icon").removeClass("ui-icon-error ui-icon-check ui-icon-info");
+    var $statusMessage = $("#status-message");
+    var $statusMessageIcon = $statusMessage.find("p span#icon");
+    $statusMessage.removeClass("ui-state-error ui-state-default ui-state-highlight");
+    $statusMessageIcon.removeClass("ui-icon-error ui-icon-check ui-icon-info");
 	switch(messageType){
 		case "normal":
-				$("#status-message p span#icon").addClass("ui-icon-check");
-				$("#status-message").addClass("ui-state-default");
+            $statusMessageIcon.addClass("ui-icon-check");
+            $statusMessage.addClass("ui-state-default");
 			break;
 		case "error":
-				$("#status-message p span#icon").addClass("ui-icon-error");
-				$("#status-message").addClass("ui-state-error");
+            $statusMessageIcon.addClass("ui-icon-error");
+            $statusMessage.addClass("ui-state-error");
 			break;
 		case "highlight":
-				$("#status-message p span#icon").addClass("ui-icon-info");
-				$("#status-message").addClass("ui-state-highlight");
-				$("#status-message").addClass( "ui-state-highlight");
+            $statusMessageIcon.addClass("ui-icon-info");
+            $statusMessage.addClass("ui-state-highlight");
 			break;
 	}
-	$("#status-message p span#message").text(messageText);
+    $statusMessage.find("p span#message").text(messageText);
 }
 
 function loadControlPanel(){
@@ -90,21 +94,22 @@ function loadControlPanel(){
         if(window.controlSettings === {}){
             return;
         }
+        var $controlPanel = $('#control-panel');
 		switch(window.controlSettings.mode){
 			case 'p':
-				$('#control-panel').tabs( "select" , 0);
+                $controlPanel.tabs( "select" , 0);
 				statusMessage("normal","Running in beer profile mode");
 				break;
 			case 'b':
-				$('#control-panel').tabs( "select" , 1);
+                $controlPanel.tabs( "select" , 1);
 				statusMessage("normal","Running in beer constant mode");
 				break;
 			case 'f':
-				$('#control-panel').tabs( "select" , 2);
+                $controlPanel.tabs( "select" , 2);
 				statusMessage("normal","Running in fridge constant mode");
 				break;
 			case 'o':
-				$('#control-panel').tabs( "select" , 3);
+                $controlPanel.tabs( "select" , 3);
 				statusMessage("normal","Temperature control disabled");
 				break;
 			default:
@@ -119,8 +124,8 @@ function loadControlPanel(){
 		if(window.fridgeTemp === null){
 			window.fridgeTemp = 20.0;
 		}
-		$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
-		$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
+		$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+		$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
 	});
 }
 
@@ -175,14 +180,14 @@ $(document).ready(function(){
 	//Control Panel
 	$('#control-panel').tabs();
 
-	$("#controls button#refresh").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
+	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
 		drawProfileChart();
 		drawProfileTable();
 	});
     // unhide after loading
     $("#control-panel").css("visibility", "visible");
 
-	$("#controls button#edit").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
+	$("button#edit-controls").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
 		window.open("https://docs.google.com/spreadsheet/ccc?key=" + window.googleDocsKey);
 	});
 
@@ -207,10 +212,10 @@ $(document).ready(function(){
                 temp = 20.0;
             }
             $(this).val(temp.toFixed(1));
-            if($(this).parent().attr('id').localeCompare("beer-temp") !== -1){
+            if($(this).parent().attr('id').localeCompare("beer-temp") === 0){
                 window.beerTemp=parseFloat(temp);
             }
-            else if($(this).parent().attr('id').localeCompare("fridge-temp") !== -1){
+            if($(this).parent().attr('id').localeCompare("fridge-temp") === 0){
                 window.fridgeTemp=parseFloat(temp);
             }
         });
@@ -229,10 +234,10 @@ $(document).ready(function(){
 	$("button#beer-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"} }).bind({
 		mousedown: function(){
 			window.beerTemp=tempUp(window.beerTemp);
-			$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
-			window.beerTempUpTimeOtoFixedut = window.setInterval(function(){
+			$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+			window.beerTempUpTimeOut = window.setInterval(function(){
 				window.beerTemp=tempUp(window.beerTemp);
-				$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
+				$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){
@@ -250,10 +255,10 @@ $(document).ready(function(){
 	$("button#beer-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"} }).bind({
 		mousedown: function() {
 			window.beerTemp=tempDown(window.beerTemp);
-			$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
+			$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
 			window.beerTempDownTimeOut = window.setInterval(function(){
 				window.beerTemp=tempDown(window.beerTemp);
-				$("#beer-temp input.temperature").val(window.beerTemp.toFixed(1));
+				$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){
@@ -272,10 +277,10 @@ $(document).ready(function(){
 	$("button#fridge-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"}	}).bind({
 		mousedown: function() {
 			window.fridgeTemp=tempUp(window.fridgeTemp);
-			$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
+			$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
 			window.fridgeTempUpTimeOut = window.setInterval(function(){
 				window.fridgeTemp=tempUp(window.fridgeTemp);
-				$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
+				$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){
@@ -293,10 +298,10 @@ $(document).ready(function(){
 	$("button#fridge-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"}	}).bind({
 		mousedown: function() {
 			window.fridgeTemp=tempDown(window.fridgeTemp);
-			$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
+			$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
 			window.fridgeTempDownTimeOut = window.setInterval(function(){
 				window.fridgeTemp=tempDown(window.fridgeTemp);
-				$("#fridge-temp input.temperature").val(window.fridgeTemp.toFixed(1));
+				$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
 			}, 100);
 		},
 		mouseup: function(){
@@ -310,5 +315,4 @@ $(document).ready(function(){
 			}
 		}
 	});
-
 });

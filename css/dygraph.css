@@ -31,25 +31,6 @@
     padding: 5px 0px;
 }
 
-.beerTemp {
-    color:rgb(255, 153, 0);
-}
-.beerSet {
-    color:rgb(255, 192, 102);
-}
-.fridgeTemp {
-    color:rgb(70,132,238);
-}
-.fridgeSet {
-    color:rgb(138, 177, 244);
-}
-.roomTemp {
-    color:#aaa;
-}
-.state {
-    color:rgb(153,0,153);
-}
-
 .beer-chart-controls {
     display: block;
     float: right;

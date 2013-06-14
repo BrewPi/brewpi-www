@@ -17,6 +17,9 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* jshint jquery:true */
+/* global controlSettings, tempFormat, beername, Dygraph, google, CanvasRenderingContext2D */
+
 var currBeerChart;
 var prevBeerChart;
 
@@ -79,17 +82,11 @@ CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen
     this.closePath();
 };
 
-
-function setAlphaFactor(rgba) {
-    "use strict";
-    return rgba;
-}
-
 /**
  * Fetches the state for the given data row.
  * @param row   The data row to fetch the state for.
  * @param g {Dygraph}
- * @returns The state, if defined for that time.
+ * @returns int, The state, if defined for that time.
  */
 function getState(g, row) {
     "use strict";
@@ -219,9 +216,8 @@ function paintBackgroundImpl(canvas, area, g) {
 /* Give name of the beer to display and div to draw the graph in */
 function drawBeerChart(beerToDraw, div){
     "use strict";
-    var beerData;
 	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer) {
-		var combinedJson;
+		var combinedJson = {};
 		var first = true;
 		var files = $.parseJSON(answer);
 		if(typeof files === 'undefined'){
@@ -314,10 +310,11 @@ function drawBeerChart(beerToDraw, div){
         }
         if(div === 'curr-beer-chart'){
             currBeerChart = beerChart;
+            var $chartControls = $('#curr-beer-chart-controls');
             if(controlSettings.mode !== 'f'){
-                toggleLine($('#curr-beer-chart-controls button.toggle-line-3').get(0));
+                toggleLine($chartControls.find('button.toggle-line-3').get(0));
             }
-            toggleLine($('#curr-beer-chart-controls button.toggle-line-4').get(0)); // hide room temp by default
+            toggleLine($chartControls.find('button.toggle-line-4').get(0)); // hide room temp by default
         }
         else if(div === 'prev-beer-chart'){
             prevBeerChart = beerChart;
@@ -343,7 +340,7 @@ function toggleLine(el) {
     var visibilityThisLine = visibilityAllLines[lineNumber];
     var colorString = $el.css('background-color');
     var colors = colorString.split(/[,()]+/);
-    var r = colors[1]; var g = colors[2]; var b = colors[3]; var a = colors[4];
+    var r = colors[1]; var g = colors[2]; var b = colors[3];
     var newColor;
     visibilityThisLine = !visibilityThisLine; // toggle visibility
 

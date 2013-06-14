@@ -1,3 +1,4 @@
+/* global console, alert, Spinner */
 
 function initDeviceConfiguration(){
     "use strict";
@@ -23,38 +24,42 @@ function getDeviceList(){
         data: {messageType: "getDeviceList", message: ""},
         success: function(response){
             response = response.replace(/\s/g, ''); //strip all whitespace, including newline.
+            var deviceAndPinList;
+            var $deviceList = $(".device-list");
+            var $deviceConsole = $("#device-console").find("span");
+
             if(response.localeCompare("device-list-not-up-to-date") !== 0){
-                $("#device-console span").append("<br>Updated device list received<br>");
+                $deviceConsole.find("span").append("<br>Updated device list received<br>");
                 var jsonParsed = false;
                 try
                 {
-                    var deviceAndPinList = JSON.parse(response);
+                    deviceAndPinList = JSON.parse(response);
                     deviceList = deviceAndPinList.deviceList;
                     pinList = deviceAndPinList.pinList;
                     jsonParsed = true;
                 }
                 catch(e)
                 {
-                    $("#device-console span").append("Error while receiving device configuration: " + e + "<br>");
+                    $("#device-console").find("span").append("Error while receiving device configuration: " + e + "<br>");
                 }
                 if(jsonParsed){
-                    $(".device-list").empty();
-                    $('.device-list').append("<span class='device-list-header'>Installed devices</span>");
+                    $deviceList.empty();
+                    $deviceList.append("<span class='device-list-header'>Installed devices</span>");
                     if(deviceList.installed.length === 0){
-                        $("#device-console span").append("No installed devices found<br>");
-                        $('.device-list').append("<span class='device-list-empty-text'>None</span>");
+                        $deviceConsole.append("No installed devices found<br>");
+                        $deviceList.append("<span class='device-list-empty-text'>None</span>");
                     }
                     else{
-                        $("#device-console span").append("Parsing installed devices<br>");
+                        $deviceConsole.append("Parsing installed devices<br>");
                         console.log("Parsing installed devices: " + parseDeviceList(deviceList.installed, pinList));
                     }
-                    $('.device-list').append("<span class='device-list-header'>Detected devices</span>");
+                    $deviceList.append("<span class='device-list-header'>Detected devices</span>");
                     if(deviceList.available.length === 0){
-                        $("#device-console span").append("No available devices found<br>");
+                        $deviceConsole.append("No available devices found<br>");
                         $('.device-list').append("<span class='device-list-empty-text'>No additional devices found</span>");
                     }
                     else{
-                        $("#device-console span").append("Parsing available devices<br>");
+                        $deviceConsole.append("Parsing available devices<br>");
                         console.log("Parsing available devices: " + parseDeviceList(deviceList.available, pinList));
                     }
                     // add new device button to device list container if it does not exist already
@@ -64,7 +69,7 @@ function getDeviceList(){
                                 .click(addNewDevice);
                     }
 
-                    $("#device-console span").append("Device list updated for Arduino " +
+                    $deviceConsole.append("Device list updated for Arduino " +
                         deviceAndPinList.board + " with a " +
                         deviceAndPinList.shield + " shield<br>");
                 }
@@ -216,7 +221,6 @@ function addDeviceToDeviceList(device, pinList, addManual){
             "<span class='onewire-address device-setting'>" + device.a + "</span>"));
     }
 
-    var pinType;
     var pinSpec;
     if(addManual){
         pinSpec = {'val':-1, 'type':'free'};
@@ -228,10 +232,18 @@ function addDeviceToDeviceList(device, pinList, addManual){
     else{
         if((typeof device.p !== "undefined") ){
         pinSpec = findPinInList(pinList, device.p);
-        $settings.append( generateDeviceSettingContainer(
-            "Arduino Pin",
-            "arduino-pin",
-            spanFromListVal(pinList, device.p, 'arduino-pin')));
+        if(pinSpec !== -1){ // if pin exists in pin list
+            $settings.append( generateDeviceSettingContainer(
+                "Arduino Pin",
+                "arduino-pin",
+                spanFromListVal(pinList, device.p, 'arduino-pin')));
+            }
+        }
+        else{
+            $settings.append( generateDeviceSettingContainer(
+                "Arduino Pin",
+                "arduino-pin",
+                $("<span>Unknown pin" + device.p + "</span>")));
         }
     }
 
@@ -246,7 +258,7 @@ function addDeviceToDeviceList(device, pinList, addManual){
         $settings.append(generateDeviceSettingContainer(
             "DS2413 pin",
             "ds2413-pin",
-            generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.n, "device-setting")));
+            generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.n)));
     }
     if((typeof device.v !== "undefined") ){
         var value = device.v;
@@ -276,6 +288,7 @@ function findPinInList(pinList, pinNr){
             return pinList[i];
         }
     }
+    return -1;
 }
 
 function pinTypeToFunctionList(pinType){
@@ -330,7 +343,7 @@ function functionToPinTypes(functionType){
 function getDeviceFunctionList(){
     "use strict";
     // currently unsupported/unused devices commented out
-    var list = [
+    return [
         {val : 0, text: 'None'},
         {val : 1, text: 'Chamber Door'},
         {val : 2, text: 'Chamber Heater'},
@@ -348,7 +361,6 @@ function getDeviceFunctionList(){
          {val : 14, text: 'Beer Reserved 1'},
          {val : 15, text: 'Beer Reserved 2'}  */
     ];
-    return list;
 }
 
 function getLimitedFunctionList(pinType){
@@ -367,25 +379,23 @@ function getLimitedFunctionList(pinType){
 function getDeviceHwTypeList(){
     "use strict";
     // currently unsupported/unused devices commented out
-    var list = [
+    return [
         {val : 0, text: 'None'},
         {val : 1, text: 'Digital Pin'},
         {val : 2, text: 'Temp Sensor'},
         {val : 3, text: 'DS2413'}
     ];
-    return list;
 }
 
 function getDeviceTypeList(){
     "use strict";
     // currently unsupported/unused devices commented out
-    var list = [
+    return [
         {val : 0, text: 'None'},
         {val : 1, text: 'Temp Sensor'},
         {val : 2, text: 'Switch Sensor'},
         {val : 3, text: 'Switch Actuator'}
     ];
-    return list;
 }
 
 function getLimitedPinList(pinList, pinTypes){
@@ -457,8 +467,7 @@ function spanFromListVal(list, val, className){
             spanText = list[i].text;
         }
     }
-    var $span = $("<span class='" + className + " device-setting'>" + spanText + "</span>");
-    return $span;
+    return $("<span class='" + className + " device-setting'>" + spanText + "</span>");
 }
 
 function valFromListText(list, text){
@@ -487,7 +496,7 @@ function applyDeviceSettings(deviceNr){
 
     $.post('socketmessage.php', {messageType: "applyDevice", message: configString});
 
-    $("#device-console span").append("Device config command sent, U:" + configString + "<br>");
+    $("#device-console").find("span").append("Device config command sent, U:" + configString + "<br>");
 }
 
 function getDeviceConfigString(deviceNr){

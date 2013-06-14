@@ -15,19 +15,23 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* jshint jquery:true */
+/* global reloadControlConstantsFromArduino, reloadControlSettingsFromArduino, reloadControlVariablesFromArduino,
+          reloadControlSettings, reloadControlConstants, reloadControlVariables,
+          receiveControlConstants, receiveControlSettings, receiveControlVariables,
+          loadDefaultControlConstants, loadDefaultControlSettings */
+
 $(document).ready(function(){
     "use strict";
 
     //Maintenance Panel
-	$('#maintenance-panel')
+	$('#maintenance-panel').tabs()
 	.dialog({
 		autoOpen: false,
 		title: 'Maintenance Panel',
 		height: 850,
 		width: 1000
 	});
-
-    $('#maintenance-panel').tabs();
 
     // unhide after loading
     $("#maintenance-panel").css("visibility", "visible");
@@ -48,19 +52,20 @@ $(document).ready(function(){
 		$.post('socketmessage.php', {messageType: "profileKey", message: $("input#profile-key").val()});
 	});
 
-	$("#advanced-settings .send-button").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
+	$("#advanced-settings").find(".send-button").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		var jsonString;
-        if($(this).parent().children("select").length){ // check for existance
-			jsonString = "{\"" + $(this).parent().children("select").attr("name") + "\":\"" + $(this).parent().children("select").val() + "\"}";
+        if($(this).parent().find("select").length){ // check for existance
+			jsonString = "{\"" + $(this).parent().find("select").attr("name") +
+                            "\":\"" + $(this).parent().find("select").val() + "\"}";
 		}
-		else if($(this).parent().children("input").length){ // check for existance
-			jsonString = "{\"" + $(this).parent().children("input").attr("name") + "\":" + $(this).parent().children("input").val() + "}";
+		else if($(this).parent().find("input").length){ // check for existance
+			jsonString = "{\"" + $(this).parent().find("input").attr("name") + "\":" + $(this).parent().find("input").val() + "}";
 		}
 		else{
 			return;
 		}
 		$.post('socketmessage.php', {messageType: "setParameters", message: jsonString});
-		if($(this).parent().children("select").attr("name") === "tempFormat"){
+		if($(this).parent().find("select").attr("name") === "tempFormat"){
 			// if temperature format is updated, reload all settings in new format and update fields
 			reloadControlConstantsFromArduino();
 			reloadControlSettingsFromArduino();
@@ -101,12 +106,10 @@ $(document).ready(function(){
         if($(this).hasClass('ui-state-default')){
             $(this).removeClass("ui-state-default").addClass("ui-state-error");
             $(this).find('.ui-button-text').text('Disable auto-refresh');
-            return;
         }
         else{
             $(this).removeClass("ui-state-error").addClass("ui-state-default");
             $(this).find('.ui-button-text').text('Enable auto-refresh');
-            return;
         }
     });
 
@@ -123,10 +126,11 @@ $(document).ready(function(){
 
 function refreshLogs(refreshStdOut, refreshStdErr){
     "use strict";
+    /* global stderr */
     $.get('getLogs.php?stdout=' + refreshStdOut.toString() + '&stderr=' + refreshStdErr.toString(),
         function(response){
             if(refreshStdErr){
-                var $stderr = $('div.stderr').each(function(){
+                    $('div.stderr').each(function(){
                     if(response.stderr){
                         $(this).html(response.stderr);
                     }
@@ -141,7 +145,7 @@ function refreshLogs(refreshStdOut, refreshStdErr){
                 });
             }
             if(refreshStdOut){
-                var $stdout = $('div.stdout').each(function(){
+                    $('div.stdout').each(function(){
                     if(response.stdout){
                         $(this).html(response.stdout);
                     }
@@ -177,8 +181,8 @@ function autoRefreshLogs(refreshStdErr, refreshStdOut, tab){
         // clear interval when switched to a different tab
         window.clearInterval(autoRefreshLogsInterval);
         // reset button on view logs tab
-        $('button#auto-refresh-logs').removeClass("ui-state-error").addClass("ui-state-default");
-        $('button#auto-refresh-logs').find('.ui-button-text').text('Enable auto-refresh');
+        $('button#auto-refresh-logs').removeClass("ui-state-error").addClass("ui-state-default")
+                                     .find('.ui-button-text').text('Enable auto-refresh');
     }
     else{
         refreshLogs(refreshStdOut, refreshStdErr); // refresh log
@@ -189,10 +193,10 @@ function autoRefreshLogs(refreshStdErr, refreshStdOut, tab){
 
 function programmingError(string){
     "use strict";
-    alert(string);
+    window.alert(string);
 }
 
-function programmingDone(string){
+function programmingDone(){
     "use strict";
     $("#program-stderr-header").text("Programming done!");
 }
