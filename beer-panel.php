@@ -42,6 +42,7 @@
 		<button class="toggle fridgeTemp" title="Fridge temperature" onClick="toggleLine(this)">
 		<button class="toggle fridgeSet" title="Fridge setting" onClick="toggleLine(this)">
 		<button class="toggle roomTemp" title="Room temperature" onClick="toggleLine(this)">
+		<button class="toggleAnnotations" title="Annotations" onClick="toggleAnnotations(this)">A</button>
 	</div>
 </div>
 <div id="chart-help-popup" title="Beer graph help" style="visibility: hidden">

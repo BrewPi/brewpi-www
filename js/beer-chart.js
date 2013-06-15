@@ -398,3 +398,17 @@ $(document).ready(function(){
     applyStateColors();
 });
 
+function toggleAnnotations(el){
+    "use strict";
+    var $el = $(el);
+    $el.toggleClass('inactive');
+    var $chart = $el.closest('.chart-container').find('.beer-chart');
+    var chartId = $chart.attr('id');
+
+    if($($el).hasClass('inactive')){
+        $chart.find('.dygraphDefaultAnnotation').css('visibility', 'hidden');
+    }
+    else{
+        $chart.find('.dygraphDefaultAnnotation').css('visibility', 'visible');
+    }
+}

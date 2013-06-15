@@ -103,8 +103,25 @@ button.toggle.roomTemp:hover{
     border:2px solid rgba(170, 170, 170, 1);
 }
 
+button.toggleAnnotations{
+    border: 1px solid red;
+    background-color: white;
+    color:red;
+    width: 18px;
+    height: 18px;
+    -moz-border-radius:0px;
+    -webkit-border-radius:0px;
+    border-radius:0px;
+    font-size: 10px;
+}
+
 button.toggle.inactive{
     background-color:white;
+}
+button.toggleAnnotations.inactive{
+    background-color:white;
+    border: 1px solid lightgrey;
+    color: lightgrey;
 }
 
 div.state-info{
