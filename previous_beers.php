@@ -40,7 +40,7 @@
 	</div>
 	<div class="chart-container">
 		<div id="prev-beer-chart-label" class="beer-chart-label"></div>
-		<div id="prev-beer-chart" class="beer-chart"></div>
+		<div id="prev-beer-chart" class="beer-chart" style="width:800px; height:500px"></div>
 		<div id="prev-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
 			<button class="chart-help"></button>
 			<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)">

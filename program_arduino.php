@@ -91,10 +91,21 @@ else{
 $sock = open_socket();
 if($sock !== false){
     $cmd = "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"restoreSettings\":$restoreSettings, \"restoreDevices\":$restoreDevices}";
+	socket_set_timeout($sock, 120, 0); // set timeout to 2 minutes in case programming takes a while
 	socket_write($sock, $cmd, 1024);
 	// script will return 1 on success and 0 on failure. This blocks the post request until done
 	$programmingResult = socket_read($sock, 1024);
+	if(strlen($programmingResult)<1){
+		$programmingResult = 0;
+	}
 	socket_close($sock);
 }
 ?>
-<script type="text/javascript"> window.top.window.programmingDone()</script>
+<script type="text/javascript">
+	if(<?php echo $programmingResult?>){
+		window.top.window.programmingDone()
+	}
+	else{
+		window.top.window.programmingFailed()
+	}
+</script>

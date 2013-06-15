@@ -10,6 +10,7 @@ body {
 	color: #000;
 	font-family: Verdana, Arial, sans-serif;
 	width:980px;
+    font-size: 12px;
 }
 
 #top-bar button.script-status{
@@ -201,21 +202,19 @@ button#maintenance{
 	white-space: pre;
 }
 
+.ui-dialog,
+.ui-dialog .ui-dialog-content{
+    overflow: visible !important;
+}
+
 #maintenance-panel{
-    padding-left: 1px;
-    padding-right: 1px;
-    overflow:auto;
-    padding-bottom: 10px;
+    height: 700px!important;
 }
 
 #maintenance-panel ul.ui-tabs-nav li{
     margin: 2px;
     width: 180px;
     text-align: center;
-}
-
-#chart-help-popup{
-    overflow: auto;
 }
 
 #maintenance-panel ul.ui-tabs-nav li a{
@@ -237,6 +236,14 @@ button#maintenance{
     padding: 10px 10px;
     overflow: auto;
     font-family: "Courrier New", monospace;
+    float: left;
+    width: 98%;
+}
+
+#maintenance-panel ui-widget-content .ui-corner-all{
+    padding: 5px 0px;
+    float:left;
+    width: 98%;
 }
 
 #view-logs .console-box{
@@ -278,10 +285,7 @@ button#maintenance{
 
 
 #reprogram-arduino .console-box{
-    height: 400px;
-    float: left;
-    clear: both;
-    width: 100%;
+    height: 280px;
 }
 
 #reprogram-arduino h3{
@@ -294,20 +298,22 @@ button#maintenance{
     margin: 20px 60px;
 }
 
-
 #device-config .console-box{
     height: 100px;
-    margin: 10px;
+    width:97%;
+    float:none;
 }
 
 
 #maintenance-panel .device-list-container{
     width: 99%;
     margin: auto;
-    min-height: 200px;
+    height: 400px;
     overflow: auto;
 }
-
+#maintenance-panel .ui-widget-content .ui-widget-header{
+    margin: 5px 0px;
+}
 #maintenance-panel .device-list-container .header button{
     float: right;
 }
@@ -402,6 +408,20 @@ button#maintenance{
     clear: left;
 }
 
+#advanced-settings{
+}
+
+#control-settings-container{
+    height: 250px;
+    overflow:auto;
+}
+
+#control-constants-container{
+    height: 250px;
+    overflow:auto;
+}
+
+
 #maintenance-panel #beer-selector{
 	margin-bottom: 20px;
 }
@@ -410,15 +430,13 @@ button#maintenance{
 	margin-bottom: 5px;
 }
 
-
 #maintenance-panel .setting-container{
-	clear: both;
+    float: left;
+    clear: both;
 	padding:10px;
 	margin: 20px 15px;
-}
+    width: 90%;
 
-.ui-dialog{
-	overflow: auto;
 }
 
 #maintenance-panel .setting-container .setting-name{
@@ -433,48 +451,29 @@ button#maintenance{
 	float: left;
 	clear: both;
 	width: 710px;
-	margin-top: 30px;
-	margin-left: 25px;
-	margin-bottom: 30px;
 }
 
 #maintenance-panel .setting-container .explanation{
-	clear: left;
-	float:left;
+    float:left;
+    clear: left;
 	width: 320px;
 }
 
+#maintenance-panel .apply-button,
+#advanced-settings .send-button{
+    position: relative;
+    float: right;
+}
 
 #advanced-settings .setting-container select,
-#advanced-settings .setting-container input{
-	position: absolute;
-	float: left;
-	left: 400px;
-}
-
+#advanced-settings .setting-container input,
 #settings .setting-container select,
 #settings .setting-container input{
-	position: absolute;
+    position: relative;
 	float: left;
-	left: 300px;
+    left: 100px;
 }
 
-#maintenance-panel #settings-container{
-	height: 130px;
-}
-
-#maintenance-panel .apply-button{
-	position: absolute;
-	float: left;
-	left: 700px;
-}
-
-#advanced-settings .send-button{
-	position: absolute;
-	float: left;
-	left: 600px;
-	margin-top: 0;
-}
 
 #control-constants-container,
 #control-settings-container{

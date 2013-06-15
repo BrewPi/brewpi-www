@@ -25,13 +25,13 @@ $(document).ready(function(){
     "use strict";
 
     //Maintenance Panel
-	$('#maintenance-panel').tabs()
+	$('#maintenance-panel')
 	.dialog({
 		autoOpen: false,
 		title: 'Maintenance Panel',
 		height: 850,
 		width: 1000
-	});
+	}).tabs();
 
     // unhide after loading
     $("#maintenance-panel").css("visibility", "visible");
@@ -102,7 +102,7 @@ $(document).ready(function(){
     });
 
     $("button#auto-refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).unbind('click').click(function(){
-        startAutoRefreshLogs(5000, 1, 1, '#view-logs');
+        startRefreshLogs(5000, 1, 1);
         if($(this).hasClass('ui-state-default')){
             $(this).removeClass("ui-state-default").addClass("ui-state-error");
             $(this).find('.ui-button-text').text('Disable auto-refresh');
@@ -119,7 +119,7 @@ $(document).ready(function(){
     });
 
     $("input#program-submit-button").button({ icons: {primary: "ui-icon-arrowthickstop-1-n"}}).unbind('click').click(function(){
-        startAutoRefreshLogs(2000, 1, 0, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
+        startRefreshLogs(2000, 1, 0, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
         $("#program-stderr-header").text("Programming... keep an eye on the output below to see the progress.");
     });
 });
@@ -187,32 +187,30 @@ function refreshLogs(refreshStdOut, refreshStdErr){
     );
 }
 
-var autoRefreshLogsInterval;
-function startAutoRefreshLogs(refreshTime, refreshStdErr, refreshStdOut, tab){
+var refreshLogsInterval;
+function startRefreshLogs(refreshTime, refreshStdErr, refreshStdOut){
     "use strict";
-    if(typeof(window.autoRefreshLogsInterval)!=='undefined'){
+    if(typeof(window.refreshLogsInterval)!=='undefined'){
         // Clear existing timers
-        window.clearInterval(window.autoRefreshLogsInterval);
+        window.clearInterval(window.refreshLogsInterval);
     }
     // refresh logs immediately
     refreshLogs(refreshStdErr,refreshStdOut);
     // set interval to start auto refreshing
-    autoRefreshLogsInterval = window.setInterval(function(){ autoRefreshLogs(refreshStdErr, refreshStdOut, tab);}, refreshTime);
+    refreshLogsInterval = window.setInterval(function(){ refreshLogs(refreshStdErr, refreshStdOut);}, refreshTime);
 }
 
-function autoRefreshLogs(refreshStdErr, refreshStdOut, tab){
+// stop auto refreshing logs when switching to a different tab
+$("#maintenance-panel" ).on( "tabsactivate", function( event, ui ) {
     "use strict";
-    if($(tab).hasClass('ui-tabs-hide')){
-        // clear interval when switched to a different tab
-        window.clearInterval(autoRefreshLogsInterval);
-        // reset button on view logs tab
-        $('button#auto-refresh-logs').removeClass("ui-state-error").addClass("ui-state-default")
-                                     .find('.ui-button-text').text('Enable auto-refresh');
+    if(typeof(window.refreshLogsInterval)!=='undefined'){
+        // Clear existing timers
+        window.clearInterval(window.autoRefreshLogsInterval);
     }
-    else{
-        refreshLogs(refreshStdOut, refreshStdErr); // refresh log
-    }
-}
+    $('button#auto-refresh-logs').removeClass("ui-state-error").addClass("ui-state-default")
+        .find('.ui-button-text').text('Enable auto-refresh');
+} );
+
 
 // Functions that are called in the programArduino.php file:
 

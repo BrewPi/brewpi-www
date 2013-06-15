@@ -33,7 +33,7 @@
 </div>
 <div class="chart-container">
     <div id="curr-beer-chart-label" class="beer-chart-label"></div>
-    <div id="curr-beer-chart" class="beer-chart"></div>
+    <div id="curr-beer-chart" class="beer-chart" style="width:900px; height:390px"></div>
 	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
 		<button id="refresh-curr-beer-chart"></button>
 		<button class="chart-help"></button>

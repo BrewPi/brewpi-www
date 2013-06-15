@@ -1,18 +1,13 @@
-.chart-container {
-    height:500px;
-    width:960px;
-}
-
 #curr-beer-chart {
-    width: 900px;
-    height:390px;
     float: left;
 }
 
 #prev-beer-chart {
-    width: 900px;
-    height:390px;
     float: left;
+}
+
+.beer-chart{
+    margin: 10px 0px;
 }
 
 .dygraph-legend {
@@ -34,6 +29,7 @@
 .beer-chart-controls {
     display: block;
     float: right;
+    margin-right: 15px;
 }
 
 .beer-chart-controls button{

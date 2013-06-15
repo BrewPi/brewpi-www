@@ -97,19 +97,19 @@ function loadControlPanel(){
         var $controlPanel = $('#control-panel');
 		switch(window.controlSettings.mode){
 			case 'p':
-                $controlPanel.tabs( "select" , 0);
+                $controlPanel.tabs( "option", "active", 0);
 				statusMessage("normal","Running in beer profile mode");
 				break;
 			case 'b':
-                $controlPanel.tabs( "select" , 1);
+                $controlPanel.tabs( "option", "active", 1);
 				statusMessage("normal","Running in beer constant mode");
 				break;
 			case 'f':
-                $controlPanel.tabs( "select" , 2);
+                $controlPanel.tabs( "option", "active", 2);
 				statusMessage("normal","Running in fridge constant mode");
 				break;
 			case 'o':
-                $controlPanel.tabs( "select" , 3);
+                $controlPanel.tabs( "option", "active", 3);
 				statusMessage("normal","Temperature control disabled");
 				break;
 			default:
@@ -150,28 +150,31 @@ function tempDown(temp){
 function applySettings(){
 	"use strict";
 	//Check which tab is open
-	if($("#profile-control").hasClass('ui-tabs-hide') === false){
-        // upload profile to pi
-        $.post('socketmessage.php', {messageType: "uploadProfile", message: ""}, function(answer){
-           if(answer !==''){
-               statusMessage("highlight", answer);
-           }
-        });
-        // set mode to profile
-        $.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
-	}
-	else if($("#beer-constant-control").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
-		statusMessage("highlight","Mode set to beer constant");
-	}
-	else if($("#fridge-constant-control").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setFridge", message: String(window.fridgeTemp)}, function(){});
-		statusMessage("highlight","Mode set to fridge constant");
-	}
-	else if($("#temp-control-off").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setOff", message: ""}, function(){});
-		statusMessage("highlight","Temperature control disabled");
-	}
+    var activeTab = $("#control-panel").tabs("option", "active");
+    switch(activeTab){
+        case 0: // profile
+            // upload profile to pi
+            $.post('socketmessage.php', {messageType: "uploadProfile", message: ""}, function(answer){
+                if(answer !==''){
+                    statusMessage("highlight", answer);
+                }
+            });
+            // set mode to profile
+            $.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
+        break;
+        case 1: // beer constant
+            $.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
+            statusMessage("highlight","Mode set to beer constant");
+        break;
+        case 2: // fridge constant
+            $.post('socketmessage.php', {messageType: "setFridge", message: String(window.fridgeTemp)}, function(){});
+            statusMessage("highlight","Mode set to fridge constant");
+        break;
+        case 3: // off
+            $.post('socketmessage.php', {messageType: "setOff", message: ""}, function(){});
+            statusMessage("highlight","Temperature control disabled");
+        break;
+    }
 	setTimeout(loadControlPanel,5000);
 }
 
