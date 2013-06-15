@@ -1,8 +1,8 @@
 @import url('dygraph.css');
 
 @font-face {
-    font-family: 'CPMono_v07_Plain';
-    src: url('../font/CPMono_v07_Plain.otf');
+    font-family: 'CPMono_v07_Plain' monospace;
+    src: url('../font/CPMono_v07_Plain.otf') format('opentype');
 }
 
 body {
@@ -109,7 +109,7 @@ button#maintenance{
 }
 
 .temperature {
-	font-family: 'CPMono_v07_Plain', sans-serif !important;
+	font-family: 'CPMono_v07_Plain', monospace !important;
 	font-size: 5em !important;
 	border: 0;
 	float: left;
@@ -124,7 +124,7 @@ button#maintenance{
 	float: right;
 }
 .degree{
-	font-family: 'CPMono_v07_Plain', sans-serif;
+	font-family: 'CPMono_v07_Plain', monospace;
 	font-size: 2em;
 	float: right;
 	clear: right;
