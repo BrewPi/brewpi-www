@@ -178,16 +178,12 @@ function applySettings(){
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
-	$('#control-panel').tabs();
-
-	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
+		$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
 		drawProfileChart();
 		drawProfileTable();
 	});
-    // unhide after loading
-    $("#control-panel").css("visibility", "visible");
 
-	$("button#edit-controls").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
+    $("button#edit-controls").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
 		window.open("https://docs.google.com/spreadsheet/ccc?key=" + window.googleDocsKey);
 	});
 
@@ -232,87 +228,98 @@ $(document).ready(function(){
 
 	//Constant temperature control buttons
 	$("button#beer-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"} }).bind({
-		mousedown: function(){
-			window.beerTemp=tempUp(window.beerTemp);
-			$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
-			window.beerTempUpTimeOut = window.setInterval(function(){
-				window.beerTemp=tempUp(window.beerTemp);
-				$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(window.beerTempUpTimeOut)!=='undefined'){
-				clearInterval(window.beerTempUpTimeOut);
-			}
-		},
-		mouseleave: function(){
-			if(typeof(window.beerTempUpTimeOut)!=='undefined'){
-				clearInterval(window.beerTempUpTimeOut);
-			}
-		}
+		mousedown: startBeerTempUpInterval,
+		mouseup: clearBeerTempUpInterval,
+		mouseleave: clearBeerTempUpInterval
 	});
 
 	$("button#beer-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"} }).bind({
-		mousedown: function() {
-			window.beerTemp=tempDown(window.beerTemp);
-			$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
-			window.beerTempDownTimeOut = window.setInterval(function(){
-				window.beerTemp=tempDown(window.beerTemp);
-				$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(window.beerTempDownTimeOut)!=='undefined'){
-				clearInterval(window.beerTempDownTimeOut);
-			}
-		},
-		mouseleave: function(){
-			if(typeof(window.beerTempDownTimeOut)!=='undefined'){
-				clearInterval(window.beerTempDownTimeOut);
-			}
-		}
+		mousedown: startBeerTempDownInterval,
+		mouseup: clearBeerTempDownInterval,
+		mouseleave: clearBeerTempDownInterval
 	});
 
 	//Constant fridge temperature control buttons
 	$("button#fridge-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"}	}).bind({
-		mousedown: function() {
-			window.fridgeTemp=tempUp(window.fridgeTemp);
-			$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
-			window.fridgeTempUpTimeOut = window.setInterval(function(){
-				window.fridgeTemp=tempUp(window.fridgeTemp);
-				$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(window.fridgeTempUpTimeOut)!=='undefined'){
-				clearInterval(window.fridgeTempUpTimeOut);
-			}
-		},
-		mouseleave: function(){
-			if(typeof(window.fridgeTempUpTimeOut)!=='undefined'){
-				clearInterval(window.fridgeTempUpTimeOut);
-			}
-		}
+		mousedown: startFridgeTempUpInterval,
+		mouseup: clearFridgeTempUpInterval,
+		mouseleave: clearFridgeTempUpInterval
 	});
 
 	$("button#fridge-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"}	}).bind({
-		mousedown: function() {
-			window.fridgeTemp=tempDown(window.fridgeTemp);
-			$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
-			window.fridgeTempDownTimeOut = window.setInterval(function(){
-				window.fridgeTemp=tempDown(window.fridgeTemp);
-				$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(window.fridgeTempDownTimeOut)!=='undefined'){
-				clearInterval(window.fridgeTempDownTimeOut);
-			}
-		},
-		mouseleave: function(){
-			if(typeof(window.fridgeTempDownTimeOut)!=='undefined'){
-				clearInterval(window.fridgeTempDownTimeOut);
-			}
-		}
+		mousedown: startFridgeTempDownInterval,
+		mouseup: clearFridgeTempDownInterval,
+		mouseleave: clearFridgeTempDownInterval
 	});
+    $('#control-panel').tabs();
+    // unhide after loading
+    $("#control-panel").css("visibility", "visible");
 });
+
+function startFridgeTempUpInterval(){
+    "use strict";
+    window.fridgeTemp=tempUp(window.fridgeTemp);
+    $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    window.fridgeTempUpTimeOut = window.setInterval(function(){
+        window.fridgeTemp=tempUp(window.fridgeTemp);
+        $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    }, 100);
+}
+
+function clearFridgeTempUpInterval(){
+    "use strict";
+    if(typeof(window.fridgeTempUpTimeOut)!=='undefined'){
+        clearInterval(window.fridgeTempUpTimeOut);
+    }
+}
+
+function startFridgeTempDownInterval(){
+    "use strict";
+    window.fridgeTemp=tempDown(window.fridgeTemp);
+    $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    window.fridgeTempDownTimeOut = window.setInterval(function(){
+        window.fridgeTemp=tempDown(window.fridgeTemp);
+        $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    }, 100);
+}
+
+function clearFridgeTempDownInterval(){
+    "use strict";
+    if(typeof(window.fridgeTempDownTimeOut)!=='undefined'){
+        clearInterval(window.fridgeTempDownTimeOut);
+    }
+}
+
+function startBeerTempUpInterval(){
+    "use strict";
+    window.beerTemp=tempUp(window.beerTemp);
+    $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    window.beerTempUpTimeOut = window.setInterval(function(){
+        window.beerTemp=tempUp(window.beerTemp);
+        $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    }, 100);
+}
+
+function clearBeerTempUpInterval(){
+    "use strict";
+    if(typeof(window.beerTempUpTimeOut)!=='undefined'){
+        clearInterval(window.beerTempUpTimeOut);
+    }
+}
+
+function startBeerTempDownInterval(){
+    "use strict";
+    window.beerTemp=tempDown(window.beerTemp);
+    $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    window.beerTempDownTimeOut = window.setInterval(function(){
+        window.beerTemp=tempDown(window.beerTemp);
+        $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    }, 100);
+}
+
+function clearBeerTempDownInterval(){
+    "use strict";
+    if(typeof(window.beerTempDownTimeOut)!=='undefined'){
+        clearInterval(window.beerTempDownTimeOut);
+    }
+}
