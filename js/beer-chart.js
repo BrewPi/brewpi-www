@@ -225,8 +225,16 @@ function drawBeerChart(beerToDraw, div){
 	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer) {
 		var combinedJson = {};
 		var first = true;
-		var files = $.parseJSON(answer);
-		if(typeof files === 'undefined'){
+        var files = [];
+		try{
+            files = $.parseJSON(answer);
+        }
+        catch (e){
+            $("#"+div).html("<span style=\"padding:100px;\">Could not receive files for beer, did you just start it?</span>");
+            return;
+        }
+
+        if(typeof files === 'undefined' || files === []){
             return;
         }
 		for(var i=0;i<files.length;i++){
@@ -240,7 +248,14 @@ function drawBeerChart(beerToDraw, div){
 				// skip empty responses
 				continue;
 			}
-            var parsedJsonData = $.parseJSON(jsonData);
+            var parsedJsonData;
+            try{
+                parsedJsonData = $.parseJSON(jsonData);
+            }
+            catch (e){
+                alert("error in JSON of file '" + fileLocation + "'. Skipping file.");
+                continue;
+            }
 			if(first){
 				combinedJson = parsedJsonData;
 				first = false;

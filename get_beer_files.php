@@ -21,9 +21,13 @@
 	$beerName = $_POST["beername"];
 	$fileNames = array();
   	$currentBeerDir = 'data/' . $beerName;
+	if(!file_exists($currentBeerDir)){
+		echo "directory does not exist";
+		return;
+	}
   	$handle = opendir($currentBeerDir);
   	if($handle == false){
-  		die("Cannot retrieve beer files directory: " . $currentBeerDir);
+	    die("Cannot retrieve beer files directory: " . $currentBeerDir);
   	}
   	$first = true;
   	$i=0;
