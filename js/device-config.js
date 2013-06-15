@@ -215,10 +215,15 @@ function addDeviceToDeviceList(device, pinList, addManual){
     }
 
     if((typeof device.a !== "undefined") ){
+        var address = device.a;
+        if(parseInt(address,10) === 0){
+            // device is configured as first device on bus. Address is 16 zeros.
+            address = "First on bus";
+        }
         $settings.append(generateDeviceSettingContainer(
             "OneWire Address",
             "onewire-address",
-            "<span class='onewire-address device-setting'>" + device.a + "</span>"));
+            "<span class='onewire-address device-setting'>" + address + "</span>"));
     }
 
     var pinSpec;
