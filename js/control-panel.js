@@ -286,8 +286,14 @@ $(document).ready(function(){
 function startFridgeTempUpInterval(){
     "use strict";
     clearFridgeTempUpInterval();
-    window.fridgeTemp=tempUp(window.fridgeTemp);
-    $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    var $fridgeTemp = $("#fridge-temp").find("input.temperature");
+    if($fridgeTemp.find(":focus")){
+        window.fridgeTemp = tempUp(parseFloat($fridgeTemp.val()));
+    }
+    else{
+        window.fridgeTemp = tempUp(window.fridgeTemp);
+    }
+    $fridgeTemp.val(window.fridgeTemp.toFixed(1));
     window.fridgeTempUpTimeOut = window.setInterval(function(){
         window.fridgeTemp=tempUp(window.fridgeTemp);
         $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
@@ -304,8 +310,14 @@ function clearFridgeTempUpInterval(){
 function startFridgeTempDownInterval(){
     "use strict";
     clearFridgeTempDownInterval();
-    window.fridgeTemp=tempDown(window.fridgeTemp);
-    $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    var $fridgeTemp = $("#fridge-temp").find("input.temperature");
+    if($fridgeTemp.find(":focus")){
+        window.fridgeTemp = tempDown(parseFloat($fridgeTemp.val()));
+    }
+    else{
+        window.fridgeTemp = tempDown(window.fridgeTemp);
+    }
+    $fridgeTemp.val(window.fridgeTemp.toFixed(1));
     window.fridgeTempDownTimeOut = window.setInterval(function(){
         window.fridgeTemp=tempDown(window.fridgeTemp);
         $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
@@ -322,8 +334,14 @@ function clearFridgeTempDownInterval(){
 function startBeerTempUpInterval(){
     "use strict";
     clearBeerTempUpInterval();
-    window.beerTemp=tempUp(window.beerTemp);
-    $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    var $beerTemp = $("#beer-temp").find("input.temperature");
+    if($beerTemp.find(":focus")){
+        window.beerTemp = tempUp(parseFloat($beerTemp.val()));
+    }
+    else{
+        window.beerTemp = tempUp(window.beerTemp);
+    }
+    $beerTemp.val(window.beerTemp.toFixed(1));
     window.beerTempUpTimeOut = window.setInterval(function(){
         window.beerTemp=tempUp(window.beerTemp);
         $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
@@ -340,8 +358,14 @@ function clearBeerTempUpInterval(){
 function startBeerTempDownInterval(){
     "use strict";
     clearBeerTempDownInterval();
-    window.beerTemp=tempDown(window.beerTemp);
-    $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    var $beerTemp = $("#beer-temp").find("input.temperature");
+    if($beerTemp.find(":focus")){
+        window.beerTemp = tempDown(parseFloat($beerTemp.val()));
+    }
+    else{
+        window.beerTemp = tempDown(window.beerTemp);
+    }
+    $beerTemp.val(window.beerTemp.toFixed(1));
     window.beerTempDownTimeOut = window.setInterval(function(){
         window.beerTemp=tempDown(window.beerTemp);
         $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
