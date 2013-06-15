@@ -341,13 +341,13 @@
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Use light as heater</span> <?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
-			<span class="explanation">The fridge slope filter is not used in the current version.</span>
+			<span class="setting-name">Use light as heater</span><?php echoYesNoSelect("lah") ?>
+			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater..</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge slope filter delay time</span> <?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
-			<span class="explanation">The fridge slope filter is not used in the current version.</span>
+			<span class="setting-name">Trigger rotary encoder at every ...</span> <?php echoRotarySelect("hs") ?>
+			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step.</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 	</div>
@@ -409,6 +409,19 @@ function echoSlopeFilterSelect($filterName){
 	echo "<option value=4>  31.8 minutes</option>"; // a=12,	b=4,	delay time = 53
 	echo "<option value=5>  63.6 minutes</option>"; // a=14,	b=5,	delay time = 106
 	echo "<option value=6> 127.8 minutes</option>"; // a=16,	b=6,	delay time = 213
+	echo "</select>";
+}
+
+function echoYesNoSelect($optionName){
+	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
+	echo "<option value=1> Yes</option>";
+	echo "<option value=0>  No</option>";
+	echo "</select>";
+}
+function echoRotarySelect($optionName){
+	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
+	echo "<option value=0> Full step</option>";
+	echo "<option value=1> Half step</option>";
 	echo "</select>";
 }
 ?>
