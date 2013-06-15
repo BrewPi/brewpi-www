@@ -51,11 +51,7 @@
     margin-left: -2px; /* fix centering of icon for small button */
 }
 
-button.toggle-line-0,
-button.toggle-line-1,
-button.toggle-line-2,
-button.toggle-line-3,
-button.toggle-line-4{
+button.toggle{
     width: 20px;
     height: 20px;
     -moz-border-radius:24px;
@@ -64,54 +60,55 @@ button.toggle-line-4{
     display:block;
 }
 
-button.toggle-line-0{
+button.toggle.beerTemp{
     background-color:rgba(41, 170, 41, 0.5);
     border:1px solid rgba(41, 170, 41, 1);
     margin-top: 30px;
 }
-button.toggle-line-0:hover{
+button.toggle.beerTemp:hover{
     border:2px solid rgba(41, 170, 41, 1);
 }
 
 
-button.toggle-line-1{
+button.toggle.beerSet{
     background-color:rgba(240, 100, 100, 0.5);
     border:1px solid rgba(240, 100, 100, 1);
 }
-button.toggle-line-1:hover{
+button.toggle.beerSet:hover{
     border:2px solid rgba(240, 100, 100, 1);
 }
 
-button.toggle-line-2{
+button.toggle.fridgeTemp{
     background-color:rgba(89, 184, 255, 0.5);
     border:1px solid rgba(89, 184, 255, 1);
 }
-button.toggle-line-2:hover{
+button.toggle.fridgeTemp:hover{
     border:2px solid rgba(89, 184, 255, 1);
 }
 
 
-button.toggle-line-3{
+button.toggle.fridgeSet{
     background-color:rgba(255, 161, 76, 0.5);
     border:1px solid rgba(255, 161, 76, 1);
 }
-button.toggle-line-3:hover{
+button.toggle.fridgeSet:hover{
     border:2px solid rgba(255, 161, 76, 1);
 }
 
-button.toggle-line-4{
+button.toggle.roomTemp{
     background-color:rgba(170, 170, 170, 0.5);
     border:1px solid rgba(170, 170, 170, 1);
 }
-button.toggle-line-4:hover{
+button.toggle.roomTemp:hover{
     border:2px solid rgba(170, 170, 170, 1);
 }
 
-div.staate-info{
-    display: block;
+button.toggle.inactive{
+    background-color:white;
 }
 
 div.state-info{
+    display: block;
     margin-top: 10px;
 }
 

@@ -132,7 +132,7 @@ function refreshLcd(){
 			for (var i = lcdText.length - 1; i >= 0; i--) {
 				$lcdText.find('#lcd-line-' + i).html(lcdText[i]);
 			}
-		}
+        }
 		catch(e)
 		{
             $lcdText.find('#lcd-line-0').html("Cannot receive");

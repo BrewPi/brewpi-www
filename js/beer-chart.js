@@ -18,7 +18,7 @@
  */
 
 /* jshint jquery:true */
-/* global controlSettings, tempFormat, beername, Dygraph, google, CanvasRenderingContext2D */
+/* global console, controlSettings, tempFormat, beername, Dygraph, google, CanvasRenderingContext2D */
 
 var currBeerChart;
 var prevBeerChart;
@@ -32,6 +32,12 @@ var colorHeatingMinTime = "rgba(255, 0, 0, 0.6)";
 var colorCoolingMinTime = "rgba(0, 0, 255, 0.6)";
 var colorWaitingPeakDetect = "rgba(0, 0, 0, 0.2)";
 
+var lineNames = {
+    beerTemp: 'Beer temperature',
+    beerSet: 'Beer setting',
+    fridgeTemp: 'Fridge temperature',
+    fridgeSet: 'Fridge setting',
+    roomTemp: 'Room temp.'};
 
 var TIME_COLUMN = 0;        // time is the first column of data
 var STATE_COLUMN = 6;       // state is currently the 6th column of data.
@@ -299,59 +305,62 @@ function drawBeerChart(beerToDraw, div){
         var $chartContainer = $('#'+ div).parent();
         $chartContainer.find('.beer-chart-controls').css('visibility','visible');
 
-        for(var line = 0; line <= 4; line++){
-            var $toggleButton = $chartContainer.find('button.toggle-line-' + line.toString());
-            var names = ['Beer temperature', 'Beer setting', 'Fridge temperature', 'Fridge setting', 'Room temp.'];
-            if(beerChart.getPropertiesForSeries(names[line])===null){
-                // series does not exist
-                $toggleButton.css('display', 'none');
-                // beerChart.setVisibility(line, false); // hides the legend on top of the graph
-            }
-        }
-        if(div === 'curr-beer-chart'){
+        if(div.localeCompare('curr-beer-chart')===0){
             currBeerChart = beerChart;
-            var $chartControls = $('#curr-beer-chart-controls');
-            if(controlSettings.mode !== 'f'){
-                toggleLine($chartControls.find('button.toggle-line-3').get(0));
-            }
-            toggleLine($chartControls.find('button.toggle-line-4').get(0)); // hide room temp by default
         }
-        else if(div === 'prev-beer-chart'){
+        else if(div.localeCompare('prev-beer-chart')===0){
             prevBeerChart = beerChart;
         }
-    }
-    );
+
+        // hide buttons for lines that are not in the chart
+        for (var key in lineNames){
+            var $button = $chartContainer.find('button.toggle.'+key);
+            if(beerChart.getPropertiesForSeries(lineNames[key])===null){
+                $button.css('display', 'none');
+            }
+            else{
+                updateVisibility(key, $button);
+            }
+        }
+    });
 }
 
 function toggleLine(el) {
     "use strict";
     var $el = $(el);
-    var $chart = $el.closest('.chart-container').find('.beer-chart');
+    $el.toggleClass('inactive');
+    // get line name from classes
+    var classString = $el.attr('class');
+    var classList = classString.split(/\s+/);
+    for (var i in classList){
+        if (classList[i] in lineNames){
+            break;
+        }
+    }
+    updateVisibility(classList[i], $el);
+}
+
+function updateVisibility(lineName, $button){
+    "use strict";
+    var $chart = $button.closest('.chart-container').find('.beer-chart');
     var chartId = $chart.attr('id');
     var chart;
-    if(chartId === 'curr-beer-chart'){
+    if(chartId.localeCompare('curr-beer-chart')===0){
         chart = currBeerChart;
     }
-    else  if(chartId === 'prev-beer-chart'){
+    else  if(chartId.localeCompare('prev-beer-chart')===0){
         chart = prevBeerChart;
     }
-    var lineNumber = $el.attr('class').split("line-")[1]; // id = line-n
-    var visibilityAllLines = chart.visibility();
-    var visibilityThisLine = visibilityAllLines[lineNumber];
-    var colorString = $el.css('background-color');
-    var colors = colorString.split(/[,()]+/);
-    var r = colors[1]; var g = colors[2]; var b = colors[3];
-    var newColor;
-    visibilityThisLine = !visibilityThisLine; // toggle visibility
-
-    if(visibilityThisLine){
-        newColor = 'rgba(' + r + ',' + g + ',' + b + ',' + '0.5)';
+    else{
+        console.log("cannot find chart with id " + chartId);
+        return;
+    }
+    if($button.hasClass("inactive")){
+        chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, false);
     }
     else{
-        newColor = 'rgba(' + r + ',' + g + ',' + b + ',' + '0.01)'; // cannot set a to zero, causes color info to be lost
+        chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, true);
     }
-    $el.css('background-color', newColor);
-    chart.setVisibility(lineNumber, visibilityThisLine);
 }
 
 function applyStateColors(){
@@ -367,6 +376,7 @@ function applyStateColors(){
 }
 
 $(document).ready(function(){
+    "use strict";
     $("button#refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
         drawBeerChart(window.beerName, 'curr-beer-chart');
     });

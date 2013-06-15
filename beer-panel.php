@@ -37,11 +37,11 @@
 	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
 		<button id="refresh-curr-beer-chart"></button>
 		<button class="chart-help"></button>
-		<button class="toggle-line-0" title="Beer temperature" onClick="toggleLine(this)">
-		<button class="toggle-line-1" title="Beer setting" onClick="toggleLine(this)">
-		<button class="toggle-line-2" title="Fridge temperature" onClick="toggleLine(this)">
-		<button class="toggle-line-3" title="Fridge setting" onClick="toggleLine(this)">
-		<button class="toggle-line-4" title="Room temperature" onClick="toggleLine(this)">
+		<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)">
+		<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)">
+		<button class="toggle fridgeTemp" title="Fridge temperature" onClick="toggleLine(this)">
+		<button class="toggle fridgeSet" title="Fridge setting" onClick="toggleLine(this)">
+		<button class="toggle roomTemp" title="Room temperature" onClick="toggleLine(this)">
 	</div>
 </div>
 <div id="chart-help-popup" title="Beer graph help" style="visibility: hidden">
