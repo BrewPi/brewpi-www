@@ -114,12 +114,12 @@ $(document).ready(function(){
     });
 
     $("#erase-logs").button({ icons: {primary: "ui-icon-trash"}	}).unbind('click').click(function(){
-        $.get('erase_logs.php');
-        $('#maintenance-panel').tabs( "load" , 1);
+        $.post('socketmessage.php', {messageType: "eraseLogs", message: ""});
+        refreshLogs(1,1);
     });
 
     $("input#program-submit-button").button({ icons: {primary: "ui-icon-arrowthickstop-1-n"}}).unbind('click').click(function(){
-        startRefreshLogs(2000, 1, 0, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
+        startRefreshLogs(2000, 0, 1, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
         $("#program-stderr-header").text("Programming... keep an eye on the output below to see the progress.");
     });
 });
@@ -135,8 +135,8 @@ function refreshLogs(refreshStdOut, refreshStdErr){
                     var div = $(this)[0];
                     var scrolledDown = false;
                     // check if div is scrolled down
-                    if(div.scrollTop === div.scrollHeight){
-                        scrolledDown = true; // if already at bottom
+                    if((div.scrollTop - div.scrollHeight) < 40 && (div.scrollTop - div.scrollHeight) > -40){
+                        scrolledDown = true; // if already near bottom
                     }
                     var wasEmpty = false;
                     if($(this).text().length<40){
@@ -162,8 +162,8 @@ function refreshLogs(refreshStdOut, refreshStdErr){
                     var div = $(this)[0];
                     var scrolledDown = false;
                     // check if div is scrolled down
-                    if(div.scrollTop === div.scrollHeight){
-                        scrolledDown = true; // if already at bottom
+                    if((div.scrollTop - div.scrollHeight) < 40 && (div.scrollTop - div.scrollHeight) > -40){
+                        scrolledDown = true; // if already near bottom
                     }
                     var wasEmpty = false;
                     if($(this).text().length<40){
@@ -171,8 +171,8 @@ function refreshLogs(refreshStdOut, refreshStdErr){
                         wasEmpty = true;
                     }
 
-                    if(response.stderr){
-                        $(this).html(response.stderr);
+                    if(response.stdout){
+                        $(this).html(response.stdout);
                     }
                     else{
                         $(this).html("");
@@ -188,16 +188,16 @@ function refreshLogs(refreshStdOut, refreshStdErr){
 }
 
 var refreshLogsInterval;
-function startRefreshLogs(refreshTime, refreshStdErr, refreshStdOut){
+function startRefreshLogs(refreshTime, refreshStdOut, refreshStdErr){
     "use strict";
     if(typeof(window.refreshLogsInterval)!=='undefined'){
         // Clear existing timers
         window.clearInterval(window.refreshLogsInterval);
     }
     // refresh logs immediately
-    refreshLogs(refreshStdErr,refreshStdOut);
+    refreshLogs(refreshStdOut,refreshStdErr);
     // set interval to start auto refreshing
-    refreshLogsInterval = window.setInterval(function(){ refreshLogs(refreshStdErr, refreshStdOut);}, refreshTime);
+    refreshLogsInterval = window.setInterval(function(){ refreshLogs(refreshStdOut, refreshStdErr);}, refreshTime);
 }
 
 // stop auto refreshing logs when switching to a different tab

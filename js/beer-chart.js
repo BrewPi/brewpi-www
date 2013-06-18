@@ -337,6 +337,9 @@ function drawBeerChart(beerToDraw, div){
                 updateVisibility(key, $button);
             }
         }
+        if($(div + " .toggleAnnotations ").hasClass("inactive")){
+            $(beerChart).find('.dygraphDefaultAnnotation').css('visibility', 'hidden');
+        }
     });
 }
 
