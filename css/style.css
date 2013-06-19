@@ -1,6 +1,8 @@
+@import url('dygraph.css');
+
 @font-face {
-    font-family: 'CPMono_v07_Plain';
-    src: url('../font/CPMono_v07_Plain.otf');
+    font-family: 'CPMono_v07_Plain' monospace;
+    src: url('../font/CPMono_v07_Plain.otf') format('opentype');
 }
 
 body {
@@ -8,6 +10,7 @@ body {
 	color: #000;
 	font-family: Verdana, Arial, sans-serif;
 	width:980px;
+    font-size: 12px;
 }
 
 #top-bar button.script-status{
@@ -24,18 +27,6 @@ button#maintenance{
 	float: right;
 	clear:right;
 	margin: 10px 10px 10px 10px;
-}
-
-button#refresh-beer-chart{
-	height: 20px;
-	width: 20px;
-	margin: 5px;
-	float: right;
-}
-
-button#refresh-beer-chart span.ui-icon{
-	top:8px;
-	left:0;
 }
 
 /* Control Panel */
@@ -100,51 +91,41 @@ button#refresh-beer-chart span.ui-icon{
 	float: left;
 }
 
-#beer-chart{
-	/*width:960px;
-	height:400px;*/ /*replaced by inline */
-	padding: 5px;
-	float: left;
-}
-
-#prev-beer-chart{
-	/*width:960px;
-	height:400px;*/ /*replaced by inline */
-	padding: 5px;
-	float: left;
-}
-
 #beer-panel{
 	width: 980px;
-	height: 540px;
 	margin-bottom: 10px;
+    float:left;
 }
 
 #top-bar{
 	width: 968px;
-	height: 104px;
 	margin: 5px;
+    float:left;
 }
 
 #control-panel{
 	width: 976px;
-	height: 350px;
-	overflow:auto;
+    min-height: 360px;
+    float: left;
 }
 
-.temperature{
-	font-family: 'CPMono_v07_Plain', sans-serif;
-	font-size: 5em;
-	float: right;
+.temperature {
+	font-family: 'CPMono_v07_Plain', monospace !important;
+	font-size: 5em !important;
+	border: 0;
+	float: left;
+	margin-left: 10px;
+	width: 175px;
 }
 .temp-container{
 	width: 175px;
-	float: left;
 }
 
-
+.temperature-controls {
+	float: right;
+}
 .degree{
-	font-family: 'CPMono_v07_Plain', sans-serif;
+	font-family: 'CPMono_v07_Plain', monospace;
 	font-size: 2em;
 	float: right;
 	clear: right;
@@ -215,16 +196,231 @@ button#refresh-beer-chart span.ui-icon{
 	clear:left;
 	font-size: 16px;
 	font-weight: normal;
-	font-style: normal;	
+	font-style: normal;
 	font-family: '5x8LCDHD44780UA02Regular';
 	color: #FFFF00;
 	white-space: pre;
 }
 
-#maintenance-panel{
-    padding-left: 1px;
-    padding-right: 1px;
+.ui-dialog,
+.ui-dialog .ui-dialog-content{
+    overflow: visible !important;
 }
+
+#maintenance-panel{
+    height: 700px!important;
+}
+
+#maintenance-panel ul.ui-tabs-nav li{
+    margin: 2px;
+    width: 180px;
+    text-align: center;
+}
+
+#maintenance-panel ul.ui-tabs-nav li a{
+    width: inherit;
+    padding-left: 0;
+}
+
+#maintenance-panel ul.ui-tabs-nav li:nth-child(6n) {
+    clear: left;
+}
+
+.console-box{
+    width: inherit;
+    background: black;
+    color:#bbbbbb;
+    border-color:#ADD6FF;
+    border-style:ridge;
+    border-width:5px;
+    padding: 10px 10px;
+    overflow: auto;
+    font-family: "Courrier New", monospace;
+    float: left;
+    width: 98%;
+}
+
+#maintenance-panel ui-widget-content .ui-corner-all{
+    padding: 5px 0px;
+    float:left;
+    width: 98%;
+}
+
+#view-logs .console-box{
+    height: 240px;
+}
+
+#view-logs h3{
+    margin: 10px 40px;
+}
+
+#view-logs button{
+    float: right;
+}
+#view-logs button:first-child{
+    margin-right: 40px;
+}
+
+#reprogram-arduino p{
+    padding: 0px 10px;
+}
+
+#program-container{
+    padding: 0 40px;
+    float: left;
+}
+
+#reprogram-arduino #program-options{
+    float: left;
+}
+
+#reprogram-arduino .program-option{
+    margin: 20px 0px;
+}
+
+#reprogram-arduino .program-option label{
+    width: 350px;
+    float: left;
+}
+
+
+#reprogram-arduino .console-box{
+    height: 280px;
+}
+
+#reprogram-arduino h3{
+    float: left;
+    clear: both;
+}
+
+#reprogram-arduino #program-submit-button{
+    float:right;
+    margin: 20px 60px;
+}
+
+#device-config .console-box{
+    height: 100px;
+    width:97%;
+    float:none;
+}
+
+
+#maintenance-panel .device-list-container{
+    width: 99%;
+    margin: auto;
+    height: 400px;
+    overflow: auto;
+}
+#maintenance-panel .ui-widget-content .ui-widget-header{
+    margin: 5px 0px;
+}
+#maintenance-panel .device-list-container .header button{
+    float: right;
+}
+
+#maintenance-panel .device-list-container .spinner-position{
+    position:absolute;
+    top:350px;
+    left:50%;
+}
+
+#maintenance-panel .device-list span.device-list-header{
+    display: block;
+    float: left;
+    clear: both;
+    margin: 10px 40px;
+    font-size: 1.5em;
+}
+
+#maintenance-panel .device-list span.device-list-empty-text{
+    display: block;
+    float: left;
+    clear: both;
+    margin: 10px 40px;
+}
+
+#maintenance-panel .device-list span.setting-name{
+    display: block;
+    float: left;
+    font-weight: bold;
+}
+
+#maintenance-panel .device-list span.device-setting{
+    display: block;
+    float: left;
+    clear: left;
+}
+
+#maintenance-panel .device-list span.device-name{
+    display: block;
+    float: left;
+    clear: both;
+    font-size: 1.2em;
+    color: #306fa9;
+}
+
+#maintenance-panel .refresh-options-container{
+    float: right;
+    padding: 5px;
+}
+
+#maintenance-panel .device-container{
+    margin: 10px 40px;
+    padding: 5px 10px;
+    border: solid 1px;
+    float: left;
+}
+
+
+#maintenance-panel .device-name-and-apply{
+    float: left;
+    margin: 10px 20px;
+}
+
+#maintenance-panel .device-name{
+    float: left;
+}
+
+#maintenance-panel .device-list button.apply{
+    float: left;
+    clear: left;
+    margin-top: 15px;
+}
+
+#maintenance-panel .device-all-settings{
+    float: left;
+    color: #555;
+}
+
+#maintenance-panel .device-container .device-setting-container{
+    width: 150px;
+    padding: 5px;
+    float: left;
+}
+
+.device-container .device-setting-container:nth-child(4n+2){
+    clear: left;
+}
+
+.device-list-container button.add-new-device{
+    margin: 10px 40px;
+    float: left;
+    clear: left;
+}
+
+#advanced-settings{
+}
+
+#control-settings-container{
+    height: 250px;
+    overflow:auto;
+}
+
+#control-constants-container{
+    height: 250px;
+    overflow:auto;
+}
+
 
 #maintenance-panel #beer-selector{
 	margin-bottom: 20px;
@@ -234,15 +430,13 @@ button#refresh-beer-chart span.ui-icon{
 	margin-bottom: 5px;
 }
 
-
 #maintenance-panel .setting-container{
-	clear: both;
+    float: left;
+    clear: both;
 	padding:10px;
 	margin: 20px 15px;
-}
+    width: 90%;
 
-.ui-dialog{
-	overflow: auto;
 }
 
 #maintenance-panel .setting-container .setting-name{
@@ -257,48 +451,29 @@ button#refresh-beer-chart span.ui-icon{
 	float: left;
 	clear: both;
 	width: 710px;
-	margin-top: 30px;
-	margin-left: 25px;
-	margin-bottom: 30px;
 }
 
 #maintenance-panel .setting-container .explanation{
-	clear: left;
-	float:left;
+    float:left;
+    clear: left;
 	width: 320px;
 }
 
+#maintenance-panel .apply-button,
+#advanced-settings .send-button{
+    position: relative;
+    float: right;
+}
 
 #advanced-settings .setting-container select,
-#advanced-settings .setting-container input{
-	position: absolute;
-	float: left;
-	left: 400px;
-}
-
+#advanced-settings .setting-container input,
 #settings .setting-container select,
 #settings .setting-container input{
-	position: absolute;
+    position: relative;
 	float: left;
-	left: 300px;
+    left: 100px;
 }
 
-#maintenance-panel #settings-container{
-	height: 130px;
-}
-
-#maintenance-panel .apply-button{
-	position: absolute;
-	float: left;
-	left: 700px;
-}
-
-#advanced-settings .send-button{
-	position: absolute;
-	float: left;
-	left: 600px;
-	margin-top: 0;
-}
 
 #control-constants-container,
 #control-settings-container{

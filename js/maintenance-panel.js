@@ -15,6 +15,12 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* jshint jquery:true */
+/* global reloadControlConstantsFromArduino, reloadControlSettingsFromArduino, reloadControlVariablesFromArduino,
+          reloadControlSettings, reloadControlConstants, reloadControlVariables,
+          receiveControlConstants, receiveControlSettings, receiveControlVariables,
+          loadDefaultControlConstants, loadDefaultControlSettings */
+
 $(document).ready(function(){
     "use strict";
 
@@ -24,46 +30,42 @@ $(document).ready(function(){
 		autoOpen: false,
 		title: 'Maintenance Panel',
 		height: 850,
-		width: 1000,
-		open: function(){
-			// hide beer chart, because it displays through the panel in chrome
-			$('#beer-chart').css('visibility', 'hidden');
-			// show profile chart
-			$('#profileChartDiv').css('visibility', 'hidden');
-		},
-		close: function(){
-			// show beer-chart
-			$('#beer-chart').css('visibility', 'visible');
-			// show profile chart
-			$('#profileChartDiv').css('visibility', 'visible');
-		}
-	});
+		width: 1000
+	}).tabs();
 
-	$("button#apply-interval").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+    // unhide after loading
+    $("#maintenance-panel").css("visibility", "visible");
+
+    $("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).unbind('click').click(function(){
+        $("#maintenance-panel").dialog("open");
+    });
+
+	$("button#apply-interval").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		$.post('socketmessage.php', {messageType: "interval", message: String($("select#interval").val())});
 	});
 
-	$("button.apply-beer-name").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+	$("button.apply-beer-name").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		$.post('socketmessage.php', {messageType: "name", message: $("input#beer-name").val()});
 	});
 
-	$("button.apply-profile-key").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+	$("button.apply-profile-key").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		$.post('socketmessage.php', {messageType: "profileKey", message: $("input#profile-key").val()});
 	});
 
-	$("#advanced-settings .send-button").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+	$("#advanced-settings").find(".send-button").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		var jsonString;
-        if($(this).parent().children("select").length){ // check for existance
-			jsonString = "{\"" + $(this).parent().children("select").attr("name") + "\":\"" + $(this).parent().children("select").val() + "\"}";
+        if($(this).parent().find("select").length){ // check for existance
+			jsonString = "{\"" + $(this).parent().find("select").attr("name") +
+                            "\":\"" + $(this).parent().find("select").val() + "\"}";
 		}
-		else if($(this).parent().children("input").length){ // check for existance
-			jsonString = "{\"" + $(this).parent().children("input").attr("name") + "\":" + $(this).parent().children("input").val() + "}";
+		else if($(this).parent().find("input").length){ // check for existance
+			jsonString = "{\"" + $(this).parent().find("input").attr("name") + "\":" + $(this).parent().find("input").val() + "}";
 		}
 		else{
 			return;
 		}
 		$.post('socketmessage.php', {messageType: "setParameters", message: jsonString});
-		if($(this).parent().children("select").attr("name") === "tempFormat"){
+		if($(this).parent().find("select").attr("name") === "tempFormat"){
 			// if temperature format is updated, reload all settings in new format and update fields
 			reloadControlConstantsFromArduino();
 			reloadControlSettingsFromArduino();
@@ -71,26 +73,159 @@ $(document).ready(function(){
 	});
 
 	$(".cc.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
-		.click(receiveControlConstants);
+		.unbind('click').click(receiveControlConstants);
 
 	$(".cc.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
-		.click(reloadControlConstantsFromArduino);
+		.unbind('click').click(reloadControlConstantsFromArduino);
 
 	$(".cc.load-defaults").button({	icons: {primary: "ui-icon-trash" } })
-		.click(loadDefaultControlConstants);
+		.unbind('click').click(loadDefaultControlConstants);
 
 	$(".cs.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
-		.click(receiveControlSettings);
+		.unbind('click').click(receiveControlSettings);
 
 	$(".cs.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
-		.click(reloadControlSettingsFromArduino);
+		.unbind('click').click(reloadControlSettingsFromArduino);
 
 	$(".cs.load-defaults").button({	icons: {primary: "ui-icon-trash" } })
-		.click(loadDefaultControlSettings);
+		.unbind('click').click(loadDefaultControlSettings);
 
 	$(".cv.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
-		.click(receiveControlVariables);
+		.unbind('click').click(receiveControlVariables);
 
 	$(".cv.update-from-arduino").button({	icons: {primary: "ui-icon-refresh" } })
-		.click(reloadControlVariablesFromArduino);
+		.unbind('click').click(reloadControlVariablesFromArduino);
+
+    // create refresh button
+    $("#refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).unbind('click').click(function(){
+        refreshLogs(1, 1);
+    });
+
+    $("button#auto-refresh-logs").button({ icons: {primary: "ui-icon-refresh"}	}).unbind('click').click(function(){
+        startRefreshLogs(5000, 1, 1);
+        if($(this).hasClass('ui-state-default')){
+            $(this).removeClass("ui-state-default").addClass("ui-state-error");
+            $(this).find('.ui-button-text').text('Disable auto-refresh');
+        }
+        else{
+            $(this).removeClass("ui-state-error").addClass("ui-state-default");
+            $(this).find('.ui-button-text').text('Enable auto-refresh');
+        }
+    });
+
+    $("#erase-logs").button({ icons: {primary: "ui-icon-trash"}	}).unbind('click').click(function(){
+        $.post('socketmessage.php', {messageType: "eraseLogs", message: ""});
+        refreshLogs(1,1);
+    });
+
+    $("input#program-submit-button").button({ icons: {primary: "ui-icon-arrowthickstop-1-n"}}).unbind('click').click(function(){
+        startRefreshLogs(2000, 0, 1, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
+        $("#program-stderr-header").text("Programming... keep an eye on the output below to see the progress.");
+    });
 });
+
+function refreshLogs(refreshStdOut, refreshStdErr){
+    "use strict";
+    /* global stderr */
+    $.get('getLogs.php?stdout=' + refreshStdOut.toString() + '&stderr=' + refreshStdErr.toString(),
+        function(response){
+            if(refreshStdErr){
+                $('div.stderr').each(function(){
+                    // get DOM element
+                    var div = $(this)[0];
+                    var scrolledDown = false;
+                    // check if div is scrolled down
+                    if((div.scrollTop - div.scrollHeight) < 40 && (div.scrollTop - div.scrollHeight) > -40){
+                        scrolledDown = true; // if already near bottom
+                    }
+                    var wasEmpty = false;
+                    if($(this).text().length<40){
+                        // div doesnt overflow
+                        wasEmpty = true;
+                    }
+
+                    if(response.stderr){
+                        $(this).html(response.stderr);
+                    }
+                    else{
+                        $(this).html("");
+                    }
+                    if(scrolledDown || wasEmpty){
+                        // scroll divs down to the last line after refresh
+                        div.scrollTop = div.scrollHeight;
+                    }
+                });
+            }
+            if(refreshStdOut){
+                $('div.stdout').each(function(){
+                    // get DOM element
+                    var div = $(this)[0];
+                    var scrolledDown = false;
+                    // check if div is scrolled down
+                    if((div.scrollTop - div.scrollHeight) < 40 && (div.scrollTop - div.scrollHeight) > -40){
+                        scrolledDown = true; // if already near bottom
+                    }
+                    var wasEmpty = false;
+                    if($(this).text().length<40){
+                        // div doesnt overflow
+                        wasEmpty = true;
+                    }
+
+                    if(response.stdout){
+                        $(this).html(response.stdout);
+                    }
+                    else{
+                        $(this).html("");
+                    }
+                    if(scrolledDown || wasEmpty){
+                        // scroll divs down to the last line after refresh
+                        div.scrollTop = div.scrollHeight;
+                    }
+                });
+            }
+        }
+    );
+}
+
+var refreshLogsInterval;
+function startRefreshLogs(refreshTime, refreshStdOut, refreshStdErr){
+    "use strict";
+    if(typeof(window.refreshLogsInterval)!=='undefined'){
+        // Clear existing timers
+        window.clearInterval(window.refreshLogsInterval);
+    }
+    // refresh logs immediately
+    refreshLogs(refreshStdOut,refreshStdErr);
+    // set interval to start auto refreshing
+    refreshLogsInterval = window.setInterval(function(){ refreshLogs(refreshStdOut, refreshStdErr);}, refreshTime);
+}
+
+// stop auto refreshing logs when switching to a different tab
+$("#maintenance-panel" ).on( "tabsactivate", function( event, ui ) {
+    "use strict";
+    if(typeof(window.refreshLogsInterval)!=='undefined'){
+        // Clear existing timers
+        window.clearInterval(window.autoRefreshLogsInterval);
+    }
+    $('button#auto-refresh-logs').removeClass("ui-state-error").addClass("ui-state-default")
+        .find('.ui-button-text').text('Enable auto-refresh');
+} );
+
+
+// Functions that are called in the programArduino.php file:
+
+function programmingError(string){
+    "use strict";
+    window.alert(string);
+}
+
+function programmingDone(){
+    "use strict";
+    $("#program-stderr-header").text("Programming done!");
+}
+
+function programmingFailed(){
+    "use strict";
+    $("#program-stderr-header").text("Something went wrong! Please check the log for details!");
+}
+
