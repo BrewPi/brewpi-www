@@ -38,15 +38,32 @@
 		<button id="prev-beer-show">Show</button>
 		<button id="download-csv">Download CSV</button>
 	</div>
-	<div id="prev-beer-chart" style="width:900px; height:400px;"></div>
+	<div class="chart-container">
+		<div id="prev-beer-chart-label" class="beer-chart-label"></div>
+		<div id="prev-beer-chart" class="beer-chart" style="width:800px; height:500px"></div>
+		<div id="prev-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
+			<button class="chart-help"></button>
+			<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)">
+			<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)">
+			<button class="toggle fridgeTemp" title="Fridge temperature" onClick="toggleLine(this)">
+			<button class="toggle fridgeSet" title="Fridge setting" onClick="toggleLine(this)">
+			<button class="toggle roomTemp" title="Room temperature" onClick="toggleLine(this)">
+			<button class="toggleAnnotations" title="Annotations" onClick="toggleAnnotations(this)">A</button>
+		</div>
+	</div>
 	<script>
-		$("button#prev-beer-show").button({ icons: {primary: "ui-icon-circle-triangle-e"} }).click(function(){
-			drawBeerChart(String($("select#prev-beer-name").val()), "prev-beer-chart" );
-		});
-		$("button#download-csv").button({ icons: {primary: "ui-icon-arrowthickstop-1-s"} }).click(function(){
-			var url = "data/" + String($("select#prev-beer-name").val()) + "/" + String($("select#prev-beer-name").val()) + ".csv";
-			window.open(encodeURI(url), 'Download CSV' );
+		$(document).ready(function(){
+			$("button#prev-beer-show").button({ icons: {primary: "ui-icon-circle-triangle-e"} }).click(function(){
+				drawBeerChart(String($("select#prev-beer-name").val()), "prev-beer-chart" );
+			});
+			$("button#download-csv").button({ icons: {primary: "ui-icon-arrowthickstop-1-s"} }).click(function(){
+				var url = "data/" + String($("select#prev-beer-name").val()) + "/" + String($("select#prev-beer-name").val()) + ".csv";
+				window.open(encodeURI(url), 'Download CSV' );
+			});
+			$("#prev-beer-chart-controls button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
+				$("#chart-help-popup").dialog("open");
+			});
 		});
 	</script>
-</body> 
+</body>
 </html>

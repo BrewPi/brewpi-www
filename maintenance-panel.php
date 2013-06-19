@@ -18,44 +18,60 @@
 ?>
 
 <ul>
+	<button class="script-status"></button>
 	<li><a href="#settings"><span class="setting-name">Settings</span></a></li>
-	<li><a href="logs.php"><span>Log files</span></a></li>
+	<li><a href="#view-logs"><span>View logs</span></a></li>
 	<li><a href="previous_beers.php"><span>Previous Beers</span></a></li>
 	<li><a href="#control-algorithm"><span>Control Algorithm</span></a></li>
+	<li><a href="#device-config"><span>Device Configuration</span></a></li>
 	<li><a href="#advanced-settings"><span>Advanced Settings</span></a></li>
 	<li><a href="#reprogram-arduino"><span>Reprogram Arduino</span></a></li>
 	<!--kinda dirty to have buttons in the ul, but the ul is styled as a nice header by jQuery UI -->
-	<button class="script-status"></button>
 </ul>
 <div id="reprogram-arduino">
-	<div class="script-warning ui-widget-content ui-corner-all" style="padding:5px;">
-		<p>Here you can upload a HEX file which will be uploaded to the Arduino by the Python script.
-			The script will automatically restart itself after programming.
-			Just hit the back button on your browser to continue running BrewPi.</p>
-		<div style="padding: 15px 0;">
-			<form action="program_arduino.php" method="post" enctype="multipart/form-data">
-				<label for="file">Hex file:</label>
-				<input type="file" name="file" id="file" /> <!-- add max file size?-->
-				<label for="boardType"> Board type:</label>
-				<select name="boardType">
-					<option value="leonardo">Leonardo</option>
-					<option value="uno">Uno</option>
-					<option value="atmega328">ATmega328 based</option>
-					<option value="diecimila">Atmega168 based</option>
-					<option value="mega2560">Mega 2560</option>
-					<option value="mega">Mega 1280</option>
-				</select>
-				<label for="eraseEEPROM"> Reset settings (clear EEPROM)</label>
-				<input type="radio" name="eraseEEPROM" value="true" checked>Yes
-				<input type="radio" name="eraseEEPROM" value="false">No
-				<input type="submit" name="Program" value="Program">
-			</form>
-		</div>
-		<p>Note: the EEPROM is only preserved when the 'Preserve EEPROM' fuse is set!</p>
+	<p>Here you can upload a HEX file which will be uploaded to the Arduino by the Python script.
+		The script will automatically restart itself after programming.
+		Just hit the back button on your browser to continue running BrewPi.</p>
+	<div id = "program-container">
+		<!-- This form has a hidden iFrame as target, so the full page is not refreshed -->
+		<form action="program_arduino.php" method="post" enctype="multipart/form-data" target="upload-target">
+			<div id="program-options">
+				<div class="program-option">
+					<label for="file">Hex file:</label>
+					<input type="file" name="file" id="file" /> <!-- add max file size?-->
+				</div>
+				<div class="program-option">
+					<label for="boardType"> Board type:</label>
+					<select name="boardType">
+						<option value="leonardo">Leonardo</option>
+						<option value="uno">Uno</option>
+						<option value="atmega328">ATmega328 based</option>
+						<option value="diecimila">Atmega168 based</option>
+						<option value="mega2560">Mega 2560</option>
+						<option value="mega">Mega 1280</option>
+					</select>
+				</div>
+				<div class="program-option">
+					<label for="restoreSettings">Restore old settings after programming</label>
+					<input type="radio" name="restoreSettings" value="true" checked>Yes
+					<input type="radio" name="restoreSettings" value="false">No
+				</div>
+				<div class="program-option">
+					<label for="restoreDevices">Restore installed devices after programming</label>
+					<input type="radio" name="restoreDevices" value="true" checked>Yes
+					<input type="radio" name="restoreDevices" value="false">No
+				</div>
+			</div>
+			<input id="program-submit-button" type="submit" name="Program" value="Program">
+		</form>
+
+		<h3 id="program-stderr-header">Script stderr output will auto-refresh while programming if you keep this tab open</h3>
+		<div class="stderr console-box" "></div>
+		<iframe id="upload-target" name="upload-target" src="#"style="width:0;height:0;border:0px solid #fff;"></iframe>
 	</div>
 </div>
 <div id="settings">
-	<div class="settings-container ui-widget-content ui-corner-all">
+	<div class="settings-container">
 		<div class="setting-container">
 			<span class="setting-name">Log data point every:</span>
 			<select id="interval">
@@ -88,7 +104,7 @@
 		<button class="cv update-from-arduino">Update control variables</button>
 		<button class="cc update-from-arduino">Update control constants</button>
 	</div>
-	<div class="algorithm-container ui-helper-reset ui-helper-clearfix ui-widget-content ui-corner-all">
+	<div class="algorithm-container ui-widget-content ui-corner-all">
 		<div class="help-panel">
 			<p>
 				The red values are control settings. The beer setting is set by the profile or constant. The fridge setting is set by PID or constant.
@@ -134,7 +150,7 @@
 		<button class="cv update-from-arduino">Update control variables</button>
 		<button class="cc update-from-arduino">Update control constants</button>
 	</div>
-	<div class="algorithm-container ui-helper-reset ui-helper-clearfix ui-widget-content ui-corner-all">
+	<div class="algorithm-container ui-widget-content ui-corner-all">
 		<div class="help-panel">
 			<p>
 				The heater and cooler are controlled by a predictive on-off algorithm.
@@ -156,13 +172,13 @@
 	</div>
 </div>
 <div id="advanced-settings">
+	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<span class='container-title'>Control settings</span>
+		<button class="cs load-defaults">Reload defaults</button>
+		<button class="cs receive-from-script">Receive from script</button>
+		<button class="cs update-from-arduino">Update from Arduino</button>
+	</div>
 	<div id="control-settings-container" class="ui-widget-content ui-corner-all">
-		<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-			<span class='container-title'>Control settings</span>
-			<button class="cs load-defaults">Reload defaults</button>
-			<button class="cs receive-from-script">Receive from script</button>
-			<button class="cs update-from-arduino">Update from Arduino</button>
-		</div>
 		<div class="setting-container">
 			<span class="setting-name">Mode</span>
 			<span class="explanation">Active temperature control mode. Use to control panel to switch (apply button).</span>
@@ -201,13 +217,13 @@
 			<button class="send-button">Send to Arduino</button>
 		</div>
 	</div>
+	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<span class='container-title'>Control constants</span>
+		<button class="cc load-defaults">Reload defaults</button>
+		<button class="cc receive-from-script">Receive from script</button>
+		<button class="cc update-from-arduino">Update from Arduino</button>
+	</div>
 	<div id="control-constants-container" class="ui-widget-content ui-corner-all">
-		<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-			<span class='container-title'>Control constants</span>
-			<button class="cc load-defaults">Reload defaults</button>
-			<button class="cc receive-from-script">Receive from script</button>
-			<button class="cc update-from-arduino">Update from Arduino</button>
-		</div>
 		<div class="setting-container">
 			<span class="setting-name">Temperature format</span>
 			<span class="explanation">Switch your temperature format here. The algorithm always uses fixed point Celcius format internally,
@@ -324,7 +340,49 @@
 			<span class="explanation">The fridge slope filter is not used in the current version.</span>
 			<button class="send-button">Send to Arduino</button>
 		</div>
+		<div class="setting-container">
+			<span class="setting-name">Use light as heater</span><?php echoYesNoSelect("lah") ?>
+			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater..</span>
+			<button class="send-button">Send to Arduino</button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Trigger rotary encoder at every ...</span> <?php echoRotarySelect("hs") ?>
+			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step.</span>
+			<button class="send-button">Send to Arduino</button>
+		</div>
 	</div>
+</div>
+
+<div id="device-config">
+	<div class="console-box" id="device-console">
+		<span></span>
+	</div>
+	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<span class='container-title'>Device List</span>
+		<div class="refresh-options-container">
+			<div class="refresh-option">
+				<input type="checkbox" name="read-values" id="read-values"/><label for="read-values">Read values</label>
+			</div>
+		</div>
+		<button class="refresh-device-list">Refresh device list</button>
+		<!--  <button class="get-device-list">Get device list</button>-->
+	</div>
+	<div class="device-list-container ui-widget-content ui-corner-all">
+		<div class ="spinner-position"></div>
+		<div class="device-list"></div>
+	</div>
+</div>
+
+<div id="view-logs">
+	<div id="log-buttons" style="clear:both">
+		<button id="erase-logs">Erase logs</button>
+		<button id="auto-refresh-logs">Enable auto refresh</button>
+		<button id="refresh-logs">Refresh</button>
+	</div>
+	<h3>stderr:</h3>
+	<div class="stderr console-box" "></div>
+	<h3>stdout:</h3>
+	<div class="stdout console-box"></div>
 </div>
 
 <?php
@@ -351,6 +409,19 @@ function echoSlopeFilterSelect($filterName){
 	echo "<option value=4>  31.8 minutes</option>"; // a=12,	b=4,	delay time = 53
 	echo "<option value=5>  63.6 minutes</option>"; // a=14,	b=5,	delay time = 106
 	echo "<option value=6> 127.8 minutes</option>"; // a=16,	b=6,	delay time = 213
+	echo "</select>";
+}
+
+function echoYesNoSelect($optionName){
+	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
+	echo "<option value=1> Yes</option>";
+	echo "<option value=0>  No</option>";
+	echo "</select>";
+}
+function echoRotarySelect($optionName){
+	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
+	echo "<option value=0> Full step</option>";
+	echo "<option value=1> Half step</option>";
 	echo "</select>";
 }
 ?>

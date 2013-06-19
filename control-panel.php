@@ -36,25 +36,25 @@
 </ul>
 <div id="profile-control">
 	<div id="controls">
-		<button id="refresh">Refresh</button>
-		<button id="edit">Edit profile</button>
+		<button id="refresh-controls">Refresh</button>
+		<button id="edit-controls">Edit profile</button>
 	</div>
 	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
 	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right"></div>
 </div>
 <div id="beer-constant-control">
 	<div id="beer-temp" class="temp-display">
-		<div class="temp-container"><span class="temperature"></span></div>
+		<div class="temp-container"></div>
 		<button id="beer-temp-up" class="temp-up"></button>
-		<span class="degree">&deg;<?php echo $tempFormat ?></span>
+		<input class='temperature' /><span class='degree'>&deg;<?php echo $tempFormat ?></span>
 		<button id="beer-temp-down" class="temp-down"></button>
 	</div>
 </div>
 <div id="fridge-constant-control">
 	<div id="fridge-temp" class="temp-display">
-		<div class="temp-container"><span class="temperature"></span></div>
+		<div class="temp-container"></div>
 		<button id="fridge-temp-up" class="temp-up"></button>
-		<span class="degree">&deg;<?php echo $tempFormat ?></span>
+		<input class='temperature' /><span class='degree'>&deg;<?php echo $tempFormat ?></span>
 		<button id="fridge-temp-down" class="temp-down"></button>
 	</div>
 </div>

@@ -21,9 +21,13 @@
 	$beerName = $_POST["beername"];
 	$fileNames = array();
   	$currentBeerDir = 'data/' . $beerName;
+	if(!file_exists($currentBeerDir)){
+		echo "directory does not exist";
+		return;
+	}
   	$handle = opendir($currentBeerDir);
   	if($handle == false){
-  		die("Cannot retrieve beer files directory: " . $currentBeerDir);
+	    die("Cannot retrieve beer files directory: " . $currentBeerDir);
   	}
   	$first = true;
   	$i=0;
@@ -31,15 +35,17 @@
 		  $extension = strtolower(substr(strrchr($file, '.'), 1));
 		  if($extension == 'json' ){
 		  	$jsonFile =  $currentBeerDir . '/' . $file;
-				$filenames[$i] = $jsonFile;
+				$fileNames[$i] = str_replace(".json", "", $jsonFile); // strip extension for sorting
 				$i=$i+1;
 			}
 		}
 		closedir($handle);
-		if(empty($filenames)){
+		if(empty($fileNames)){
 			echo "";
 		}
 		else{
-			echo json_encode($filenames);
+			sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
+			array_walk($fileNames, function(&$value) { $value .= '.json'; }); // add .json again
+			echo json_encode($fileNames);
 		}
 ?>
