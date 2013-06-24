@@ -75,7 +75,7 @@ Keep your programs up to date with these commands:
 Updating firmware
 -----------------
 
-Make sure you also have the latest firmware version, and stay up to date using `rpi-update by Hexxeh <[https://github.com/Hexxeh/rpi-update>`_.
+Make sure you also have the latest firmware version, and stay up to date using `rpi-update by Hexxeh <https://github.com/Hexxeh/rpi-update>`_.
 Firmware updates will often fix instability issues, so make sure you run one. USB used to be unstable on the pi, but the latest firmware fixed this.
 
 
