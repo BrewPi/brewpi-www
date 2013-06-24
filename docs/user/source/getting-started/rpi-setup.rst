@@ -5,9 +5,54 @@ This step by step guide will help you to set everything up on your Raspberry Pi 
 
 Installing Linux on your Raspberry Pi
 -------------------------------------
+You can download an optimized Debian image for Raspberry Pi from their download page.
 
-Go to the `Raspberry Pi download page <http://www.raspberrypi.org/downloads>`_ and download the latest Raspbian Wheezy image. This is the recommended image.
+#. Go to the `Raspberry Pi download page <http://www.raspberrypi.org/downloads>`_
+#. Download the latest Raspbian Wheezy image by clicking the `Direct Download` link for the zip file.
+#. On the following download confirmation page, click on the Direct Link if you are not redirected.
+#. Wait until you download is finished.
+#. (Optional) Verify the image following the checksum instructions link on the confirmation page.
+
+A list of recommended SD cards can be found at http://elinux.org/RPi_SD_cards
+The default login credentials for the image are username ``pi`` and password ``raspberry``.
+
+Putting the image on your SD card (Windows)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 You can use `Win32DiskImager <http://www.softpedia.com/get/CD-DVD-Tools/Data-CD-DVD-Burning/Win32-Disk-Imager.shtml>`_ to write the image to your memory card with a card reader. If you have an old image on your card and cannot remove the partition with Windows, `SD Formatter <https://www.sdcard.org/downloads/formatter_3/>`_ can help you to format the SD card before writing the image.
+
+Putting the image on your SD card (Mac)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#. Prepare the SD card for Linux distribution loading
+    #. Insert the SD card into the slot or reader.
+    #. Open Disk Utility.
+    #. Click on the SD card in the disk list (not its partition, which is indented below it).
+    #. Click on the Erase tab.
+    #. Select ExFAT in the Format selection list.
+    #. Type in a desired disk name (e.g. BREWPI).
+    #. Click the Erase... button (the disk will be partitioned automatically).
+    #. Click the Erase button in the confirmation dialog box.
+    #. Close Disk Utility.
+
+#. Determine the SD card image identifier
+    #. Right-click on the SD card image (desktop icon), and select Eject "BREWPI".
+    #. Open Terminal.
+    #. Execute the following command to produce a list of disks. ``df -h``
+    #. Make note of any existing disks identified similar to ``/dev/disk?s?``.
+    #. Pull out the SD card, and push it back into the slot.
+    #. Execute the following command, and make note of the added SD card identifier. ``df -h``
+
+#. Load the Linux distribution onto the SD card (not the partition)
+    #. Execute the following Terminal command with the SD card identifier to unmount the SD card. Do not unmount from Finder. ``sudo diskutil unmount /dev/disk?s?``
+    #. Execute the following command with the location of the Linux distribution image to load the Linux distribution onto the SD card (leaving off the s? portion of the SD card identifier) ``sudo dd bs=1m if=~/downloads/... of=/dev/rdisk?``
+    #. When complete (it will take a while), pull out the SD card, and push it back into the slot to mount it.
+    #. Double click on the SD card image to confirm the loaded Linux distribution.
+    #. Right-click on the SD card image (desktop icon), and select Eject "BREWPI".
+    #. Pull out the SD card.
+
+
+Configuring your system
+-----------------------
 
 When you have put the image on the card, plug in a keyboard, network cable and a monitor and use the on screen menu to configure the basic settings. If the menu doesn't come up automatically, type:
 
@@ -16,12 +61,19 @@ When you have put the image on the card, plug in a keyboard, network cable and a
     sudo raspi-config
 
 
+Updating programs
+-----------------
+
 Keep your programs up to date with these commands:
+
 .. code-block:: bash
 
     sudo apt-get update
     sudo apt-get upgrade
 
+
+Updating firmware
+-----------------
 
 Make sure you also have the latest firmware version, and stay up to date using `rpi-update by Hexxeh <[https://github.com/Hexxeh/rpi-update>`_.
 Firmware updates will often fix instability issues, so make sure you run one. USB used to be unstable on the pi, but the latest firmware fixed this.
@@ -42,6 +94,7 @@ Setting up a static IP address
 
 You probably want your Pi to always have the same IP address, so after setting up your WiFi change your interfaces file to a static IP address.
 To edit your interfaces, you can run:
+
 .. code-block:: bash
 
     sudo nano /etc/network/interfaces
