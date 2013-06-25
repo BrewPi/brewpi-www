@@ -89,6 +89,33 @@ Setting up WiFi
 I am using an Edimax EW-7811un WiFi dongle. The latest image has built in support for this dongle. I can highly recommend this dongle.
 `This setup script <http://www.raspberrypi.org/phpBB3/viewtopic.php?p=127325#p127325>`_  by MrEngman is a useful interactive way to setup your WiFi. It can also update your system and your firmware automatically. If you already have WLAN interfaces defined in /etc/network/interfaces, remove them before running the script. The script failed the first time I ran it because it tried to update existing interfaces that were not properly configured.
 
+To improve the stability of your WiFi, it is recommended to disable power management. For the EW7811, which is based on a Realtek 8192CU you do this as follows:
+
+#. Create a new file ``8192cu.conf`` in ``/etc/modprobe.d/``:
+
+.. code-block:: bash
+
+    sudo nano /etc/modprobe.d/8192cu.conf
+
+#. Add this line to the file and save:
+
+.. code-block:: bash
+
+    options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
+
+Alternatively you can add a line to your crontab to ping your router every minute to keep the connection alive. Open your current users crontab with:
+
+.. code-block:: bash
+
+    crontab -e
+
+And add this line (replace the IP with your routers IP address, the standard gateway address in your IP settings):
+
+.. code-block:: bash
+
+    * * * * * ping -c 1 192.168.0.1
+
+
 Setting up a static IP address
 ------------------------------
 
