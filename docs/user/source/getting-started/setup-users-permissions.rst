@@ -27,22 +27,7 @@ To allow the brewpi user to write to the directories owned by www-data, we will 
     sudo usermod -a -G www-data pi
     sudo usermod -a -G brewpi pi
 
-To make sure that all newly created files in the www-data directory have www-data as group, even when they are created by the brewpi user, we set the sticky bit on the www-data directory and all its sub directories. We'll set the sticky bit for the brewpi home directory as well. The brewpi-script repository contains a script to do all of this automatically, so we will just use that.
-
-
-Fixing permissions issues
--------------------------
-If you did not run git as the brewpi user or the www-data user, the owner of the files can be set to ``pi`` or ``root``. This will cause errors when the web interface or script tries to access files.
-To make it easy to fix this, I have included a shell script in ``/home/brewpi/fixPermissions.sh``. Run it with:
-
-.. code-block:: bash
-
-    sudo sh fixPermissions.sh
-
-That file executes the following commands:
-* Set the ownership of all files and sub directories.
-* Give group all permissions on all files.
-* Give group all permissions and set the sticky bit on directories.
+To make sure that all newly created files in the www-data directory have www-data as group, even when they are created by the brewpi user, we set the sticky bit on the www-data directory and all its sub directories. We'll set the sticky bit for the brewpi home directory as well. Run the following commands:
 
 .. code-block:: bash
 
@@ -53,6 +38,23 @@ That file executes the following commands:
     sudo find /var/www -type d -exec chmod g+rwxs {} \;
     sudo find /var/www -type f -exec chmod g+rwx {} \;
 
+These commands do the following things:
+
+* Set the ownership of all files and subdirectories to brewpi and www-data (first two lines)
+* Give the group all permissions on all files (third and fourth line)
+* Give the group all permissions and set the sticky bit on all directories (fifth and sixth line).
+
+
+Fixing permissions issues
+-------------------------
+If you run into permission issues later, you can use a script included with the brewpi-script repository to fix it.
+This could happen for example when you did not run git as the brewpi user or the www-data user, which results in the owner of the files being ``pi`` or ``root``.
+This will cause errors when the web interface or script tries to access files.
+This script just executes the commands above. Run it with:
+
+.. code-block:: bash
+
+    sudo sh /home/brewpi/fixPermissions.sh
 
 
 Starting and stopping the python script
