@@ -55,8 +55,8 @@ require_once("./include/membersite_config.php");
 		<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)"></button>
 		<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)"></button>
 		<button class="toggle fridgeTemp" title="Fridge temperature" onClick="toggleLine(this)"></button>
-		<button class="toggle fridgeSet" title="Fridge setting" onClick="toggleLine(this)"></button>
-		<button class="toggle roomTemp" title="Room temperature" onClick="toggleLine(this)"></button>
+		<button class="toggle fridgeSet inactive" title="Fridge setting" onClick="toggleLine(this)"></button>
+		<button class="toggle roomTemp inactive" title="Room temperature" onClick="toggleLine(this)"></button>
 		<button class="toggleAnnotations" title="Annotations" onClick="toggleAnnotations(this)">A</button>
 	</div>
 </div>

@@ -18,7 +18,7 @@
  */
 
 /* jshint jquery:true */
-/* global console, controlSettings, tempFormat, beername, Dygraph, google, CanvasRenderingContext2D */
+/* global alert, console, controlSettings, tempFormat, beername, Dygraph, google, CanvasRenderingContext2D */
 
 var currBeerChart;
 var prevBeerChart;
@@ -320,24 +320,46 @@ function drawBeerChart(beerToDraw, div){
         var $chartContainer = $('#'+ div).parent();
         $chartContainer.find('.beer-chart-controls').css('visibility','visible');
 
-        if(div.localeCompare('curr-beer-chart')===0){
+        if(div.localeCompare('curr-beer-chart') === 0){
             currBeerChart = beerChart;
         }
-        else if(div.localeCompare('prev-beer-chart')===0){
+        else if(div.localeCompare('prev-beer-chart') === 0){
             prevBeerChart = beerChart;
         }
 
         // hide buttons for lines that are not in the chart
         for (var key in lineNames){
-            var $button = $chartContainer.find('button.toggle.'+key);
-            if(beerChart.getPropertiesForSeries(lineNames[key])===null){
-                $button.css('display', 'none');
-            }
-            else{
-                updateVisibility(key, $button);
+            if(lineNames.hasOwnProperty(key)){
+                var $button = $chartContainer.find('button.toggle.'+ key);
+                var series = beerChart.getPropertiesForSeries(lineNames[key]);
+                if(series === null){
+                    $button.css('display', 'none');
+                }
+                else{
+                    var numRows = beerChart.numRows();
+                    if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
+                        $button.css('display', 'none');
+                    }
+                    updateVisibility(key, $button);
+                }
+                if($(div + " .toggleAnnotations ").hasClass("inactive")){
+                    $(beerChart).find('.dygraphDefaultAnnotation').css('visibility', 'hidden');
+                }
             }
         }
     });
+}
+
+function isDataEmpty(chart, column, rowStart, rowEnd){
+    "use strict";
+    // start with last element, because when a sensor is just connected it should show up
+    for (var row = rowEnd; row > rowStart; row--){
+        if(chart.getValue(row, column) !== null){
+            return false;
+        }
+    }
+    console.log(column);
+    return true;
 }
 
 function toggleLine(el) {

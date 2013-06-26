@@ -69,6 +69,7 @@ require_once("./include/membersite_config.php");
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
+		<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;
@@ -77,7 +78,6 @@ require_once("./include/membersite_config.php");
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>
-		<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
