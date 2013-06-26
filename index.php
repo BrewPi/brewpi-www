@@ -17,10 +17,11 @@
  */
 ?>
 
+
 <?php
 
 $settings = file_get_contents('wwwSettings.json');
-if($settings == false){
+if($settings == false) {
 	die("Cannot open settings file");
 }
 $settingsArray = json_decode(prepareJSON($settings), true);
@@ -30,6 +31,7 @@ if(is_null($settingsArray)){
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
 $profileKey = $settingsArray["profileKey"];
+require_once("./include/membersite_config.php");
 ?>
 
 <!DOCTYPE html >
@@ -56,6 +58,12 @@ $profileKey = $settingsArray["profileKey"];
 				include 'maintenance-panel.php';
 			?>
 		</div>
+		<div id="login-panel" style="visibility:hidden"> <!--// hide while loading -->
+			<?php
+				include 'login-panel.php';
+			?>
+		</div>
+
 		<!-- Load scripts after the body, so they don't block rendering of the page -->
 		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -73,6 +81,7 @@ $profileKey = $settingsArray["profileKey"];
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
+		<script type="text/javascript" src="js/login-panel.js"></script>
 	</body>
 </html>
 

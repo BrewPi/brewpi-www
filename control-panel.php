@@ -26,7 +26,11 @@
 	<li><a href="#beer-constant-control"><span>Beer constant</span></a></li>
 	<li><a href="#fridge-constant-control"><span>Fridge constant</span></a></li>
 	<li><a href="#temp-control-off"><span>Off</span></a></li>
-	<button id="apply-settings">Apply</button>
+	<?php
+		if($fgmembersite->CheckLogin()) {
+			echo '<button id="apply-settings">Apply</button>';
+		}
+	?>
 	<div id="status-message" class="ui-state-error ui-corner-all">
 		<p>
 			<span id="icon" class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
@@ -37,7 +41,11 @@
 <div id="profile-control">
 	<div id="controls">
 		<button id="refresh-controls">Refresh</button>
-		<button id="edit-controls">Edit profile</button>
+		<?php
+			if($fgmembersite->CheckLogin()) {
+				echo '<button id="edit-controls">Edit profile</button>';
+			}
+		?>
 	</div>
 	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
 	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right"></div>
