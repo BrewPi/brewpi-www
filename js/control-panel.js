@@ -15,74 +15,70 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global google, receiveControlSettings, window.googleDocsKey, controlSettings, controlVariables */
+ /* global google, receiveControlSettings, window.googleDocsKey, controlSettings, controlVariables */
 
 var beerTemp = 20.0;
 var fridgeTemp = 20.0;
 
 function drawProfileChart() {
-	"use strict";
-	var query = new google.visualization.Query(
-		'https://docs.google.com/spreadsheet/tq?range=D:E&key=' + window.googleDocsKey);
-	query.send(handleProfileChartQueryResponse);
+    "use strict";
+    var query = new google.visualization.Query( 'https://docs.google.com/spreadsheet/tq?range=D:E&key=' + window.googleDocsKey);
+    query.send(handleProfileChartQueryResponse);
 }
 
 function handleProfileChartQueryResponse(response) {
-	"use strict";
-	if (response.isError()) {
-		window.alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-	return;
-  }
-	var profileData = response.getDataTable();
-	var profileChart = new google.visualization.AnnotatedTimeLine(document.getElementById('profileChartDiv'));
-	profileChart.draw(profileData, {
-		'displayAnnotations': true,
-		'scaleType': 'maximized',
-		'displayZoomButtons': false,
-		'allValuesSuffix': '\u00B0',
-		'numberFormats': '##.0',
-		'displayAnnotationsFilter': true});
+    "use strict";
+    if (response.isError()) {
+        window.alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;
+    }
+    var profileData = response.getDataTable();
+    var profileChart = new google.visualization.AnnotatedTimeLine(document.getElementById('profileChartDiv'));
+    profileChart.draw(profileData, {
+        'displayAnnotations': true,
+        'scaleType': 'maximized',
+        'displayZoomButtons': false,
+        'allValuesSuffix': '\u00B0',
+        'numberFormats': '##.0',
+        'displayAnnotationsFilter': true});
 }
 
+var profileTable = null;
 function drawProfileTable() {
 	"use strict";
-	var query = new google.visualization.Query(
-		'https://docs.google.com/spreadsheet/tq?range=C:E&where=D<date "2070-01-01"&key=' + window.googleDocsKey);
-	query.send(handleProfileTableQueryResponse);
-}
-
-function handleProfileTableQueryResponse(response){
-	"use strict";
-	if (response.isError()) {
-		window.alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-		return;
-	}
-
-	var profileData = response.getDataTable();
-	var profileTable = new google.visualization.Table(document.getElementById('profileTableDiv'));
-	profileTable.draw(profileData,null);
+    $.post("get_beer_profile.php", { "beername": window.beerName }, function(resp) {
+        var beerProfile = null;
+        try {
+            beerProfile = $.parseJSON(resp);
+            profileTable.render(beerProfile);
+        } catch (e) {
+            //$("#"+div).html("<span style=\"padding:100px;\">Could not receive files for beer, did you just start it?</span>");
+            console.log('Cant load beer: ' + window.beerName);
+            return;
+        }
+    });
 }
 
 function statusMessage(messageType, messageText){
-	"use strict";
+    "use strict";
     var $statusMessage = $("#status-message");
     var $statusMessageIcon = $statusMessage.find("p span#icon");
     $statusMessage.removeClass("ui-state-error ui-state-default ui-state-highlight");
     $statusMessageIcon.removeClass("ui-icon-error ui-icon-check ui-icon-info");
-	switch(messageType){
-		case "normal":
+    switch(messageType){
+        case "normal":
             $statusMessageIcon.addClass("ui-icon-check");
             $statusMessage.addClass("ui-state-default");
-			break;
-		case "error":
+            break;
+        case "error":
             $statusMessageIcon.addClass("ui-icon-error");
             $statusMessage.addClass("ui-state-error");
-			break;
-		case "highlight":
+            break;
+        case "highlight":
             $statusMessageIcon.addClass("ui-icon-info");
             $statusMessage.addClass("ui-state-highlight");
-			break;
-	}
+            break;
+    }
     $statusMessage.find("p span#message").text(messageText);
 }
 
@@ -95,28 +91,28 @@ function loadControlPanel(){
             return;
         }
         var $controlPanel = $('#control-panel');
-		switch(window.controlSettings.mode){
-			case 'p':
+        switch(window.controlSettings.mode){
+            case 'p':
                 $controlPanel.tabs( "option", "active", 0);
-				statusMessage("normal","Running in beer profile mode");
-				break;
-			case 'b':
+                statusMessage("normal","Running in beer profile mode");
+                break;
+            case 'b':
                 $controlPanel.tabs( "option", "active", 1);
-				statusMessage("normal","Running in beer constant mode");
-				break;
-			case 'f':
+                statusMessage("normal","Running in beer constant mode");
+                break;
+            case 'f':
                 $controlPanel.tabs( "option", "active", 2);
-				statusMessage("normal","Running in fridge constant mode");
-				break;
-			case 'o':
+                statusMessage("normal","Running in fridge constant mode");
+                break;
+            case 'o':
                 $controlPanel.tabs( "option", "active", 3);
-				statusMessage("normal","Temperature control disabled");
-				break;
-			default:
-				statusMessage("error","Invalid mode ("+window.controlSettings.mode+") received");
-		}
-		window.beerTemp = window.controlSettings.beerSet;
-		window.fridgeTemp = window.controlSettings.fridgeSet;
+                statusMessage("normal","Temperature control disabled");
+                break;
+            default:
+                statusMessage("error","Invalid mode ("+window.controlSettings.mode+") received");
+        }
+        window.beerTemp = window.controlSettings.beerSet;
+        window.fridgeTemp = window.controlSettings.fridgeSet;
 		// beer and fridge temp can be null when not active (off mode)
 		if(window.beerTemp === null){
 			window.beerTemp = 20.0;
@@ -161,38 +157,66 @@ function applySettings(){
             });
             // set mode to profile
             $.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
-        break;
+            break;
         case 1: // beer constant
-            $.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
-            statusMessage("highlight","Mode set to beer constant");
+        $.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
+        statusMessage("highlight","Mode set to beer constant");
         break;
         case 2: // fridge constant
-            $.post('socketmessage.php', {messageType: "setFridge", message: String(window.fridgeTemp)}, function(){});
-            statusMessage("highlight","Mode set to fridge constant");
+        $.post('socketmessage.php', {messageType: "setFridge", message: String(window.fridgeTemp)}, function(){});
+        statusMessage("highlight","Mode set to fridge constant");
         break;
         case 3: // off
-            $.post('socketmessage.php', {messageType: "setOff", message: ""}, function(){});
-            statusMessage("highlight","Temperature control disabled");
+        $.post('socketmessage.php', {messageType: "setOff", message: ""}, function(){});
+        statusMessage("highlight","Temperature control disabled");
         break;
     }
-	setTimeout(loadControlPanel,5000);
+    setTimeout(loadControlPanel,5000);
 }
 
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
-		$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
+	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
 		drawProfileChart();
 		drawProfileTable();
 	});
 
-    $("button#edit-controls").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
-		window.open("https://docs.google.com/spreadsheet/ccc?key=" + window.googleDocsKey);
-	});
+    var profileEdit = new BeerProfileTable('profileTableEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileTableStartDate' });
+    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate' });
 
-	$("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function(){
-		applySettings();
-	});
+    function showProfileEditDialog() {
+        profileEdit.render( $('#beerProfileData').val() );
+        $("#profileTableEditDiv").dialog( {
+            modal: true,
+            title: "Beer Temperature Profile",
+            buttons: [
+                {
+                    text: "Save",
+                    click: function() {
+                        var beerName = $('#profileTableName').val();
+                        if ( beerName != null && beerName != '' ) {
+                            console.log("Saving beer: " + beerName + ', with data: ' + profileEdit.toCSV());
+                        }
+                        $( this ).dialog( "close" );
+                    }
+                },{
+                    text: "Cancel",
+                    click: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            ]
+        });
+    }
+
+    $("button#edit-controls").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
+        showProfileEditDialog();
+    });
+
+    $("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function(){
+        applySettings();
+    });
 
 	// set functions to validate and mask temperature input
 	$("input.temperature").each( function(){

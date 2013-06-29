@@ -39,6 +39,26 @@
 		<button id="refresh-controls">Refresh</button>
 		<button id="edit-controls">Edit profile</button>
 	</div>
+	<style>
+	       #profileTableEditDiv { display:none; }
+	       .profileTableLabel { display:inline-block; width:75px; }
+	       .profileTableField { display:inline-block; width:170px; }
+	       .profileTableEdit { margin:10px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; }
+	       .profileTableEdit TR.odd { background:#eee; }
+	       .profileTableEdit TR.even { background:#fff; }
+	       .profileTableEdit tbody TR:hover { background:#ddd; }
+	       .profileTableEdit TD, .profileTableEdit TH { text-align:right; padding:10px; }
+	       .profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
+	       .profileTableEdit TH { border-right: solid 1px #fff; }
+	       .profileTableEdit TH:last-child { border-right: 0px }
+	</style>
+	<div id="profileTableEditDiv">
+	       <div>
+	               <div class="profileTableLabel">Beer Name:</div><input class="profileTableField" type="text" id="profileTableBeerName" name="profileTableStartDate" valu
+	               <div class="profileTableLabel">Start Date:</div><input class="profileTableField" type="text" id="profileTableStartDate" name="profileTableStartDate" va
+	       </div>
+	       <div id="profileTableTempsDiv"></div>
+	</div>
 	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
 	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right"></div>
 </div>

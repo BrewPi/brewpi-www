@@ -73,6 +73,7 @@ $profileKey = $settingsArray["profileKey"];
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
+		<script type="text/javascript" src="js/profile-table.js"></script>
 	</body>
 </html>
 
