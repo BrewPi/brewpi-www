@@ -94,15 +94,12 @@ BeerProfileTable.prototype = {
     parseRows: function(data) {
         return (data != null) ? data.split('\n') : [];
     },
-    updateDates: function() {
-        if ( this.config.startDateFieldSelector != null ) {
-            var startDate = $(this.config.startDateFieldSelector).val();
-            if ( startDate != null && startDate != '' ) {
-                $(this.rowsSelector).each(function() {
-                    // add days in row to startdate
-                    // set start date to new value
-                });
-            }
+    updateDates: function(startDate) {
+        if ( startDate != null && startDate != '' ) {
+            $(this.rowsSelector).each(function() {
+                // add days in row to startdate
+                // set start date to new value
+            });
         }
     },
     selectAll: function(elem) {

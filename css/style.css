@@ -645,3 +645,21 @@ button#maintenance{
 	margin-bottom: 20px;
 	width: inherit;
 }
+
+#profileSelectDiv { display:none; }
+#profileTableEditDiv { display:none; }
+.profileTableLabel { display:inline-block; width:75px; }
+.profileTableField { display:inline-block; width:170px; }
+.profileTableEdit { margin:10px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; }
+.profileTableEdit TR.odd { background:#eee; }
+.profileTableEdit TR.even { background:#fff; }
+.profileTableEdit tbody TR:hover { background:#ddd; }
+.profileTableEdit TD, .profileTableEdit TH { text-align:right; padding:10px; }
+.profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
+.profileTableEdit TH { border-right: solid 1px #fff; }
+.profileTableEdit TH:last-child { border-right: 0px }
+
+#profileSelect .ui-selecting { background: #FECA40; }
+#profileSelect .ui-selected { background: #F39814; color: white; }
+#profileSelect { list-style-type: none; margin: 0; padding: 0; }
+#profileSelect li { margin: 3px; padding: 0.4em; height: 18px; }

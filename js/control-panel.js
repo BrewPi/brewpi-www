@@ -44,19 +44,16 @@ function handleProfileChartQueryResponse(response) {
 }
 
 var profileTable = null;
-function drawProfileTable() {
+function drawProfileTable(beerName) {
 	"use strict";
-    $.post("get_beer_profile.php", { "beername": window.beerName }, function(resp) {
-        var beerProfile = null;
+    $.post("get_beer_profile.php", { "beername": beerName }, function(beerProfile) {
         try {
-            beerProfile = $.parseJSON(resp);
             profileTable.render(beerProfile);
         } catch (e) {
-            //$("#"+div).html("<span style=\"padding:100px;\">Could not receive files for beer, did you just start it?</span>");
             console.log('Cant load beer: ' + window.beerName);
             return;
         }
-    });
+    }, 'json');
 }
 
 function statusMessage(messageType, messageText){
@@ -85,7 +82,7 @@ function statusMessage(messageType, messageText){
 function loadControlPanel(){
 	"use strict";
 	drawProfileChart();
-	drawProfileTable();
+	drawProfileTable(window.beerName);
 	receiveControlSettings(function(){
         if(window.controlSettings === {}){
             return;
@@ -174,22 +171,65 @@ function applySettings(){
     setTimeout(loadControlPanel,5000);
 }
 
+
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
 	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
 		drawProfileChart();
-		drawProfileTable();
+		drawProfileTable(window.beerName);
 	});
 
     var profileEdit = new BeerProfileTable('profileTableEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileTableStartDate' });
     profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate' });
 
+    function showProfileSelectDialog() {
+        var selectedProfile = null;
+        $('#profileSelect').selectable({
+            stop: function(e, ui) {
+                $(".ui-selected:first", this).each(function() {
+                    $(this).siblings().removeClass("ui-selected");
+                    selectedProfile = $(this).text();
+                });
+            }
+        });
+        $.post("get_beer_profiles.php", {}, function(beerProfiles) {
+            var beerProfile = null;
+            try {
+                $('#profileSelect').empty();
+                for( var i=0; i<beerProfiles.profiles.length; i++) {
+                    var $li = $("<li></li>").addClass("ui-widget-content").text(beerProfiles.profiles[i]);
+                    $('#profileSelect').append($li);
+                }
+            } catch (e) {
+                console.log('Can not load temperature profiles');
+                return;
+            }
+        }, 'json');
+        $("#profileSelectDiv").dialog( {
+            modal: true,
+            title: "Select Temperature Profile",
+            buttons: [
+                {
+                    text: "OK",
+                    click: function() {
+                        if ( selectedProfile != null ) {
+                            drawProfileTable(selectedProfile);
+                        }
+                        $( this ).dialog( "close" );
+                    }
+                },{
+                    text: "Cancel",
+                    click: function() { $( this ).dialog( "close" ); }
+                }
+            ]
+        });
+    }
     function showProfileEditDialog() {
         profileEdit.render( $('#beerProfileData').val() );
         $("#profileTableEditDiv").dialog( {
             modal: true,
-            title: "Beer Temperature Profile",
+            title: "Edit Temperature Profile",
             buttons: [
                 {
                     text: "Save",
@@ -202,19 +242,21 @@ $(document).ready(function(){
                     }
                 },{
                     text: "Cancel",
-                    click: function() {
-                        $( this ).dialog( "close" );
-                    }
+                    click: function() { $( this ).dialog( "close" ); }
                 }
             ]
         });
     }
 
-    $("button#edit-controls").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
+    $("button#load-controls").button({  icons: {primary: "ui-icon-open" } }).click(function() {
+        showProfileSelectDialog();
+    });
+
+    $("button#edit-controls").button({  icons: {primary: "ui-icon-wrench" } }).click(function() {
         showProfileEditDialog();
     });
 
-    $("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function(){
+    $("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function() {
         applySettings();
     });
 

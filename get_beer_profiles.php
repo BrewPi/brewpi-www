@@ -18,7 +18,7 @@
 ?>
 
 <?php
-	$fileNames = array();
+	$profiles = array();
   	$profilesDir = 'data/profiles';
 	if(!file_exists($profilesDir)){
 		echo json_encode( array( "error" => "directory: $profilesDir, does not exist" ) );
@@ -28,22 +28,14 @@
   	if($handle == false){
 	    die("Cannot retrieve beer files directory: " . $profilesDir);
   	}
-  	$first = true;
   	$i=0;
   	while (false !== ($file = readdir($handle))){  // iterate over all csv files in directory
-	  $extension = strtolower(substr(strrchr($file, '.'), 1));
-	  if($extension == 'csv' ){
-	  	$jsonFile =  $profilesDir . '/' . $file;
-			$fileNames[$i] = str_replace(".csv", "", $jsonFile); // strip extension for sorting
+		$extension = strtolower(substr(strrchr($file, '.'), 1));
+		if($extension == 'csv' ){
+			$profiles[$i] = str_replace(".csv", "", $file); // strip extension for sorting
 			$i=$i+1;
 		}
 	}
 	closedir($handle);
-	if ( empty($fileNames) ) {
-		echo json_encode(array());
-	} else {
-		sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
-		array_walk($fileNames, function(&$value) { $value .= '.csv'; }); // add .json again
-		echo json_encode($fileNames);
-	}
+	echo json_encode( array( "profiles" => $profiles) );
 ?>
