@@ -18,7 +18,7 @@
 ?>
 
 <?php
-	$beerName = $_REQUEST["beername"];
+	$beerName = $_REQUEST["name"];
   	$beerProfile = 'data/profiles/' . $beerName . ".csv";
 	if(!file_exists($beerProfile)){
 		echo json_encode( array( "error" => "beer profile does not exist for beer: $beerProfile" ) );
@@ -32,7 +32,7 @@
 		array_push( $rows, array( "days" => $row[0], "temperature" => $row[1]) );
 	}
 
-	$resp = array( "beerName" => $beerName, "profile" => $rows );
+	$resp = array( "name" => $beerName, "profile" => $rows );
 
 	echo json_encode($resp);
 ?>

@@ -45,13 +45,13 @@
 	</div>
 	<div id="profileTableEditDiv">
 	       <div>
-	               <div class="profileTableLabel">Beer Name:</div><input class="profileTableField" type="text" id="profileTableBeerName" name="profileTableStartDate" valu
-	               <div class="profileTableLabel">Start Date:</div><input class="profileTableField" type="text" id="profileTableStartDate" name="profileTableStartDate" va
+               <div class="profileTableLabel">Beer Name:</div><input class="profileTableField" type="text" id="profileTableName" name="profileTableStartDate" value="" />
+               <div class="profileTableLabel">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
 	       </div>
 	       <div id="profileTableTempsDiv"></div>
 	</div>
 	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
-	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right"></div>
+	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right">Start: <input type="text" id="profileTableStartDate" name="profileTableStartDate" value="" /></div>
 </div>
 <div id="beer-constant-control">
 	<div id="beer-temp" class="temp-display">

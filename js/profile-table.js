@@ -8,6 +8,7 @@ function BeerProfileTable(id, config) {
 BeerProfileTable.prototype = {
     init: function(id, config) {
         this.id = id;
+        this.profileName = null;
         this.config = (config || {});
         this.selector = '#' + this.id;
         this.bodySelector = this.selector + ' tbody';
@@ -18,6 +19,7 @@ BeerProfileTable.prototype = {
         this.newRow = '<tr></tr>';
         this.newCell = '<td></td>';
         this.newHeadCell = '<th></th>';
+        this.numSecondsPerDay = 24 * 60 * 60 * 1000;
         this.prepTable();
     },
     prepTable: function() {
@@ -27,6 +29,7 @@ BeerProfileTable.prototype = {
         $(this.bodySelector).addClass(this.config.tbodyClass);
     },
     render: function(data) {
+        this.profileName = data.name;
         this.clearRows();
         this.renderHeader(data);
         this.renderRows(data);
@@ -50,7 +53,9 @@ BeerProfileTable.prototype = {
             $(this.bodySelector).append(newRow);
             this.renderRow( rows[i], newRow );
         }
-        this.addRow();
+        if ( this.config.editable ) {
+            this.addRow();
+        }
     },
     renderRow: function(rowData, $row) {
         var theCell = $(this.newCell).html( rowData.days );
@@ -78,13 +83,12 @@ BeerProfileTable.prototype = {
         var $newRow = $(this.newRow).attr('class', ($(this.rowsSelector).size() % 2 == 1) ? 'odd' : 'even');
         $(this.bodySelector).append($newRow);
         var cell = $(this.newCell).html( '' ).focus();
-        this.attachEditHandlers(0, cell);
+        this.attachEditHandlers(cell);
         $newRow.append(cell);
         cell = $(this.newCell).html( '' );
-        this.attachEditHandlers(1, cell);
+        this.attachEditHandlers(cell);
         $newRow.append(cell);
         cell = $(this.newCell).html( '' );
-        this.attachEditHandlers(2, cell);
         $newRow.append(cell);
     },
     clearRows: function() {
@@ -95,11 +99,28 @@ BeerProfileTable.prototype = {
         return (data != null) ? data.split('\n') : [];
     },
     updateDates: function(startDate) {
-        if ( startDate != null && startDate != '' ) {
-            $(this.rowsSelector).each(function() {
-                // add days in row to startdate
-                // set start date to new value
-            });
+        var me = this;
+        if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
+            var startDate = $(this.config.startDateFieldSelector).val();
+            if ( startDate != null && startDate != '' ) {
+                var theDate = null;
+                try {
+                    theDate = $(this.config.startDateFieldSelector).datepicker( "getDate" );
+                    var idx = 0;
+                    $(this.rowsSelector).each(function() {
+                        var strDays = $(this).find("td:first-child").text();
+                        if ( strDays != null && strDays != '' ) {
+                            var days = parseFloat(strDays);
+                            var newDate = new Date( theDate + (me.numSecondsPerDay * days) );
+                            $(this).find("td:last-child").text($.datepicker.formatDate($.datepicker.W3C, newDate));
+                            theDate = newDate.getTime();
+                        }
+                        idx++;
+                    });
+                } catch(e) {
+                    console.log("error caculating dates: " + e.message);                
+                }
+            }
         }
     },
     selectAll: function(elem) {
@@ -118,16 +139,47 @@ BeerProfileTable.prototype = {
             }
         }, 1);
     },
+    toJSON: function() {
+        var points = [];
+        var me = this;
+        $(this.rowsSelector).each(function() {
+            var cell = $(this).find('td:first-child');
+            if ( !me.isBlankCell(cell) ) {
+                var dataPoint = { days : cell.text(), temperature: cell.next().text() };
+                points[points.length] = dataPoint;
+            }
+        });
+        return { name: this.profileName, profile: points};
+    },
     toCSV: function() {
         var ret = '';
+        var me = this;
         $(this.rowsSelector).each(function() {
-            var notfirst = 0;
+            var idx = 0;
             $(this).find('td').each(function() {
-                ret += ((notfirst) ? ',' : '') + $(this).html();
-                notfirst++;
+                if ( !me.isBlankCell( $(this) ) ) {
+                    if ( idx < 2 ) {
+                        ret += ((idx>0) ? ',' : '') + $(this).html();
+                    }
+                }
+                idx++;
             });
             ret += '\n';
         });
         return ret;
+    },
+    toXML: function() {
+            var days = cell.text();
+            if ( days != null && days != '' ) {
+            }
+        
+    },
+    isBlankCell: function(cell) {
+        var contents = cell.text();
+        if ( contents != null && contents != '' ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
