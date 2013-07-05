@@ -1,4 +1,15 @@
-/* global console, alert, Spinner */
+/*
+ * Temperature Profile Table
+ * config is:
+ * {
+ *   tableClass: "<css classname for table>",
+ *   theadClass: "<css classname for thead>",
+ *   tbodyClass: "<css classname for tbody>",
+ *   menuCssClass: "<context menu class>",
+ *   editable: true|false,
+ *   startDateFieldSelector: "<css selector for start date field>"
+ * }
+ */
 
 function BeerProfileTable(id, config) {
     if (arguments.length > 0 ) {
@@ -11,6 +22,8 @@ BeerProfileTable.prototype = {
         this.profileName = null;
         this.config = (config || {});
         this.selector = '#' + this.id;
+        this.menuId = this.id + 'Menu';
+        this.menuSelector = '#' + this.menuId;
         this.bodySelector = this.selector + ' tbody';
         this.headSelector = this.selector + ' thead';
         this.footSelector = this.selector + ' tfoot';
@@ -35,6 +48,7 @@ BeerProfileTable.prototype = {
         this.renderRows(data);
         this.renderFooter(data);
         this.updateDates();
+        this.updateBGColors();
     },
     renderHeader: function(data) {
         var headerRow = $(this.newRow);
@@ -49,7 +63,7 @@ BeerProfileTable.prototype = {
     renderRows: function(data) {
         var rows = data.profile;
         for( var i=0; i<rows.length; i++ ) {
-            var newRow = $(this.newRow).attr('class', (i % 2 == 1) ? 'odd' : 'even');
+            var newRow = $(this.newRow);
             $(this.bodySelector).append(newRow);
             this.renderRow( rows[i], newRow );
         }
@@ -66,6 +80,22 @@ BeerProfileTable.prototype = {
         $row.append(theCell);
         var dateCell = $(this.newCell).html( '' );
         $row.append(dateCell);
+        var me = this;
+        $row.click(function() {
+            $(this).toggleClass("selected").siblings().removeClass("selected");
+        })
+        if (this.config.editable) {
+            $row.bind("contextmenu",function(e) {
+                $(this).addClass("selected").siblings().removeClass("selected");
+                var selectedIndex = $(this).data('rowIndex');
+                var newMenu = me.createContextMenu(selectedIndex);
+                $(me.selector).append(newMenu);
+                me.positionMenu(e, newMenu);
+                newMenu.show();
+
+                e.preventDefault();
+            });
+        }
     },
     renderFooter: function(data) {
     },
@@ -80,8 +110,22 @@ BeerProfileTable.prototype = {
         }
     },
     addRow: function() {
-        var $newRow = $(this.newRow).attr('class', ($(this.rowsSelector).size() % 2 == 1) ? 'odd' : 'even');
+        var $newRow = this.createRow();
         $(this.bodySelector).append($newRow);
+    },
+    insertRow: function(index, afterOrBefore) {
+        var row = this.createRow();
+        if ( afterOrBefore ) {
+            $(this.rowsSelector).eq(index).after(row);
+        } else {
+            $(this.rowsSelector).eq(index).before(row);
+        }
+    },
+    deleteRow: function(index) {
+        
+    },
+    createRow: function() {
+        var $newRow = $(this.newRow);
         var cell = $(this.newCell).html( '' ).focus();
         this.attachEditHandlers(cell);
         $newRow.append(cell);
@@ -90,6 +134,7 @@ BeerProfileTable.prototype = {
         $newRow.append(cell);
         cell = $(this.newCell).html( '' );
         $newRow.append(cell);
+        return $newRow;
     },
     clearRows: function() {
         $(this.headSelector).empty();
@@ -98,15 +143,56 @@ BeerProfileTable.prototype = {
     parseRows: function(data) {
         return (data != null) ? data.split('\n') : [];
     },
-    updateDates: function(startDate) {
+    createContextMenu: function(index) {
+        this.closeContextMenu();
+        var me = this;
+        var $menu = $('<div></div>').attr('id', this.menuId).addClass(this.config.menuCssClass).data('rowIndex', index);
+        var $list = $('<ul></ul>');
+        var $item = $('<li></li>').addClass("insertBefore").text('Insert Row Before').click( function() { me.insertRow(index, false); me.closeContextMenu(); });
+        $list.append($item);
+        $item = $('<li></li>').addClass("insertAfter").text('Insert Row After').click( function() { me.insertRow(index, true); me.closeContextMenu(); });
+        $list.append($item);
+        $item = $('<li></li>').addClass("delete").text('Delete Row').click( function() { me.deleteRow(index); me.closeContextMenu(); });
+        $list.append($item);
+        $menu.append($list);
+
+        // $(document).bind("mouseup", function(e) {
+        //    if (e.which == 1) { me.closeContextMenu(); }
+        // });
+
+        return $menu;
+    },
+    positionMenu: function(e, newMenu) {
+
+        // if menu doesn't fit, set right to 0 ?
+        // jquery dialog messes positioning up a bit so need more testing
+        //  for position limiting code
+        // perhaps allowing for a "positioning container selector" in config
+        // it would default to window
+
+        newMenu.css("top", $(e.target).position().top + e.offsetY);
+        newMenu.css("left", $(e.target).position().left + e.offsetX);
+        // var menuWidth = newMenu.outerWidth();
+        // var menuHeight = newMenu.outerHeight();
+        // if ((e.pageX + newMenu.outerWidth()) > winWidth) {
+        //     newMenu.css("left", winWidth - newMenu.outerWidth());
+        // } else {
+        //     newMenu.css("left", e.pageX);
+        // }
+
+    },
+    closeContextMenu: function(index) {
+        if ( $(this.menuSelector).length ) {
+            $(this.menuSelector).remove();
+        }
+    },
+    updateDates: function() {
         var me = this;
         if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
             var startDate = $(this.config.startDateFieldSelector).val();
             if ( startDate != null && startDate != '' ) {
-                var theDate = null;
                 try {
-                    theDate = $(this.config.startDateFieldSelector).datepicker( "getDate" );
-                    var idx = 0;
+                    var theDate = $(this.config.startDateFieldSelector).datepicker( "getDate" );
                     $(this.rowsSelector).each(function() {
                         var strDays = $(this).find("td:first-child").text();
                         if ( strDays != null && strDays != '' ) {
@@ -115,13 +201,20 @@ BeerProfileTable.prototype = {
                             $(this).find("td:last-child").text($.datepicker.formatDate($.datepicker.W3C, newDate));
                             theDate = newDate.getTime();
                         }
-                        idx++;
                     });
                 } catch(e) {
                     console.log("error caculating dates: " + e.message);                
                 }
             }
         }
+    },
+    updateBGColors: function() {
+        var idx = 0;
+        var me = this;
+        $(this.rowsSelector).each(function() {
+            $(this).addClass((idx % 2 == 1) ? 'odd' : 'even').data('rowIndex', idx);
+            idx++;
+        });
     },
     selectAll: function(elem) {
         window.setTimeout(function() {

@@ -651,13 +651,24 @@ button#maintenance{
 .profileTableLabel { display:inline-block; width:75px; }
 .profileTableField { display:inline-block; width:170px; }
 .profileTableEdit { margin:10px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; }
-.profileTableEdit TR.odd { background:#eee; }
-.profileTableEdit TR.even { background:#fff; }
-.profileTableEdit tbody TR:hover { background:#ddd; }
+.profileTableEdit tbody TR.odd { background:#f7f7f7; }
+.profileTableEdit tbody TR.even { background:#fff; }
+.profileTableEdit tbody TR:hover { background:#eee; }
+.profileTableEdit tbody TR.selected { background:#ddd; }
 .profileTableEdit TD, .profileTableEdit TH { text-align:right; padding:10px; }
 .profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
 .profileTableEdit TH { border-right: solid 1px #fff; }
 .profileTableEdit TH:last-child { border-right: 0px }
+.profileTableMenu {
+    position: absolute;
+    display: none;
+    border: #ccc solid 1px;
+    background: #fff;
+}
+.profileTableMenu UL { list-style-type: none; margin: 0; padding: 0; }
+.profileTableMenu UL LI { margin: 0; padding: 5px; border-bottom: 1px solid #ccc; cursor:pointer; cursor:hand; }
+.profileTableMenu UL LI:last-child { border-bottom: 0px solid #ccc; }
+.profileTableMenu UL LI:hover { color:#fff; border: 1px solid #4297d7; background: #5c9ccc; }
 
 #profileSelect .ui-selecting { background: #FECA40; }
 #profileSelect .ui-selected { background: #F39814; color: white; }
