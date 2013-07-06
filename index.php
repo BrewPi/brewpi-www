@@ -29,7 +29,7 @@ if(is_null($settingsArray)){
 }
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
-$profileKey = $settingsArray["profileKey"];
+$profileName = $settingsArray["profileName"];
 ?>
 
 <!DOCTYPE html >
@@ -67,6 +67,8 @@ $profileKey = $settingsArray["profileKey"];
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;
 			window.googleDocsKey = <?php echo "\"$profileKey\""?>;
 			window.beerName = <?php echo "\"$beerName\""?>;
+			window.profileKey = <?php echo "\"$profileKey\""?>;
+			window.profileName = <?php echo "\"$profileName\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>

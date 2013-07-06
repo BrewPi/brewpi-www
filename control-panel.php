@@ -38,20 +38,25 @@
 	<div id="controls">
 		<button id="refresh-controls">Refresh</button>
 		<button id="load-controls">Load profile</button>
+		<button id="new-controls">New profile</button>
 		<button id="edit-controls">Edit profile</button>
 	</div>
 	<div id="profileSelectDiv">
 		<ol id="profileSelect"></ol>
 	</div>
-	<div id="profileTableEditDiv">
+	<div id="profileEditDiv">
 	       <div>
-               <div class="profileTableLabel">Profile Name:</div><input class="profileTableField" type="text" id="profileTableName" name="profileTableStartDate" value="" />
+               <div id="profileEditNameLabel" class="profileTableLabel">Profile Name:</div><input class="profileTableField" type="text" id="profileEditName" name="profileEditName" value="" />
                <div class="profileTableLabel">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
 	       </div>
+	       <div id="profileSaveError">Error Saving Profile!</div>
 	       <div id="profileTableTempsDiv"></div>
 	</div>
 	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
-	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right">Start: <input type="text" id="profileTableStartDate" name="profileTableStartDate" value="" /></div>
+	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right">
+		<div>Profile: <span id="profileTableName"></span></div>
+		<div>Start: <input type="text" id="profileTableStartDate" name="profileTableStartDate" value="" /></div>
+	</div>
 </div>
 <div id="beer-constant-control">
 	<div id="beer-temp" class="temp-display">

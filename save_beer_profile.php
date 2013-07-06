@@ -20,19 +20,13 @@
 <?php
 	$profile = $_REQUEST["name"];
   	$beerProfile = 'data/profiles/' . $profile . ".csv";
-	if(!file_exists($beerProfile)){
-		echo json_encode( array( "error" => "beer profile does not exist for beer: $profile" ) );
-		return;
-	}
-	
-	$lines = file($beerProfile, FILE_IGNORE_NEW_LINES) or die(json_encode( array( "error" => "Unable to open profile for beer: " + $profile ) ));
-	$rows = array();
-	foreach( $lines as $line) {
-		$row = explode(",", $line);
-		array_push( $rows, array( "days" => $row[0], "temperature" => $row[1]) );
+	$contents = $_REQUEST["profile"];
+
+	if ( file_put_contents($beerProfile, $contents) ) {
+		$resp = array( "status" => "success", "message" => $profile . " saved successfully");
+		echo json_encode($resp);
+	} else {
+		echo json_encode( array( "status" => "error", "message" => "Error saving profile: $profile" ) );
 	}
 
-	$resp = array( "name" => $profile, "profile" => $rows );
-
-	echo json_encode($resp);
 ?>

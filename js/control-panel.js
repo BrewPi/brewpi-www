@@ -68,7 +68,9 @@ function statusMessage(messageType, messageText){
 
 function loadControlPanel(){
 	"use strict";
-    loadProfile(window.beerName, renderProfile);
+    if ( window.profileName != '' ) {
+        loadProfile(window.profileName, renderProfile);
+    }
 	receiveControlSettings(function(){
         if(window.controlSettings === {}){
             return;
@@ -163,6 +165,8 @@ var profileEdit = null;
 function renderProfile(beerProfile) {
     "use strict";
     profileTable.render(beerProfile);
+    $("#profileTableName").text(beerProfile.name);
+    $("button#edit-controls").show();
     drawProfileChart();
 }
 
@@ -223,19 +227,42 @@ function showProfileSelectDialog() {
     });
 }
 function showProfileEditDialog() {
-    profileEdit.render( profileTable.toJSON() );
-    $("#profileTableEditDiv").dialog( {
+    $("#profileEditDiv").dialog( {
         modal: true,
         title: "Edit Temperature Profile",
         buttons: [
             {
                 text: "Save",
                 click: function() {
-                    var profName = $('#profileTableName').val();
+                    var profName = $('#profileEditName').val();
                     if ( profName != null && profName != '' ) {
-                        console.log("Saving profile: " + profName + ', with data: ' + profileEdit.toCSV() );
+                        $('#profileEditNameLabel').removeClass('error');
+                        var jqDialog = $( this );
+                        $.ajax( {
+                            type: "post", 
+                            url: "save_beer_profile.php",
+                            dataType: "json",
+                            data: { name: profName, profile: profileEdit.toCSV() },
+                            success: function(response) {
+                                if ( response.status != 'error' ) {
+                                    loadProfile(profName, renderProfile);
+                                    $('#profileSaveError').hide();
+                                    jqDialog.dialog( "close" );
+                                } else {
+                                    console.log("profile save error: " + response.message);
+                                    $('#profileSaveError').show();
+                                }
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                console.log("profile save HTTP error - request status: " + xhr.status + " - error: " + thrownError);
+                                $('#profileSaveError').show();
+                            }
+                        });
+
+                    } else {
+                        $('#profileEditNameLabel').addClass('error');
+                        $('#profileEditName').focus();
                     }
-                    $( this ).dialog( "close" );
                 }
             },{
                 text: "Cancel",
@@ -260,20 +287,31 @@ function profTableGlobalClickHandler() {
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
-    profileEdit = new BeerProfileTable('profileTableEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
+    profileEdit = new BeerProfileTable('profileEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
     profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate' });
 
 	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
-        loadProfile(window.beerName, renderProfile);
+        if ( window.profileName != '' ) {
+            loadProfile(window.profileName, renderProfile);
+        }
 	});
 
     $("button#load-controls").button({  icons: {primary: "ui-icon-open" } }).click(function() {
         showProfileSelectDialog();
     });
 
-    $("button#edit-controls").button({  icons: {primary: "ui-icon-wrench" } }).click(function() {
+    $("button#new-controls").button({  icons: {primary: "ui-icon-new" } }).click(function() {
+        $("#profileEditName").val('');
+        profileEdit.render( { name: '', profile: [] } );
         showProfileEditDialog();
     });
+
+    $("button#edit-controls").button({  icons: {primary: "ui-icon-wrench" } }).click(function() {
+        $("#profileEditName").val(profileTable.profileName);
+        profileEdit.render( profileTable.toJSON() );
+        showProfileEditDialog();
+    }).hide();
+
     $("#profileTableStartDate").datepicker({ dateFormat: $.datepicker.W3C, onSelect: function() { 
         profileTable.updateDates();
     }});

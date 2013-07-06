@@ -26,7 +26,7 @@
 	}
   	$handle = opendir($profilesDir);
   	if($handle == false){
-	    die("Cannot retrieve beer files directory: " . $profilesDir);
+	    die("Cannot retrieve profiles directory: " . $profilesDir);
   	}
   	$i=0;
   	while (false !== ($file = readdir($handle))){  // iterate over all csv files in directory

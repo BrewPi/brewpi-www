@@ -647,9 +647,11 @@ button#maintenance{
 }
 
 #profileSelectDiv { display:none; }
-#profileTableEditDiv { display:none; }
-.profileTableLabel { display:inline-block; width:75px; }
-.profileTableField { display:inline-block; width:170px; }
+#profileEditDiv { display:none; }
+#profileSaveError { color:red; display:none; }
+.profileTableLabel { display:inline-block; width:90px; }
+.profileTableLabel.error { color:red; font-weight: bold; }
+.profileTableField { display:inline-block; width:165px; }
 .profileTableEdit { margin:10px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; }
 .profileTableEdit tbody TR.odd { background:#f7f7f7; }
 .profileTableEdit tbody TR.even { background:#fff; }
@@ -666,8 +668,8 @@ button#maintenance{
     background: #fff;
 }
 .profileTableMenu UL { list-style-type: none; margin: 0; padding: 0; }
-.profileTableMenu UL LI { margin: 0; padding: 5px; border-bottom: 1px solid #ccc; cursor:pointer; cursor:hand; }
-.profileTableMenu UL LI:last-child { border-bottom: 0px solid #ccc; }
+.profileTableMenu UL LI { margin: 0; padding: 5px; border: 1px solid #fff; border-bottom: 1px solid #ccc; cursor:pointer; cursor:hand; }
+.profileTableMenu UL LI:last-child { border-bottom: 1px solid #fff; }
 .profileTableMenu UL LI:hover { color:#fff; border: 1px solid #4297d7; background: #5c9ccc; }
 
 #profileSelect .ui-selecting { background: #FECA40; }
