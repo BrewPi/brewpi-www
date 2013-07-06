@@ -45,7 +45,7 @@
 	</div>
 	<div id="profileTableEditDiv">
 	       <div>
-               <div class="profileTableLabel">Beer Name:</div><input class="profileTableField" type="text" id="profileTableName" name="profileTableStartDate" value="" />
+               <div class="profileTableLabel">Profile Name:</div><input class="profileTableField" type="text" id="profileTableName" name="profileTableStartDate" value="" />
                <div class="profileTableLabel">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
 	       </div>
 	       <div id="profileTableTempsDiv"></div>

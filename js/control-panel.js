@@ -245,12 +245,23 @@ function showProfileEditDialog() {
     });
 }
 
+// profile table context menu global click handlers
+function profTableContextMenuHandler(shown) {
+    if (shown) {
+        $('html').bind('click', profTableGlobalClickHandler );
+    } else {
+        $('html').unbind('click', profTableGlobalClickHandler );
+    }
+}
+function profTableGlobalClickHandler() {
+    profileEdit.closeContextMenu();
+}
 
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
-    profileEdit = new BeerProfileTable('profileTableEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", menuCssClass: 'profileTableMenu', editable: true, startDateFieldSelector: '#profileEditStartDate' });
-    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", menuCssClass: 'profileTableMenu', editable: false, startDateFieldSelector: '#profileTableStartDate' });
+    profileEdit = new BeerProfileTable('profileTableEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
+    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate' });
 
 	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
         loadProfile(window.beerName, renderProfile);

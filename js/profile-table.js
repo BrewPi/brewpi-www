@@ -5,9 +5,10 @@
  *   tableClass: "<css classname for table>",
  *   theadClass: "<css classname for thead>",
  *   tbodyClass: "<css classname for tbody>",
- *   menuCssClass: "<context menu class>",
  *   editable: true|false,
- *   startDateFieldSelector: "<css selector for start date field>"
+ *   startDateFieldSelector: "<css selector for start date field>",
+ *   contextMenuCssClass: "<context menu class>",
+ *   contextMenuDisplayHandler: "<context menu shown/hidden event handler>"
  * }
  */
 
@@ -47,8 +48,7 @@ BeerProfileTable.prototype = {
         this.renderHeader(data);
         this.renderRows(data);
         this.renderFooter(data);
-        this.updateDates();
-        this.updateBGColors();
+        this.updateDisplay();
     },
     renderHeader: function(data) {
         var headerRow = $(this.newRow);
@@ -63,51 +63,17 @@ BeerProfileTable.prototype = {
     renderRows: function(data) {
         var rows = data.profile;
         for( var i=0; i<rows.length; i++ ) {
-            var newRow = $(this.newRow);
-            $(this.bodySelector).append(newRow);
-            this.renderRow( rows[i], newRow );
+            this.renderRow( rows[i] );
         }
         if ( this.config.editable ) {
             this.addRow();
         }
     },
-    renderRow: function(rowData, $row) {
-        var theCell = $(this.newCell).html( rowData.days );
-        this.attachEditHandlers(theCell);
-        $row.append(theCell);
-        theCell = $(this.newCell).html( rowData.temperature );
-        this.attachEditHandlers(theCell);
-        $row.append(theCell);
-        var dateCell = $(this.newCell).html( '' );
-        $row.append(dateCell);
-        var me = this;
-        $row.click(function() {
-            $(this).toggleClass("selected").siblings().removeClass("selected");
-        })
-        if (this.config.editable) {
-            $row.bind("contextmenu",function(e) {
-                $(this).addClass("selected").siblings().removeClass("selected");
-                var selectedIndex = $(this).data('rowIndex');
-                var newMenu = me.createContextMenu(selectedIndex);
-                $(me.selector).append(newMenu);
-                me.positionMenu(e, newMenu);
-                newMenu.show();
-
-                e.preventDefault();
-            });
-        }
+    renderRow: function(rowData) {
+        var newRow = this.createRow(rowData.days, rowData.temperature);
+        $(this.bodySelector).append(newRow);
     },
     renderFooter: function(data) {
-    },
-    attachEditHandlers: function($theCell) {
-        var me = this;
-        if ( this.config.editable ) {
-            $theCell.attr('contenteditable', 'true').focus(function() {
-                me.selectAll(this);
-            }).blur(function() {
-                me.updateDates();
-            });
-        }
     },
     addRow: function() {
         var $newRow = this.createRow();
@@ -120,21 +86,54 @@ BeerProfileTable.prototype = {
         } else {
             $(this.rowsSelector).eq(index).before(row);
         }
+        var me = this;
+        window.setTimeout(function() { me.updateDisplay(); }, 200);
     },
     deleteRow: function(index) {
         
     },
-    createRow: function() {
+    createRow: function(c1, c2) {
         var $newRow = $(this.newRow);
-        var cell = $(this.newCell).html( '' ).focus();
-        this.attachEditHandlers(cell);
+        var cell = $(this.newCell).html( (c1 || '') ).focus();
+        this.attachCellHandlers(cell);
+        $newRow.append(cell);
+        cell = $(this.newCell).html( (c2 || '') );
+        this.attachCellHandlers(cell);
         $newRow.append(cell);
         cell = $(this.newCell).html( '' );
-        this.attachEditHandlers(cell);
         $newRow.append(cell);
-        cell = $(this.newCell).html( '' );
-        $newRow.append(cell);
+        this.attachRowHandlers($newRow);
         return $newRow;
+    },
+    attachRowHandlers: function($row) {
+        $row.bind( "click", function() {
+            $(this).addClass("selected").siblings().removeClass("selected");
+        })
+        var me = this;
+        if (this.config.editable) {
+            $row.bind("contextmenu",function(e) {
+                $(this).addClass("selected").siblings().removeClass("selected");
+                var selectedIndex = $(this).data('rowIndex');
+                var newMenu = me.createContextMenu(selectedIndex);
+                $(me.selector).append(newMenu);
+                me.positionMenu(e, newMenu);
+                newMenu.show();
+                if ( me.config.contextMenuDisplayHandler != null ) {
+                    me.config.contextMenuDisplayHandler(true);
+                }
+                e.preventDefault();
+            });
+        }
+    },
+    attachCellHandlers: function($theCell) {
+        var me = this;
+        if ( this.config.editable ) {
+            $theCell.attr('contenteditable', 'true').focus(function() {
+                me.selectAll(this);
+            }).blur(function() {
+                me.updateDates();
+            });
+        }
     },
     clearRows: function() {
         $(this.headSelector).empty();
@@ -144,9 +143,12 @@ BeerProfileTable.prototype = {
         return (data != null) ? data.split('\n') : [];
     },
     createContextMenu: function(index) {
-        this.closeContextMenu();
+        if ( $(this.menuSelector).length ) {
+            $(this.menuSelector).remove();
+            console.log("closing already open menu");
+        }
         var me = this;
-        var $menu = $('<div></div>').attr('id', this.menuId).addClass(this.config.menuCssClass).data('rowIndex', index);
+        var $menu = $('<div></div>').attr('id', this.menuId).addClass(this.config.contextMenuCssClass);
         var $list = $('<ul></ul>');
         var $item = $('<li></li>').addClass("insertBefore").text('Insert Row Before').click( function() { me.insertRow(index, false); me.closeContextMenu(); });
         $list.append($item);
@@ -155,10 +157,6 @@ BeerProfileTable.prototype = {
         $item = $('<li></li>').addClass("delete").text('Delete Row').click( function() { me.deleteRow(index); me.closeContextMenu(); });
         $list.append($item);
         $menu.append($list);
-
-        // $(document).bind("mouseup", function(e) {
-        //    if (e.which == 1) { me.closeContextMenu(); }
-        // });
 
         return $menu;
     },
@@ -182,9 +180,14 @@ BeerProfileTable.prototype = {
 
     },
     closeContextMenu: function(index) {
-        if ( $(this.menuSelector).length ) {
-            $(this.menuSelector).remove();
+        $(this.menuSelector).remove();
+        if ( this.config.contextMenuDisplayHandler != null ) {
+            this.config.contextMenuDisplayHandler(false);
         }
+    },
+    updateDisplay: function() {
+        this.updateDates();
+        this.updateBGColors();
     },
     updateDates: function() {
         var me = this;
@@ -212,7 +215,13 @@ BeerProfileTable.prototype = {
         var idx = 0;
         var me = this;
         $(this.rowsSelector).each(function() {
-            $(this).addClass((idx % 2 == 1) ? 'odd' : 'even').data('rowIndex', idx);
+            var add = 'even';
+            var rmv = 'odd';
+            if ( idx % 2 == 1 ) {
+                add = 'odd';
+                rmv = 'even';
+            }
+            $(this).addClass(add).removeClass(rmv).data('rowIndex', idx); // piggy back on loop here to set row index, used for positioning in insert/delete rows
             idx++;
         });
     },
