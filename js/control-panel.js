@@ -20,29 +20,6 @@
 var beerTemp = 20.0;
 var fridgeTemp = 20.0;
 
-function drawProfileChart() {
-    "use strict";
-    var query = new google.visualization.Query( 'https://docs.google.com/spreadsheet/tq?range=D:E&key=' + window.googleDocsKey);
-    query.send(handleProfileChartQueryResponse);
-}
-
-function handleProfileChartQueryResponse(response) {
-    "use strict";
-    if (response.isError()) {
-        window.alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-        return;
-    }
-    var profileData = response.getDataTable();
-    var profileChart = new google.visualization.AnnotatedTimeLine(document.getElementById('profileChartDiv'));
-    profileChart.draw(profileData, {
-        'displayAnnotations': true,
-        'scaleType': 'maximized',
-        'displayZoomButtons': false,
-        'allValuesSuffix': '\u00B0',
-        'numberFormats': '##.0',
-        'displayAnnotationsFilter': true});
-}
-
 function statusMessage(messageType, messageText){
     "use strict";
     var $statusMessage = $("#status-message");
@@ -167,7 +144,39 @@ function renderProfile(beerProfile) {
     profileTable.render(beerProfile);
     $("#profileTableName").text(beerProfile.name);
     $("button#edit-controls").show();
-    drawProfileChart();
+    drawProfileChart(profileTable);
+}
+function drawProfileChart(profileTable) {
+    "use strict";
+
+    var tempFormat = function(y) {
+        return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
+    };
+
+    var chart = new Dygraph(
+        document.getElementById("profileChartDiv"),
+        profileTable.toCSV(true, true),
+        {
+            colors: [ 'rgb(89, 184, 255)' ],
+            axisLabelFontSize:12,
+            gridLineColor:'#ccc',
+            gridLineWidth:'0.1px',
+            labelsDiv: document.getElementById("profileChartDiv-label"),
+            legend: 'always',
+            labelsDivStyles: { 'textAlign': 'right' },
+            strokeWidth: 1,
+            "Temperature" : {},
+            axes: {
+                y : { valueFormatter: tempFormat }
+            },
+            highlightCircleSize: 2,
+            highlightSeriesOpts: {
+                strokeWidth: 1.5,
+                strokeBorderWidth: 1,
+                highlightCircleSize: 5
+            }
+        }
+    );
 }
 
 function loadProfile(profile, onProfileLoaded) {

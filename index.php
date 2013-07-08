@@ -65,9 +65,7 @@ $profileName = $settingsArray["profileName"];
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;
-			window.googleDocsKey = <?php echo "\"$profileKey\""?>;
 			window.beerName = <?php echo "\"$beerName\""?>;
-			window.profileKey = <?php echo "\"$profileKey\""?>;
 			window.profileName = <?php echo "\"$profileName\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>

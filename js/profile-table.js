@@ -34,6 +34,7 @@ BeerProfileTable.prototype = {
         this.newCell = '<td></td>';
         this.newHeadCell = '<th></th>';
         this.numSecondsPerDay = 24 * 60 * 60 * 1000;
+        this.cumulativeDates = false;
         this.prepTable();
     },
     prepTable: function() {
@@ -202,7 +203,9 @@ BeerProfileTable.prototype = {
                             var days = parseFloat(strDays);
                             var newDate = new Date( theDate + (me.numSecondsPerDay * days) );
                             $(this).find("td:last-child").text($.datepicker.formatDate($.datepicker.W3C, newDate));
-                            theDate = newDate.getTime();
+                            if ( me.cumulativeDates ) {
+                                theDate = newDate.getTime();
+                            }
                         }
                     });
                 } catch(e) {
@@ -253,20 +256,26 @@ BeerProfileTable.prototype = {
         });
         return { name: this.profileName, profile: points};
     },
-    toCSV: function() {
+    toCSV: function(includeHeader, addDays) {
         var ret = '';
         var me = this;
+        if ( includeHeader ) {
+            ret += 'Days,Temperature\n';
+        }
         $(this.rowsSelector).each(function() {
-            var idx = 0;
-            $(this).find('td').each(function() {
-                if ( !me.isBlankCell( $(this) ) ) {
-                    if ( idx < 2 ) {
-                        ret += ((idx>0) ? ',' : '') + $(this).html();
-                    }
+            var days = 0.0;
+            var cell = $(this).children().first();
+            if ( !me.isBlankCell( cell ) ) {
+                if ( addDays ) {
+                    var fltDays = parseFloat(cell.text());
+                    days += fltDays;
+                    ret += days.toString() + '';
+                } else {
+                    ret += cell.text();
                 }
-                idx++;
-            });
-            ret += '\n';
+                ret += ',' + cell.next().html();
+                ret += '\n';
+            }
         });
         return ret;
     },
