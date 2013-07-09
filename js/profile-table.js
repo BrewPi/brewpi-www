@@ -34,7 +34,6 @@ BeerProfileTable.prototype = {
         this.newCell = '<td></td>';
         this.newHeadCell = '<th></th>';
         this.numSecondsPerDay = 24 * 60 * 60 * 1000;
-        this.cumulativeDates = false;
         this.prepTable();
     },
     prepTable: function() {
@@ -196,16 +195,13 @@ BeerProfileTable.prototype = {
             var startDate = $(this.config.startDateFieldSelector).val();
             if ( startDate != null && startDate != '' ) {
                 try {
-                    var theDate = $(this.config.startDateFieldSelector).datepicker( "getDate" );
+                    var theDate = $(this.config.startDateFieldSelector).datepicker( "getDate" ).getTime();
                     $(this.rowsSelector).each(function() {
                         var strDays = $(this).find("td:first-child").text();
                         if ( strDays != null && strDays != '' ) {
                             var days = parseFloat(strDays);
                             var newDate = new Date( theDate + (me.numSecondsPerDay * days) );
                             $(this).find("td:last-child").text($.datepicker.formatDate($.datepicker.W3C, newDate));
-                            if ( me.cumulativeDates ) {
-                                theDate = newDate.getTime();
-                            }
                         }
                     });
                 } catch(e) {

@@ -149,7 +149,7 @@ function renderProfile(beerProfile) {
 function drawProfileChart(profileTable) {
     "use strict";
 
-    var tempFormat = function(y) {
+    var temperatureFormatter = function(y) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
 
@@ -167,7 +167,7 @@ function drawProfileChart(profileTable) {
             strokeWidth: 1,
             "Temperature" : {},
             axes: {
-                y : { valueFormatter: tempFormat }
+                y : { valueFormatter: temperatureFormatter }
             },
             highlightCircleSize: 2,
             highlightSeriesOpts: {
@@ -255,6 +255,7 @@ function showProfileEditDialog() {
                             success: function(response) {
                                 if ( response.status != 'error' ) {
                                     loadProfile(profName, renderProfile);
+                                    $("#profileTableStartDate").val( $("#profileEditStartDate").val() );
                                     $('#profileSaveError').hide();
                                     jqDialog.dialog( "close" );
                                 } else {
@@ -311,12 +312,14 @@ $(document).ready(function(){
 
     $("button#new-controls").button({  icons: {primary: "ui-icon-new" } }).click(function() {
         $("#profileEditName").val('');
+        $("#profileEditStartDate").val( $("#profileTableStartDate").val() );
         profileEdit.render( { name: '', profile: [] } );
         showProfileEditDialog();
     });
 
     $("button#edit-controls").button({  icons: {primary: "ui-icon-wrench" } }).click(function() {
         $("#profileEditName").val(profileTable.profileName);
+        $("#profileEditStartDate").val( $("#profileTableStartDate").val() );
         profileEdit.render( profileTable.toJSON() );
         showProfileEditDialog();
     }).hide();
