@@ -27,9 +27,13 @@
 	
 	$lines = file($beerProfile, FILE_IGNORE_NEW_LINES) or die(json_encode( array( "error" => "Unable to open profile for beer: " + $profile ) ));
 	$rows = array();
+	$idx = 0;
 	foreach( $lines as $line) {
-		$row = explode(",", $line);
-		array_push( $rows, array( "days" => $row[0], "temperature" => $row[1]) );
+		if ( $idx > 0 ) {
+			$row = explode(",", $line);
+			array_push( $rows, array( "days" => $row[0], "temperature" => $row[1]) );
+		}
+		$idx++;
 	}
 
 	$resp = array( "name" => $profile, "profile" => $rows );

@@ -112,7 +112,7 @@ function applySettings(){
     switch(activeTab){
         case 0: // profile
             // upload profile to pi
-            $.post('socketmessage.php', {messageType: "uploadProfile", message: ""}, function(answer){
+            $.post('socketmessage.php', {messageType: "uploadProfile", message: window.profileName}, function(answer){
                 if(answer !==''){
                     statusMessage("highlight", answer);
                 }
@@ -141,12 +141,14 @@ var profileEdit = null;
 
 function renderProfile(beerProfile) {
     "use strict";
+    window.profileName = beerProfile.name;
     profileTable.render(beerProfile);
-    $("#profileTableName").text(beerProfile.name);
+    $("#profileTableName").text(window.profileName);
     $("button#edit-controls").show();
-    drawProfileChart(profileTable);
+    drawProfileChart(profileTable.toCSV(true, false));
 }
-function drawProfileChart(profileTable) {
+
+function drawProfileChart(profileData) {
     "use strict";
 
     var temperatureFormatter = function(y) {
@@ -155,7 +157,7 @@ function drawProfileChart(profileTable) {
 
     var chart = new Dygraph(
         document.getElementById("profileChartDiv"),
-        profileTable.toCSV(true, true),
+        profileData,
         {
             colors: [ 'rgb(89, 184, 255)' ],
             axisLabelFontSize:12,
@@ -251,11 +253,11 @@ function showProfileEditDialog() {
                             type: "post", 
                             url: "save_beer_profile.php",
                             dataType: "json",
-                            data: { name: profName, profile: profileEdit.toCSV() },
+                            data: { name: profName, profile: profileEdit.toCSV(true,false) },
                             success: function(response) {
                                 if ( response.status != 'error' ) {
                                     loadProfile(profName, renderProfile);
-                                    $("#profileTableStartDate").val( $("#profileEditStartDate").val() );
+                                    $("#profileTableStartDate").html( $("#profileEditStartDate").val() );
                                     $('#profileSaveError').hide();
                                     jqDialog.dialog( "close" );
                                 } else {
@@ -297,8 +299,8 @@ function profTableGlobalClickHandler() {
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
-    profileEdit = new BeerProfileTable('profileEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
-    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate' });
+    profileEdit = new BeerProfileTable('profileEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', dateFormat: $.datepicker.W3C, contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
+    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate', dateFormat: $.datepicker.W3C });
 
 	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
         if ( window.profileName != '' ) {
@@ -323,10 +325,6 @@ $(document).ready(function(){
         profileEdit.render( profileTable.toJSON() );
         showProfileEditDialog();
     }).hide();
-
-    $("#profileTableStartDate").datepicker({ dateFormat: $.datepicker.W3C, onSelect: function() { 
-        profileTable.updateDates();
-    }});
 
     $("#profileEditStartDate").datepicker({ dateFormat: $.datepicker.W3C, onSelect: function() { 
         profileEdit.updateDates();

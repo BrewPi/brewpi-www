@@ -41,6 +41,12 @@
 		<button id="new-controls">New profile</button>
 		<button id="edit-controls">Edit profile</button>
 	</div>
+	<div id="profileNameDate">
+		<div><span class="profileTableLabel">Profile Name:</span><span id="profileTableName"></span></div>
+		<div><span class="profileTableLabel">Start Date:</span><span id="profileTableStartDate"></span></div>
+	</div>
+	<div id="profileChartDiv"></div>
+	<div id="profileTableDiv"></div>
 	<div id="profileSelectDiv">
 		<ol id="profileSelect"></ol>
 	</div>
@@ -51,11 +57,6 @@
 	       </div>
 	       <div id="profileSaveError">Error Saving Profile!</div>
 	       <div id="profileTableTempsDiv"></div>
-	</div>
-	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
-	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right">
-		<div>Profile: <span id="profileTableName"></span></div>
-		<div>Start: <input type="text" id="profileTableStartDate" name="profileTableStartDate" value="" /></div>
 	</div>
 </div>
 <div id="beer-constant-control">

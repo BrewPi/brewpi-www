@@ -48,7 +48,15 @@ BeerProfileTable.prototype = {
         this.renderHeader(data);
         this.renderRows(data);
         this.renderFooter(data);
-        this.updateDisplay();
+        // start date is inferred from first data row.  
+        // date should be in the CSV though we should be able to still handle no dates
+        var initialDate = null;
+        if ( data != null && data.profile != null && data.profile.length > 0 && data.profile[0].date != null ) {
+            initialDate = $.datepicker.parseDate(this.config.dateFormat, data.profile[0].date);
+        } else {
+            initialDate = new Date();
+        }
+        this.updateDisplay( initialDate );
     },
     renderHeader: function(data) {
         var headerRow = $(this.newRow);
@@ -70,7 +78,7 @@ BeerProfileTable.prototype = {
         }
     },
     renderRow: function(rowData) {
-        var newRow = this.createRow(rowData.days, rowData.temperature);
+        var newRow = this.createRow(rowData.days, rowData.temperature, rowData.date);
         $(this.bodySelector).append(newRow);
     },
     renderFooter: function(data) {
@@ -92,15 +100,15 @@ BeerProfileTable.prototype = {
     deleteRow: function(index) {
         
     },
-    createRow: function(c1, c2) {
+    createRow: function(days, temp, theDate) {
         var $newRow = $(this.newRow);
-        var cell = $(this.newCell).html( (c1 || '') ).focus();
+        var cell = $(this.newCell).addClass('profileDays').html( (days || '') ).focus();
         this.attachCellHandlers(cell);
         $newRow.append(cell);
-        cell = $(this.newCell).html( (c2 || '') );
+        cell = $(this.newCell).addClass('profileTemp').html( (temp || '') );
         this.attachCellHandlers(cell);
         $newRow.append(cell);
-        cell = $(this.newCell).html( '' );
+        cell = $(this.newCell).addClass('profileDate').html( (theDate || '') );
         $newRow.append(cell);
         this.attachRowHandlers($newRow);
         return $newRow;
@@ -139,9 +147,6 @@ BeerProfileTable.prototype = {
         $(this.headSelector).empty();
         $(this.bodySelector).empty();
     },
-    parseRows: function(data) {
-        return (data != null) ? data.split('\n') : [];
-    },
     createContextMenu: function(index) {
         if ( $(this.menuSelector).length ) {
             $(this.menuSelector).remove();
@@ -162,22 +167,10 @@ BeerProfileTable.prototype = {
     },
     positionMenu: function(e, newMenu) {
 
-        // if menu doesn't fit, set right to 0 ?
-        // jquery dialog messes positioning up a bit so need more testing
-        //  for position limiting code
-        // perhaps allowing for a "positioning container selector" in config
-        // it would default to window
+        // TODO: needs edge detection
 
         newMenu.css("top", $(e.target).position().top + e.offsetY);
         newMenu.css("left", $(e.target).position().left + e.offsetX);
-        // var menuWidth = newMenu.outerWidth();
-        // var menuHeight = newMenu.outerHeight();
-        // if ((e.pageX + newMenu.outerWidth()) > winWidth) {
-        //     newMenu.css("left", winWidth - newMenu.outerWidth());
-        // } else {
-        //     newMenu.css("left", e.pageX);
-        // }
-
     },
     closeContextMenu: function(index) {
         $(this.menuSelector).remove();
@@ -185,28 +178,50 @@ BeerProfileTable.prototype = {
             this.config.contextMenuDisplayHandler(false);
         }
     },
-    updateDisplay: function() {
-        this.updateDates();
+    updateDisplay: function(initialDate) {
+        this.updateDates(initialDate);
         this.updateBGColors();
     },
-    updateDates: function() {
+    updateDates: function(initialDate) {
         var me = this;
+        var theDate;
+        if ( initialDate != null ) {
+            theDate = initialDate;
+            this.setStartDate(initialDate);
+        } else {
+            theDate = this.getStartDate();
+        }
+        if ( theDate != null ) {
+            $(this.rowsSelector).each(function() {
+                var strDays = $(this).find("td:first-child").text();
+                if ( strDays != null && strDays != '' ) {
+                    var days = parseFloat(strDays);
+                    var newDate = new Date( theDate.getTime() + (me.numSecondsPerDay * days) );
+                    $(this).find("td:last-child").text($.datepicker.formatDate(me.config.dateFormat, newDate));
+                }
+            });
+        }
+    },
+    getStartDate: function() {
         if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
-            var startDate = $(this.config.startDateFieldSelector).val();
+            var startDate = (this.config.editable) ? $(this.config.startDateFieldSelector).val() : $(this.config.startDateFieldSelector).text();
             if ( startDate != null && startDate != '' ) {
                 try {
-                    var theDate = $(this.config.startDateFieldSelector).datepicker( "getDate" ).getTime();
-                    $(this.rowsSelector).each(function() {
-                        var strDays = $(this).find("td:first-child").text();
-                        if ( strDays != null && strDays != '' ) {
-                            var days = parseFloat(strDays);
-                            var newDate = new Date( theDate + (me.numSecondsPerDay * days) );
-                            $(this).find("td:last-child").text($.datepicker.formatDate($.datepicker.W3C, newDate));
-                        }
-                    });
+                    return $(this.config.startDateFieldSelector).datepicker( "getDate" );
                 } catch(e) {
-                    console.log("error caculating dates: " + e.message);                
+                    console.log("error caculating dates: " + e.message);
                 }
+            }
+        }
+        return null;
+    },
+    setStartDate: function(theDate) {
+        if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
+            var formattedDate = $.datepicker.formatDate(this.config.dateFormat, theDate);
+            if ( this.config.editable ) {
+                $(this.config.startDateFieldSelector).val( formattedDate );
+            } else {
+                $(this.config.startDateFieldSelector).text( formattedDate );
             }
         }
     },
@@ -240,46 +255,43 @@ BeerProfileTable.prototype = {
             }
         }, 1);
     },
-    toJSON: function() {
+    getProfileData: function() {
         var points = [];
         var me = this;
         $(this.rowsSelector).each(function() {
-            var cell = $(this).find('td:first-child');
+            var cell = $(this).find('td:first-child');  // test first cell for empty
             if ( !me.isBlankCell(cell) ) {
-                var dataPoint = { days : cell.text(), temperature: cell.next().text() };
+                var dataPoint = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').text() };
                 points[points.length] = dataPoint;
             }
         });
-        return { name: this.profileName, profile: points};
+        return points;
     },
-    toCSV: function(includeHeader, addDays) {
+    toJSON: function() {
+        return { name: this.profileName, profile: this.getProfileData()};
+    },
+    toCSV: function(includeHeader, includeDates) {
         var ret = '';
-        var me = this;
         if ( includeHeader ) {
-            ret += 'Days,Temperature\n';
-        }
-        $(this.rowsSelector).each(function() {
-            var days = 0.0;
-            var cell = $(this).children().first();
-            if ( !me.isBlankCell( cell ) ) {
-                if ( addDays ) {
-                    var fltDays = parseFloat(cell.text());
-                    days += fltDays;
-                    ret += days.toString() + '';
-                } else {
-                    ret += cell.text();
-                }
-                ret += ',' + cell.next().html();
-                ret += '\n';
+            if ( includeDates ) {
+                ret += 'Date,Days,Temperature\n';
+            } else {
+                ret += 'Days,Temperature\n';
             }
-        });
+        }
+        var profileData = this.getProfileData();
+        for ( var i=0; i<profileData.length; i++ ) {
+            var row = profileData[i];
+            if ( includeDates ) {
+                ret += row.date + ',';
+            }
+            ret += row.days + ',';
+            ret += row.temperature + '\n';
+        }
         return ret;
     },
     toXML: function() {
-            var days = cell.text();
-            if ( days != null && days != '' ) {
-            }
-        
+        // TODO: perhaps inteface to other stuff ??
     },
     isBlankCell: function(cell) {
         var contents = cell.text();

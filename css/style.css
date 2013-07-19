@@ -649,18 +649,23 @@ button#maintenance{
 #profileSelectDiv { display:none; }
 #profileEditDiv { display:none; }
 #profileSaveError { color:red; display:none; }
+
 .profileTableLabel { display:inline-block; width:90px; }
 .profileTableLabel.error { color:red; font-weight: bold; }
+
 .profileTableField { display:inline-block; width:165px; }
-.profileTableEdit { margin:10px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; }
+
+.profileTableEdit { margin:0px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; width:100%; }
 .profileTableEdit tbody TR.odd { background:#f7f7f7; }
 .profileTableEdit tbody TR.even { background:#fff; }
 .profileTableEdit tbody TR:hover { background:#eee; }
 .profileTableEdit tbody TR.selected { background:#ddd; }
-.profileTableEdit TD, .profileTableEdit TH { text-align:right; padding:10px; }
+.profileTableEdit TD, .profileTableEdit TH { padding:10px; }
+.profileTableEdit TD { text-align:right; }
 .profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
 .profileTableEdit TH { border-right: solid 1px #fff; }
 .profileTableEdit TH:last-child { border-right: 0px }
+
 .profileTableMenu {
     position: absolute;
     display: none;
@@ -676,3 +681,15 @@ button#maintenance{
 #profileSelect .ui-selected { background: #F39814; color: white; }
 #profileSelect { list-style-type: none; margin: 0; padding: 0; }
 #profileSelect li { margin: 3px; padding: 0.4em; height: 18px; }
+
+#profileNameDate { width: 775px; float:left; }
+#profileNameDate div { float:left; margin: 0 0 10px 25px; }
+#profileNameDate .profileTableLabel { font-weight: bold; margin-right:5px; }
+
+#profileChartDiv { width: 400px; height: 280px; float: left; }
+
+#profileTableDiv { width: 375px; height: 280px; float: right; }
+
+
+
+
