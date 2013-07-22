@@ -30,6 +30,7 @@ if(is_null($settingsArray)){
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
 $profileName = $settingsArray["profileName"];
+$dateTimeFormat = $settingsArray["dateTimeFormat"];
 ?>
 
 <!DOCTYPE html >
@@ -67,6 +68,7 @@ $profileName = $settingsArray["profileName"];
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;
 			window.beerName = <?php echo "\"$beerName\""?>;
 			window.profileName = <?php echo "\"$profileName\""?>;
+			window.dateTimeFormat = <?php echo "\"$dateTimeFormat\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>

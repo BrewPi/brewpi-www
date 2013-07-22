@@ -31,7 +31,7 @@
 	foreach( $lines as $line) {
 		if ( $idx > 0 ) {
 			$row = explode(",", $line);
-			array_push( $rows, array( "days" => $row[0], "temperature" => $row[1]) );
+			array_push( $rows, array( "date" => $row[0], "temperature" => $row[1], "days" => $row[2]) );
 		}
 		$idx++;
 	}

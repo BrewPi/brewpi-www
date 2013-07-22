@@ -34,6 +34,7 @@ BeerProfileTable.prototype = {
         this.newCell = '<td></td>';
         this.newHeadCell = '<th></th>';
         this.numSecondsPerDay = 24 * 60 * 60 * 1000;
+        this.csvColumns = ['date', 'temperature', 'days'];
         this.prepTable();
     },
     prepTable: function() {
@@ -48,15 +49,19 @@ BeerProfileTable.prototype = {
         this.renderHeader(data);
         this.renderRows(data);
         this.renderFooter(data);
-        // start date is inferred from first data row.  
-        // date should be in the CSV though we should be able to still handle no dates
-        var initialDate = null;
-        if ( data != null && data.profile != null && data.profile.length > 0 && data.profile[0].date != null ) {
-            initialDate = $.datepicker.parseDate(this.config.dateFormat, data.profile[0].date);
-        } else {
-            initialDate = new Date();
-        }
+        // start date inferred from first data row, if not present (empty profile), use current date/time
+        var initialDate = this.parseStartDate(data.profile);
         this.updateDisplay( initialDate );
+    },
+    parseStartDate: function(profile) {
+        if ( profile != null && profile.length > 0 && profile[0].date != null ) {
+            try {
+                return $.datepicker.parseDate(this.config.dateFormat, profile[0].date);
+            } catch(e) {
+                console.log('invalid start date in data: ' + profile[0].date + ', using current date/time' );
+            }
+        }
+        return new Date();
     },
     renderHeader: function(data) {
         var headerRow = $(this.newRow);
@@ -94,15 +99,16 @@ BeerProfileTable.prototype = {
         } else {
             $(this.rowsSelector).eq(index).before(row);
         }
+        row.find('td.profileDays').focus();
         var me = this;
         window.setTimeout(function() { me.updateDisplay(); }, 200);
     },
     deleteRow: function(index) {
-        
+        $(this.rowsSelector).eq(index).remove();
     },
     createRow: function(days, temp, theDate) {
         var $newRow = $(this.newRow);
-        var cell = $(this.newCell).addClass('profileDays').html( (days || '') ).focus();
+        var cell = $(this.newCell).addClass('profileDays').html( (days || '') );
         this.attachCellHandlers(cell);
         $newRow.append(cell);
         cell = $(this.newCell).addClass('profileTemp').html( (temp || '') );
@@ -270,23 +276,22 @@ BeerProfileTable.prototype = {
     toJSON: function() {
         return { name: this.profileName, profile: this.getProfileData()};
     },
-    toCSV: function(includeHeader, includeDates) {
+    toCSV: function(includeHeader, fields) {
         var ret = '';
+        var colNames = (fields || this.csvColumns);
         if ( includeHeader ) {
-            if ( includeDates ) {
-                ret += 'Date,Days,Temperature\n';
-            } else {
-                ret += 'Days,Temperature\n';
+            for ( var i=0; i<colNames.length; i++ ) {
+                ret += ((i!=0) ? ',' : '') + colNames[i];
             }
+            ret += '\n';
         }
         var profileData = this.getProfileData();
-        for ( var i=0; i<profileData.length; i++ ) {
-            var row = profileData[i];
-            if ( includeDates ) {
-                ret += row.date + ',';
+        for ( var j=0; j<profileData.length; j++ ) {
+            var row = profileData[j];
+            for ( var i=0; i<colNames.length; i++ ) {
+                ret += ((i!=0) ? ',' : '') + row[colNames[i]];
             }
-            ret += row.days + ',';
-            ret += row.temperature + '\n';
+            ret += '\n';
         }
         return ret;
     },
