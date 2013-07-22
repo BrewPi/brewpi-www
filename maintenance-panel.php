@@ -91,9 +91,9 @@
 			<button class="apply-beer-name apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Google Docs key for profile:</span>
-			<input id="profile-key" value="<?php echo $profileKey ?>" size=30 type="text">
-			<button class="apply-profile-key apply-button">Apply</button>
+			<span class="setting-name">Profile name:</span>
+			<input id="profile-name" value="<?php echo $profileName ?>" size=30 type="text">
+			<button class="apply-profile-name apply-button">Apply</button>
 		</div>
 	</div>
 </div>
