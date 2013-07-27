@@ -22,6 +22,7 @@ BeerProfileTable.prototype = {
         this.id = id;
         this.profileName = null;
         this.config = (config || {});
+        this.config.timeFormat = ' HH:mm:ss';
         this.selector = '#' + this.id;
         this.menuId = this.id + 'Menu';
         this.menuSelector = '#' + this.menuId;
@@ -52,16 +53,6 @@ BeerProfileTable.prototype = {
         // start date inferred from first data row, if not present (empty profile), use current date/time
         var initialDate = this.parseStartDate(data.profile);
         this.updateDisplay( initialDate );
-    },
-    parseStartDate: function(profile) {
-        if ( profile != null && profile.length > 0 && profile[0].date != null ) {
-            try {
-                return $.datepicker.parseDate(this.config.dateFormat, profile[0].date);
-            } catch(e) {
-                console.log('invalid start date in data: ' + profile[0].date + ', using current date/time' );
-            }
-        }
-        return new Date();
     },
     renderHeader: function(data) {
         var headerRow = $(this.newRow);
@@ -199,14 +190,41 @@ BeerProfileTable.prototype = {
         }
         if ( theDate != null ) {
             $(this.rowsSelector).each(function() {
-                var strDays = $(this).find("td:first-child").text();
+                var strDays = $(this).find("td.profileDays").text();
                 if ( strDays != null && strDays != '' ) {
-                    var days = parseFloat(strDays);
-                    var newDate = new Date( theDate.getTime() + (me.numSecondsPerDay * days) );
-                    $(this).find("td:last-child").text($.datepicker.formatDate(me.config.dateFormat, newDate));
+                    $(this).find("td.profileDate").text( me.formatNextDate(theDate, strDays) );
                 }
             });
         }
+    },
+    formatNextDate: function(theDate, strDays) {
+        var days = parseFloat(strDays);
+        var t1 = theDate.getTime();
+        var t2 = parseInt(this.numSecondsPerDay * days);
+        var newDate = new Date( t1 + t2 );
+        return this.formatDate(newDate);
+    },
+    formatDate: function(theDate) {
+        var strDate = $.datepicker.formatDate(this.config.dateFormat, theDate);
+        var h = theDate.getHours();
+        var m = theDate.getMinutes();
+        var s = theDate.getSeconds();
+        var strTime = ( (h<10) ? '0' + h : h ) + ':' + ( (m<10) ? '0' + m : m ) + ':' + ( (s<10) ? '0' + s : s );
+        return strDate + ' ' + strTime;
+    },
+    parseStartDate: function(profile) {
+        if ( profile != null && profile.length > 0 && profile[0].date != null ) {
+            try {
+                var strDate = profile[0].date;
+                var startDate = $.datepicker.parseDate(this.config.dateFormat, strDate);
+                var startTime = $.datepicker.parseTime(this.config.timeFormat, strDate.substring(strDate.indexOf(' ')+1));
+                var totalTime = startDate.getTime() + (startTime.hour*60*60*1000) + (startTime.minute*60*1000) + (startTime.second*1000);
+                return new Date( totalTime );
+            } catch(e) {
+                console.log('invalid start date in data: ' + profile[0].date + ', using current date/time' );
+            }
+        }
+        return new Date();
     },
     getStartDate: function() {
         if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
@@ -223,7 +241,7 @@ BeerProfileTable.prototype = {
     },
     setStartDate: function(theDate) {
         if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
-            var formattedDate = $.datepicker.formatDate(this.config.dateFormat, theDate);
+            var formattedDate = this.formatDate(theDate);
             if ( this.config.editable ) {
                 $(this.config.startDateFieldSelector).val( formattedDate );
             } else {

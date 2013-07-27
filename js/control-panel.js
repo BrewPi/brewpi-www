@@ -257,7 +257,6 @@ function showProfileEditDialog() {
                             success: function(response) {
                                 if ( response.status != 'error' ) {
                                     loadProfile(profName, renderProfile);
-                                    $("#profileTableStartDate").html( $("#profileEditStartDate").val() );
                                     $('#profileSaveError').hide();
                                     jqDialog.dialog( "close" );
                                 } else {
@@ -314,7 +313,7 @@ $(document).ready(function(){
 
     $("button#new-controls").button({  icons: {primary: "ui-icon-new" } }).click(function() {
         $("#profileEditName").val('');
-        $("#profileEditStartDate").val( $("#profileTableStartDate").val() );
+        $("#profileEditStartDate").val('');
         profileEdit.render( { name: '', profile: [] } );
         showProfileEditDialog();
     });
@@ -325,7 +324,7 @@ $(document).ready(function(){
         showProfileEditDialog();
     }).hide();
 
-    $("#profileEditStartDate").datepicker({ dateFormat: window.dateTimeFormat, onSelect: function() { 
+    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormat, timeFormat: "HH:mm:ss", onSelect: function() { 
         profileEdit.updateDates();
     }});
 
