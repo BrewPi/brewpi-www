@@ -98,8 +98,8 @@
 		<div class="setting-container">
 			<span class="setting-name">Date format:</span>
 			<select id="datetime-format-display">
-				<option <?php if ($dateTimeFormatDisplay == "mm/dd/yy") echo "selected=\"selected\""; ?>>mm/dd/yyyy</option>
-				<option <?php if ($dateTimeFormatDisplay == "dd/mm/yy") echo "selected=\"selected\""; ?>>dd/mm/yyyy</option>
+				<option <?php if ($dateTimeFormatDisplay == "mm/dd/yy") echo "selected=\"selected\""; ?>>mm/dd/yy</option>
+				<option <?php if ($dateTimeFormatDisplay == "dd/mm/yy") echo "selected=\"selected\""; ?>>dd/mm/yy</option>
 			</select>
 			<button class="apply-datetime-format-display apply-button">Apply</button>
 		</div>
