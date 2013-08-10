@@ -119,6 +119,7 @@ function applySettings(){
             });
             // set mode to profile
             $.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
+            $.post('socketmessage.php', {messageType: "profileName", message: window.profileName}, function(){});
             break;
         case 1: // beer constant
         $.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
