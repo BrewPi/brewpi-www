@@ -1,1 +1,1 @@
-{"dateTimeFormat": "dd/mm/yy", "profileName": "Sample Profile", "beerName": "Sample Data", "tempFormat": "C"}
+{"beerName": "Sample Data", "tempFormat": "C", "profileName": "Sample Profile", "dateTimeFormat": "dd/mm/yy", "dateTimeFormatDisplay": "mm/dd/yy" }

@@ -95,6 +95,14 @@
 			<input id="profile-name" value="<?php echo $profileName ?>" size=30 type="text">
 			<button class="apply-profile-name apply-button">Apply</button>
 		</div>
+		<div class="setting-container">
+			<span class="setting-name">Date format:</span>
+			<select id="datetime-format-display">
+				<option <?php if ($dateTimeFormatDisplay == "mm/dd/yy") echo "selected=\"selected\""; ?>>mm/dd/yyyy</option>
+				<option <?php if ($dateTimeFormatDisplay == "dd/mm/yy") echo "selected=\"selected\""; ?>>dd/mm/yyyy</option>
+			</select>
+			<button class="apply-datetime-format-display apply-button">Apply</button>
+		</div>
 	</div>
 </div>
 <div id="control-algorithm">

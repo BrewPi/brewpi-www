@@ -31,6 +31,7 @@ $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
 $profileName = $settingsArray["profileName"];
 $dateTimeFormat = $settingsArray["dateTimeFormat"];
+$dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 ?>
 
 <!DOCTYPE html >
@@ -70,6 +71,7 @@ $dateTimeFormat = $settingsArray["dateTimeFormat"];
 			window.beerName = <?php echo "\"$beerName\""?>;
 			window.profileName = <?php echo "\"$profileName\""?>;
 			window.dateTimeFormat = <?php echo "\"$dateTimeFormat\""?>;
+			window.dateTimeFormatDisplay = <?php echo "\"$dateTimeFormatDisplay\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>

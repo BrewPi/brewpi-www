@@ -192,7 +192,8 @@ BeerProfileTable.prototype = {
             $(this.rowsSelector).each(function() {
                 var strDays = $(this).find("td.profileDays").text();
                 if ( strDays != null && strDays != '' ) {
-                    $(this).find("td.profileDate").text( me.formatNextDate(theDate, strDays) );
+                    var dates = me.formatNextDate(theDate, strDays);
+                    $(this).find("td.profileDate").text( dates.display ).data('profile-date', dates.raw);
                 }
             });
         }
@@ -206,25 +207,28 @@ BeerProfileTable.prototype = {
     },
     formatDate: function(theDate) {
         var strDate = $.datepicker.formatDate(this.config.dateFormat, theDate);
+        var strDate2 = $.datepicker.formatDate(this.config.dateFormatDisplay, theDate);
         var h = theDate.getHours();
         var m = theDate.getMinutes();
         var s = theDate.getSeconds();
         var strTime = ( (h<10) ? '0' + h : h ) + ':' + ( (m<10) ? '0' + m : m ) + ':' + ( (s<10) ? '0' + s : s );
-        return strDate + ' ' + strTime;
+        return { raw: strDate + ' ' + strTime, display: strDate2 + ' ' + strTime };
     },
     parseStartDate: function(profile) {
         if ( profile != null && profile.length > 0 && profile[0].date != null ) {
-            try {
-                var strDate = profile[0].date;
-                var startDate = $.datepicker.parseDate(this.config.dateFormat, strDate);
-                var startTime = $.datepicker.parseTime(this.config.timeFormat, strDate.substring(strDate.indexOf(' ')+1));
-                var totalTime = startDate.getTime() + (startTime.hour*60*60*1000) + (startTime.minute*60*1000) + (startTime.second*1000);
-                return new Date( totalTime );
-            } catch(e) {
-                console.log('invalid start date in data: ' + profile[0].date + ', using current date/time' );
-            }
+            return this.parseDate(profile[0].date);
         }
         return new Date();
+    },
+    parseDate: function(strDate) {
+        try {
+            var startDate = $.datepicker.parseDate(this.config.dateFormat, strDate);
+            var startTime = $.datepicker.parseTime(this.config.timeFormat, strDate.substring(strDate.indexOf(' ')+1));
+            var totalTime = startDate.getTime() + (startTime.hour*60*60*1000) + (startTime.minute*60*1000) + (startTime.second*1000);
+            return new Date( totalTime );
+        } catch(e) {
+            console.log('invalid start date: ' + strDate + ', using current date/time' );
+        }
     },
     getStartDate: function() {
         if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
@@ -241,11 +245,11 @@ BeerProfileTable.prototype = {
     },
     setStartDate: function(theDate) {
         if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
-            var formattedDate = this.formatDate(theDate);
+            var formattedDates = this.formatDate(theDate);
             if ( this.config.editable ) {
-                $(this.config.startDateFieldSelector).val( formattedDate );
+                $(this.config.startDateFieldSelector).val( formattedDates.display ).data('profile-date', formattedDates.raw );
             } else {
-                $(this.config.startDateFieldSelector).text( formattedDate );
+                $(this.config.startDateFieldSelector).text( formattedDates.display ).data('profile-date', formattedDates.raw );
             }
         }
     },
@@ -285,7 +289,7 @@ BeerProfileTable.prototype = {
         $(this.rowsSelector).each(function() {
             var cell = $(this).find('td:first-child');  // test first cell for empty
             if ( !me.isBlankCell(cell) ) {
-                var dataPoint = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').text() };
+                var dataPoint = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
                 points[points.length] = dataPoint;
             }
         });
