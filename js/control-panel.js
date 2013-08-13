@@ -112,9 +112,10 @@ function applySettings(){
     switch(activeTab){
         case 0: // profile
             // upload profile to pi
-            $.post('socketmessage.php', {messageType: "uploadProfile", message: window.profileName}, function(answer){
-                if(answer !==''){
-                    statusMessage("highlight", answer);
+            $.ajax( { async: false, type: "POST", url: 'socketmessage.php', data: {messageType: "uploadProfile", message: window.profileName}, success: function(answer){
+                    if(answer !==''){
+                        statusMessage("highlight", answer);
+                    }
                 }
             });
             // set mode to profile
@@ -329,6 +330,15 @@ $(document).ready(function(){
     $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() { 
         profileEdit.updateDates();
     }});
+
+    $("button#profileEditAddCurrentButton").button().click(function() {
+        profileEdit.insertRowNow(window.controlSettings.beerSet);
+    });
+
+    $("button#profileEditNowButton").button().click(function() {
+        $("#profileEditStartDate").datetimepicker('setDate', (new Date()) );
+        profileEdit.updateDates();
+    });
 
     $("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function() {
         applySettings();

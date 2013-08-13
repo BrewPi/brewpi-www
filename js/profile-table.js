@@ -94,6 +94,22 @@ BeerProfileTable.prototype = {
         var me = this;
         window.setTimeout(function() { me.updateDisplay(); }, 200);
     },
+    insertRowNow: function(temperature) {
+        var nowTime = new Date().getTime();
+        var timeDiff = nowTime - this.getStartDate().getTime();
+        var days = Math.round( (timeDiff / this.numSecondsPerDay)*100 ) / 100;
+        var row = this.createRow(days, temperature);
+        var rows = this.getProfileData();
+        var rowIndex = 0;
+        for( var i=0; i<rows.length; i++ ) {
+            if ( rows[i].days > days ) {
+                rowIndex = i-1;
+                break;
+            }
+        }
+        $(this.rowsSelector).eq(rowIndex).after(row);
+        this.updateDisplay();
+    },
     deleteRow: function(index) {
         $(this.rowsSelector).eq(index).remove();
     },
