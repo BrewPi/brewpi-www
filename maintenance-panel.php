@@ -265,6 +265,11 @@
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
+			<span class="setting-name">PID: maximum</span><input type="text" name="pidMax" class="cc pidMax">
+			<span class="explanation">You can define the maximum difference between the beer temp setting and fridge temp setting here. The fridge setting will be clipped to this range.</span>
+			<button class="send-button">Send to Arduino</button>
+		</div>
+		<div class="setting-container">
 			<span class="setting-name">Integrator: maximum temp error &deg;<?php echo $tempFormat ?></span><input type="text" name="iMaxErr" class="cc iMaxErr">
 			<span class="explanation">The integral is only active when the temperature is close to the target temperature. This is the maximum error for which the integral is active..</span>
 			<button class="send-button">Send to Arduino</button>
@@ -399,16 +404,16 @@ function echoFilterSelect($filterName){
 	echo "</select>";
 }
 
-# slope filters are updated every 12 seconds, so have different delay time
+# slope filters are updated every 3 seconds, so have different delay time
 function echoSlopeFilterSelect($filterName){
 	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
-	echo "<option value=0>   1.8 minutes</option>"; // a=4,		b=0,	delay time = 3
-	echo "<option value=1>   3.6 minutes</option>"; // a=6,		b=1,	delay time = 6
-	echo "<option value=2>   7.8 minutes</option>"; // a=8,		b=2,	delay time = 13
-	echo "<option value=3>  15.6 minutes</option>"; // a=10,	b=3,	delay time = 26
-	echo "<option value=4>  31.8 minutes</option>"; // a=12,	b=4,	delay time = 53
-	echo "<option value=5>  63.6 minutes</option>"; // a=14,	b=5,	delay time = 106
-	echo "<option value=6> 127.8 minutes</option>"; // a=16,	b=6,	delay time = 213
+	echo "<option value=0>  27 seconds</option>"; // a=4,	b=0,	delay time = 3
+	echo "<option value=1>  54 seconds</option>"; // a=6,	b=1,	delay time = 6
+	echo "<option value=2>   2 minutes</option>"; // a=8,	b=2,	delay time = 13
+	echo "<option value=3>   4 minutes</option>"; // a=10,	b=3,	delay time = 26
+	echo "<option value=4>   8 minutes</option>"; // a=12,	b=4,	delay time = 53
+	echo "<option value=5>  16 minutes</option>"; // a=14,	b=5,	delay time = 106
+	echo "<option value=6>  32 minutes</option>"; // a=16,	b=6,	delay time = 213
 	echo "</select>";
 }
 

@@ -106,6 +106,6 @@ if($sock !== false){
 		window.top.window.programmingDone()
 	}
 	else{
-		window.top.window.programmingFailed()
+		// window.top.window.programmingFailed() // commented out because it reported errors when there were none
 	}
 </script>
