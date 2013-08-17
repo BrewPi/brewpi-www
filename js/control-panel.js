@@ -112,13 +112,15 @@ function applySettings(){
     switch(activeTab){
         case 0: // profile
             // upload profile to pi
-            $.post('socketmessage.php', {messageType: "uploadProfile", message: window.profileName}, function(answer){
-                if(answer !==''){
-                    statusMessage("highlight", answer);
+            $.ajax( { async: false, type: "POST", url: 'socketmessage.php', data: {messageType: "uploadProfile", message: window.profileName}, success: function(answer){
+                    if(answer !==''){
+                        statusMessage("highlight", answer);
+                    }
                 }
             });
             // set mode to profile
             $.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
+            $.post('socketmessage.php', {messageType: "profileName", message: window.profileName}, function(){});
             break;
         case 1: // beer constant
         $.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
@@ -238,6 +240,7 @@ function showProfileSelectDialog() {
     });
 }
 function showProfileEditDialog() {
+    $('#profileSaveError').hide();
     $("#profileEditDiv").dialog( {
         modal: true,
         title: "Edit Temperature Profile",
@@ -298,8 +301,8 @@ function profTableGlobalClickHandler() {
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
-    profileEdit = new BeerProfileTable('profileEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', dateFormat: window.dateTimeFormat, contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
-    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate', dateFormat: window.dateTimeFormat });
+    profileEdit = new BeerProfileTable('profileEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay, contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
+    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate', dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay });
 
 	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
         if ( window.profileName != '' ) {
@@ -324,9 +327,18 @@ $(document).ready(function(){
         showProfileEditDialog();
     }).hide();
 
-    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormat, timeFormat: "HH:mm:ss", onSelect: function() { 
+    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() { 
         profileEdit.updateDates();
     }});
+
+    $("button#profileEditAddCurrentButton").button().click(function() {
+        profileEdit.insertRowNow(window.controlSettings.beerSet);
+    });
+
+    $("button#profileEditNowButton").button().click(function() {
+        $("#profileEditStartDate").datetimepicker('setDate', (new Date()) );
+        profileEdit.updateDates();
+    });
 
     $("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function() {
         applySettings();

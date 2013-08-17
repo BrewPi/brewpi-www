@@ -650,10 +650,13 @@ button#maintenance{
 #profileEditDiv { display:none; }
 #profileSaveError { color:red; display:none; }
 
-.profileTableLabel { display:inline-block; width:90px; }
+.profileEditFieldSet { height:54px; }
+.profileTableLabel { float:left; width:90px; height:22px; }
+.profileTableLabel.edit { padding:4px 0 0 0; }
 .profileTableLabel.error { color:red; font-weight: bold; }
+.profileTableField { float:right; width:165px; }
 
-.profileTableField { display:inline-block; width:165px; }
+.wide-button { display:block; width:100%; margin:5px 0 5px 0; }
 
 .profileTableEdit { margin:0px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; width:100%; }
 .profileTableEdit tbody TR.odd { background:#f7f7f7; }

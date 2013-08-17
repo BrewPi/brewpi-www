@@ -51,10 +51,12 @@
 		<ol id="profileSelect"></ol>
 	</div>
 	<div id="profileEditDiv">
-	       <div>
-               <div id="profileEditNameLabel" class="profileTableLabel">Profile Name:</div><input class="profileTableField" type="text" id="profileEditName" name="profileEditName" value="" />
-               <div class="profileTableLabel">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
+	       <div class="profileEditFieldSet">
+               <div id="profileEditNameLabel" class="profileTableLabel edit">Profile Name:</div><input class="profileTableField" type="text" id="profileEditName" name="profileEditName" value="" />
+               <div class="profileTableLabel edit">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
 	       </div>
+           <button class="wide-button" type="button" id="profileEditNowButton">Start Now</button>
+           <button class="wide-button" type="button" id="profileEditAddCurrentButton">Insert Now</button>
 	       <div id="profileSaveError">Error Saving Profile!</div>
 	       <div id="profileTableTempsDiv"></div>
 	</div>
