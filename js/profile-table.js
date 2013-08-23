@@ -176,6 +176,7 @@ BeerProfileTable.prototype = {
                 me.selectAll(this);
             }).blur(function() {
                 me.updateDates();
+                me.maintainEmptyRow();
             });
         }
     },
@@ -380,5 +381,15 @@ BeerProfileTable.prototype = {
         "use strict";
         var contents = cell.text();
         return !( typeof( contents ) !== "undefined" && contents !== '' );
+    },
+    maintainEmptyRow: function(){
+        "use strict";
+        var rows = this.getProfileData();
+        var profileLength = rows.length;
+        var tableLength = $(this.rowsSelector).length;
+
+        if(tableLength === profileLength){
+            this.addRow();
+        }
     }
 };
