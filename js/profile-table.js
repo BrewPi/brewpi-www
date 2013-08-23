@@ -2,9 +2,9 @@
  * Temperature Profile Table
  * config is:
  * {
- *   tableClass: "<css classname for table>",
- *   theadClass: "<css classname for thead>",
- *   tbodyClass: "<css classname for tbody>",
+ *   tableClass: "<css class name for table>",
+ *   theadClass: "<css class name for thead>",
+ *   tbodyClass: "<css class name for tbody>",
  *   editable: true|false,
  *   startDateFieldSelector: "<css selector for start date field>",
  *   contextMenuCssClass: "<context menu class>",
@@ -13,14 +13,16 @@
  */
 
 function BeerProfileTable(id, config) {
+    "use strict";
     if (arguments.length > 0 ) {
         this.init(id, config);
     }
 }
 BeerProfileTable.prototype = {
     init: function(id, config) {
+        "use strict";
         this.id = id;
-        this.profileName = null;
+        this.profileName = '';
         this.config = (config || {});
         this.config.timeFormat = ' HH:mm:ss';
         this.selector = '#' + this.id;
@@ -30,21 +32,23 @@ BeerProfileTable.prototype = {
         this.headSelector = this.selector + ' thead';
         this.footSelector = this.selector + ' tfoot';
         this.rowsSelector = this.bodySelector + ' tr';
-        this.newTable = '<table cellpadding="0" cellspacing="0" border="0"><thead></thead><tbody></tbody><tfoot></tfoot></table>';
+        this.newTable = '<table border="0"><thead></thead><tbody></tbody><tfoot></tfoot></table>';
         this.newRow = '<tr></tr>';
         this.newCell = '<td></td>';
         this.newHeadCell = '<th></th>';
-        this.numSecondsPerDay = 24 * 60 * 60 * 1000;
+        this.numMilliSecondsPerDay = 24 * 60 * 60 * 1000;
         this.csvColumns = ['date', 'temperature', 'days'];
         this.prepTable();
     },
     prepTable: function() {
+        "use strict";
         var table = $(this.newTable).attr('class', this.config.tableClass);
         $(this.selector).append(table);
         $(this.headSelector).addClass(this.config.theadClass);
         $(this.bodySelector).addClass(this.config.tbodyClass);
     },
     render: function(data) {
+        "use strict";
         this.profileName = data.name;
         this.clearRows();
         this.renderHeader(data);
@@ -55,6 +59,7 @@ BeerProfileTable.prototype = {
         this.updateDisplay( initialDate );
     },
     renderHeader: function(data) {
+        "use strict";
         var headerRow = $(this.newRow);
         $(this.headSelector).append(headerRow);
         var cell = $(this.newHeadCell).text('Days');
@@ -65,6 +70,7 @@ BeerProfileTable.prototype = {
         headerRow.append(cell);
     },
     renderRows: function(data) {
+        "use strict";
         var rows = data.profile;
         for( var i=0; i<rows.length; i++ ) {
             this.renderRow( rows[i] );
@@ -74,16 +80,19 @@ BeerProfileTable.prototype = {
         }
     },
     renderRow: function(rowData) {
+        "use strict";
         var newRow = this.createRow(rowData.days, rowData.temperature, rowData.date);
         $(this.bodySelector).append(newRow);
     },
     renderFooter: function(data) {
     },
     addRow: function() {
+        "use strict";
         var $newRow = this.createRow();
         $(this.bodySelector).append($newRow);
     },
     insertRow: function(index, afterOrBefore) {
+        "use strict";
         var row = this.createRow();
         if ( afterOrBefore ) {
             $(this.rowsSelector).eq(index).after(row);
@@ -94,26 +103,38 @@ BeerProfileTable.prototype = {
         var me = this;
         window.setTimeout(function() { me.updateDisplay(); }, 200);
     },
-    insertRowNow: function(temperature) {
+    insertRowNow: function() {
+        "use strict";
         var nowTime = new Date().getTime();
         var timeDiff = nowTime - this.getStartDate().getTime();
-        var days = Math.round( (timeDiff / this.numSecondsPerDay)*100 ) / 100;
-        var row = this.createRow(days, temperature);
+        var days = (timeDiff / this.numMilliSecondsPerDay).toFixed(2);
         var rows = this.getProfileData();
-        var rowIndex = 0;
+        var rowIndex = rows.length - 1;
+        var temperature = '';
         for( var i=0; i<rows.length; i++ ) {
-            if ( rows[i].days > days ) {
+            if ( parseFloat(rows[i].days) > parseFloat(days)) {
                 rowIndex = i-1;
                 break;
             }
         }
+        if( rowIndex + 1  < rows.length ){
+            var previousTemperature = parseFloat(rows[rowIndex].temperature);
+            var nextTemperature = parseFloat(rows[rowIndex+1].temperature);
+            var previousDays = parseFloat(rows[rowIndex].days);
+            var nextDays = parseFloat(rows[rowIndex+1].days);
+            temperature = (previousTemperature + (nextTemperature - previousTemperature)*(days-previousDays)/(nextDays-previousDays)).toFixed(2);
+        }
+        var row = this.createRow(days, temperature);
+
         $(this.rowsSelector).eq(rowIndex).after(row);
         this.updateDisplay();
     },
     deleteRow: function(index) {
+        "use strict";
         $(this.rowsSelector).eq(index).remove();
     },
     createRow: function(days, temp, theDate) {
+        "use strict";
         var $newRow = $(this.newRow);
         var cell = $(this.newCell).addClass('profileDays').html( (days || '') );
         this.attachCellHandlers(cell);
@@ -127,9 +148,10 @@ BeerProfileTable.prototype = {
         return $newRow;
     },
     attachRowHandlers: function($row) {
+        "use strict";
         $row.bind( "click", function() {
             $(this).addClass("selected").siblings().removeClass("selected");
-        })
+        });
         var me = this;
         if (this.config.editable) {
             $row.bind("contextmenu",function(e) {
@@ -139,7 +161,7 @@ BeerProfileTable.prototype = {
                 $(me.selector).append(newMenu);
                 me.positionMenu(e, newMenu);
                 newMenu.show();
-                if ( me.config.contextMenuDisplayHandler != null ) {
+                if ( me.config.contextMenuDisplayHandler !== null ) {
                     me.config.contextMenuDisplayHandler(true);
                 }
                 e.preventDefault();
@@ -147,6 +169,7 @@ BeerProfileTable.prototype = {
         }
     },
     attachCellHandlers: function($theCell) {
+        "use strict";
         var me = this;
         if ( this.config.editable ) {
             $theCell.attr('contenteditable', 'true').focus(function() {
@@ -157,10 +180,12 @@ BeerProfileTable.prototype = {
         }
     },
     clearRows: function() {
+        "use strict";
         $(this.headSelector).empty();
         $(this.bodySelector).empty();
     },
     createContextMenu: function(index) {
+        "use strict";
         if ( $(this.menuSelector).length ) {
             $(this.menuSelector).remove();
             console.log("closing already open menu");
@@ -182,32 +207,36 @@ BeerProfileTable.prototype = {
 
         // TODO: needs edge detection
 
+        "use strict";
         newMenu.css("top", $(e.target).position().top + e.offsetY);
         newMenu.css("left", $(e.target).position().left + e.offsetX);
     },
-    closeContextMenu: function(index) {
+    closeContextMenu: function() {
+        "use strict";
         $(this.menuSelector).remove();
-        if ( this.config.contextMenuDisplayHandler != null ) {
+        if ( this.config.contextMenuDisplayHandler !== null ) {
             this.config.contextMenuDisplayHandler(false);
         }
     },
     updateDisplay: function(initialDate) {
+        "use strict";
         this.updateDates(initialDate);
         this.updateBGColors();
     },
     updateDates: function(initialDate) {
+        "use strict";
         var me = this;
         var theDate;
-        if ( initialDate != null ) {
+        if ( typeof( initialDate ) !== "undefined" ) {
             theDate = initialDate;
             this.setStartDate(initialDate);
         } else {
             theDate = this.getStartDate();
         }
-        if ( theDate != null ) {
+        if ( typeof( theDate ) !== "undefined" ) {
             $(this.rowsSelector).each(function() {
                 var strDays = $(this).find("td.profileDays").text();
-                if ( strDays != null && strDays != '' ) {
+                if ( typeof( strDays ) !== "undefined" && strDays !== '' ) {
                     var dates = me.formatNextDate(theDate, strDays);
                     $(this).find("td.profileDate").text( dates.display ).data('profile-date', dates.raw);
                 }
@@ -215,13 +244,15 @@ BeerProfileTable.prototype = {
         }
     },
     formatNextDate: function(theDate, strDays) {
+        "use strict";
         var days = parseFloat(strDays);
         var t1 = theDate.getTime();
-        var t2 = parseInt(this.numSecondsPerDay * days);
+        var t2 = parseInt(this.numMilliSecondsPerDay * days, 10);
         var newDate = new Date( t1 + t2 );
         return this.formatDate(newDate);
     },
     formatDate: function(theDate) {
+        "use strict";
         var strDate = $.datepicker.formatDate(this.config.dateFormat, theDate);
         var strDate2 = $.datepicker.formatDate(this.config.dateFormatDisplay, theDate);
         var h = theDate.getHours();
@@ -231,12 +262,14 @@ BeerProfileTable.prototype = {
         return { raw: strDate + ' ' + strTime, display: strDate2 + ' ' + strTime };
     },
     parseStartDate: function(profile) {
-        if ( profile != null && profile.length > 0 && profile[0].date != null ) {
+        "use strict";
+        if ( typeof( profile ) !== "undefined" && profile.length > 0 && typeof( profile[0].date ) !== "undefined" ) {
             return this.parseDate(profile[0].date);
         }
         return new Date();
     },
     parseDate: function(strDate) {
+        "use strict";
         try {
             var startDate = $.datepicker.parseDate(this.config.dateFormat, strDate);
             var startTime = $.datepicker.parseTime(this.config.timeFormat, strDate.substring(strDate.indexOf(' ')+1));
@@ -244,23 +277,26 @@ BeerProfileTable.prototype = {
             return new Date( totalTime );
         } catch(e) {
             console.log('invalid start date: ' + strDate + ', using current date/time' );
+            return 0;
         }
     },
     getStartDate: function() {
-        if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
+        "use strict";
+        if ( typeof( this.config.startDateFieldSelector ) !== "undefined" && this.config.startDateFieldSelector !== '' ) {
             var startDate = (this.config.editable) ? $(this.config.startDateFieldSelector).val() : $(this.config.startDateFieldSelector).text();
-            if ( startDate != null && startDate != '' ) {
+            if ( typeof( startDate ) !== "undefined" && startDate !== '' ) {
                 try {
                     return $(this.config.startDateFieldSelector).datepicker( "getDate" );
                 } catch(e) {
-                    console.log("error caculating dates: " + e.message);
+                    console.log("error calculating dates: " + e.message);
                 }
             }
         }
         return null;
     },
     setStartDate: function(theDate) {
-        if ( this.config.startDateFieldSelector != null && this.config.startDateFieldSelector != '' ) {
+        "use strict";
+        if ( typeof( this.config.startDateFieldSelector ) !== "undefined" && this.config.startDateFieldSelector !== '' ) {
             var formattedDates = this.formatDate(theDate);
             if ( this.config.editable ) {
                 $(this.config.startDateFieldSelector).val( formattedDates.display ).data('profile-date', formattedDates.raw );
@@ -270,12 +306,13 @@ BeerProfileTable.prototype = {
         }
     },
     updateBGColors: function() {
+        "use strict";
         var idx = 0;
         var me = this;
         $(this.rowsSelector).each(function() {
             var add = 'even';
             var rmv = 'odd';
-            if ( idx % 2 == 1 ) {
+            if ( idx % 2 === 1 ) {
                 add = 'odd';
                 rmv = 'even';
             }
@@ -284,6 +321,7 @@ BeerProfileTable.prototype = {
         });
     },
     selectAll: function(elem) {
+        "use strict";
         window.setTimeout(function() {
             var sel, range;
             if (window.getSelection && document.createRange) {
@@ -300,48 +338,47 @@ BeerProfileTable.prototype = {
         }, 1);
     },
     getProfileData: function() {
+        "use strict";
         var points = [];
         var me = this;
         $(this.rowsSelector).each(function() {
             var cell = $(this).find('td:first-child');  // test first cell for empty
             if ( !me.isBlankCell(cell) ) {
-                var dataPoint = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
-                points[points.length] = dataPoint;
+                points[points.length] = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
             }
         });
         return points;
     },
     toJSON: function() {
+        "use strict";
         return { name: this.profileName, profile: this.getProfileData()};
     },
     toCSV: function(includeHeader, fields) {
+        "use strict";
         var ret = '';
         var colNames = (fields || this.csvColumns);
         if ( includeHeader ) {
             for ( var i=0; i<colNames.length; i++ ) {
-                ret += ((i!=0) ? ',' : '') + colNames[i];
+                ret += ((i!==0) ? ',' : '') + colNames[i];
             }
             ret += '\n';
         }
         var profileData = this.getProfileData();
         for ( var j=0; j<profileData.length; j++ ) {
             var row = profileData[j];
-            for ( var i=0; i<colNames.length; i++ ) {
-                ret += ((i!=0) ? ',' : '') + row[colNames[i]];
+            for (var i=0; i<colNames.length; i++ ) {
+                ret += ((i!==0) ? ',' : '') + row[colNames[i]];
             }
             ret += '\n';
         }
         return ret;
     },
     toXML: function() {
-        // TODO: perhaps inteface to other stuff ??
+        // TODO: perhaps interface to other stuff ??
     },
     isBlankCell: function(cell) {
+        "use strict";
         var contents = cell.text();
-        if ( contents != null && contents != '' ) {
-            return false;
-        } else {
-            return true;
-        }
+        return !( typeof( contents ) !== "undefined" && contents !== '' );
     }
-}
+};

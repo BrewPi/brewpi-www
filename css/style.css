@@ -1,7 +1,7 @@
 @import url('dygraph.css');
 
 @font-face {
-    font-family: 'CPMono_v07_Plain' monospace;
+    font-family: 'CPMono_v07_Plain', monospace;
     src: url('../font/CPMono_v07_Plain.otf') format('opentype');
 }
 
@@ -54,7 +54,14 @@ button#maintenance{
 	height: 280px; must be inline*/
 	display: block;
 	overflow: auto;
+    border-collapse:separate; border-spacing: 5px;
 }
+#profileTableDiv th,
+#profileTableDiv td{
+    padding: 3px;
+    text-align: center;
+}
+
 
 #profileChartDiv{
 	/*width: 400px;
@@ -74,7 +81,7 @@ button#maintenance{
 
 
 #control-bar-text{
-	margin: 0px 2px;
+	margin: 0 2px;
 	width: 100%;
 	height: 18px;
 	display: block;
@@ -197,7 +204,7 @@ button#maintenance{
 	font-size: 16px;
 	font-weight: normal;
 	font-style: normal;
-	font-family: '5x8LCDHD44780UA02Regular';
+	font-family: '5x8LCDHD44780UA02Regular', monospace;
 	color: #FFFF00;
 	white-space: pre;
 }
@@ -227,12 +234,9 @@ button#maintenance{
 }
 
 .console-box{
-    width: inherit;
     background: black;
     color:#bbbbbb;
-    border-color:#ADD6FF;
-    border-style:ridge;
-    border-width:5px;
+    border: ridge 5px #ADD6FF;
     padding: 10px 10px;
     overflow: auto;
     font-family: "Courrier New", monospace;
@@ -241,7 +245,7 @@ button#maintenance{
 }
 
 #maintenance-panel ui-widget-content .ui-corner-all{
-    padding: 5px 0px;
+    padding: 5px 0;
     float:left;
     width: 98%;
 }
@@ -262,7 +266,7 @@ button#maintenance{
 }
 
 #reprogram-arduino p{
-    padding: 0px 10px;
+    padding: 0 10px;
 }
 
 #program-container{
@@ -275,7 +279,7 @@ button#maintenance{
 }
 
 #reprogram-arduino .program-option{
-    margin: 20px 0px;
+    margin: 20px 0;
 }
 
 #reprogram-arduino .program-option label{
@@ -312,7 +316,7 @@ button#maintenance{
     overflow: auto;
 }
 #maintenance-panel .ui-widget-content .ui-widget-header{
-    margin: 5px 0px;
+    margin: 5px 0;
 }
 #maintenance-panel .device-list-container .header button{
     float: right;
@@ -536,9 +540,8 @@ button#maintenance{
 #control-algorithm .val{
 	float: left;
 	clear: left;
-	border: solid 1px;
+	border: solid 1px #aaaaaa;
 	border-top: 0;
-	border-color: #aaaaaa;
 	text-align: center;
 	font-size: 2em;
 	min-height: 1.2em;
@@ -608,8 +611,7 @@ button#maintenance{
 #control-algorithm .help-panel{
 	width: 230px;
 	float: right;
-	border: solid 1px;
-	border-color: #aaaaaa;
+	border: solid 1px #aaaaaa;
 	margin-right: 15px;
 	margin-top: 15px;
 }
@@ -651,23 +653,24 @@ button#maintenance{
 #profileSaveError { color:red; display:none; }
 
 .profileEditFieldSet { height:54px; }
-.profileTableLabel { float:left; width:90px; height:22px; }
+.profileTableLabel { float:left; clear: left; width:90px; height:22px; }
 .profileTableLabel.edit { padding:4px 0 0 0; }
 .profileTableLabel.error { color:red; font-weight: bold; }
-.profileTableField { float:right; width:165px; }
+.profileTableField { float:right; clear: right; width:65%; }
 
-.wide-button { display:block; width:100%; margin:5px 0 5px 0; }
+.fullwidth-button { display:block; width:100%; margin:5px 0 5px 0; }
+.halfwidth-button { display:block; float:left; width:48%; margin:5px 1% 5px 1%}
 
-.profileTableEdit { margin:0px; border:1px solid #ccc; border-right: 0px; border-bottom: 0px; width:100%; }
+.profileTableEdit { margin:0; border:1px solid #ccc; border-right: 0; border-bottom: 0; width:100%; }
 .profileTableEdit tbody TR.odd { background:#f7f7f7; }
 .profileTableEdit tbody TR.even { background:#fff; }
 .profileTableEdit tbody TR:hover { background:#eee; }
 .profileTableEdit tbody TR.selected { background:#ddd; }
-.profileTableEdit TD, .profileTableEdit TH { padding:10px; }
-.profileTableEdit TD { text-align:right; }
+.profileTableEdit TD, .profileTableEdit TH { padding: 3px; height: 1em;}
+.profileTableEdit TD { text-align:center; }
 .profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
 .profileTableEdit TH { border-right: solid 1px #fff; }
-.profileTableEdit TH:last-child { border-right: 0px }
+.profileTableEdit TH:last-child { border-right: 0 }
 
 .profileTableMenu {
     position: absolute;
@@ -685,9 +688,10 @@ button#maintenance{
 #profileSelect { list-style-type: none; margin: 0; padding: 0; }
 #profileSelect li { margin: 3px; padding: 0.4em; height: 18px; }
 
-#profileNameDate { width: 775px; float:left; }
-#profileNameDate div { float:left; margin: 0 0 10px 25px; }
-#profileNameDate .profileTableLabel { font-weight: bold; margin-right:5px; }
+#profileNameDate { width: 375px; float:right; }
+#profileNameDate div { float:left; clear: left; width:100%;}
+#profileNameDate .profileTableLabel { display: block; float: left; font-weight: bold; margin-left: 5px}
+#profileNameDate .profileTableValue { display: block; float: right; margin-right:5px; }
 
 #profileChartDiv { width: 400px; height: 280px; float: left; }
 

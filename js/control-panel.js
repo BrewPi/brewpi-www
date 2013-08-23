@@ -45,7 +45,7 @@ function statusMessage(messageType, messageText){
 
 function loadControlPanel(){
 	"use strict";
-    if ( window.profileName != '' ) {
+    if ( window.profileName !== '' ) {
         loadProfile(window.profileName, renderProfile);
     }
 	receiveControlSettings(function(){
@@ -138,8 +138,8 @@ function applySettings(){
     setTimeout(loadControlPanel,5000);
 }
 
-var profileTable = null;
-var profileEdit = null;
+var profileTable;
+var profileEdit;
 
 function renderProfile(beerProfile) {
     "use strict";
@@ -187,18 +187,18 @@ function loadProfile(profile, onProfileLoaded) {
     "use strict";
     $.post("get_beer_profile.php", { "name": profile }, function(beerProfile) {
         try {
-            if ( onProfileLoaded != null ) {
+            if ( typeof( onProfileLoaded ) !== "undefined" ) {
                 onProfileLoaded(beerProfile);
             }
         } catch (e) {
             console.log('Error loading profile: ' + beerProfile);
-            return;
         }
     }, 'json');
 }
 
 function showProfileSelectDialog() {
-    var selectedProfile = null;
+    "use strict";
+    var selectedProfile;
     $('#profileSelect').selectable({
         stop: function(e, ui) {
             $(".ui-selected:first", this).each(function() {
@@ -208,7 +208,6 @@ function showProfileSelectDialog() {
         }
     });
     $.post("get_beer_profiles.php", {}, function(beerProfiles) {
-        var beerProfile = null;
         try {
             $('#profileSelect').empty();
             for( var i=0; i<beerProfiles.profiles.length; i++) {
@@ -217,7 +216,6 @@ function showProfileSelectDialog() {
             }
         } catch (e) {
             console.log('Can not load temperature profiles');
-            return;
         }
     }, 'json');
     $("#profileSelectDiv").dialog( {
@@ -227,7 +225,7 @@ function showProfileSelectDialog() {
             {
                 text: "OK",
                 click: function() {
-                    if ( selectedProfile != null ) {
+                    if ( typeof( selectedProfile ) !== "undefined" ) {
                         loadProfile(selectedProfile, renderProfile);
                     }
                     $( this ).dialog( "close" );
@@ -236,10 +234,12 @@ function showProfileSelectDialog() {
                 text: "Cancel",
                 click: function() { $( this ).dialog( "close" ); }
             }
-        ]
+        ],
+        width: 500
     });
 }
 function showProfileEditDialog() {
+    "use strict";
     $('#profileSaveError').hide();
     $("#profileEditDiv").dialog( {
         modal: true,
@@ -249,16 +249,16 @@ function showProfileEditDialog() {
                 text: "Save",
                 click: function() {
                     var profName = $('#profileEditName').val();
-                    if ( profName != null && profName != '' ) {
+                    if ( typeof( profName ) !== "undefined" && profName !== '' ) {
                         $('#profileEditNameLabel').removeClass('error');
                         var jqDialog = $( this );
                         $.ajax( {
-                            type: "post", 
+                            type: "post",
                             url: "save_beer_profile.php",
                             dataType: "json",
                             data: { name: profName, profile: profileEdit.toCSV(true) },
                             success: function(response) {
-                                if ( response.status != 'error' ) {
+                                if ( response.status !== 'error' ) {
                                     loadProfile(profName, renderProfile);
                                     $('#profileSaveError').hide();
                                     jqDialog.dialog( "close" );
@@ -282,12 +282,14 @@ function showProfileEditDialog() {
                 text: "Cancel",
                 click: function() { $( this ).dialog( "close" ); }
             }
-        ]
+        ],
+        width: 500
     });
 }
 
 // profile table context menu global click handlers
 function profTableContextMenuHandler(shown) {
+    "use strict";
     if (shown) {
         $('html').bind('click', profTableGlobalClickHandler );
     } else {
@@ -295,6 +297,7 @@ function profTableContextMenuHandler(shown) {
     }
 }
 function profTableGlobalClickHandler() {
+    "use strict";
     profileEdit.closeContextMenu();
 }
 
@@ -305,7 +308,7 @@ $(document).ready(function(){
     profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate', dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay });
 
 	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
-        if ( window.profileName != '' ) {
+        if ( window.profileName !== '' ) {
             loadProfile(window.profileName, renderProfile);
         }
 	});
@@ -327,12 +330,12 @@ $(document).ready(function(){
         showProfileEditDialog();
     }).hide();
 
-    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() { 
+    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() {
         profileEdit.updateDates();
     }});
 
     $("button#profileEditAddCurrentButton").button().click(function() {
-        profileEdit.insertRowNow(window.controlSettings.beerSet);
+        profileEdit.insertRowNow();
     });
 
     $("button#profileEditNowButton").button().click(function() {

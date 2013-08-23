@@ -42,8 +42,8 @@
 		<button id="edit-controls">Edit profile</button>
 	</div>
 	<div id="profileNameDate">
-		<div><span class="profileTableLabel">Profile Name:</span><span id="profileTableName"></span></div>
-		<div><span class="profileTableLabel">Start Date:</span><span id="profileTableStartDate"></span></div>
+		<div><span class="profileTableLabel">Profile Name:</span><span class="profileTableValue" id="profileTableName"></span></div>
+		<div><span class="profileTableLabel">Start Date:</span><span class="profileTableValue" id="profileTableStartDate"></span></div>
 	</div>
 	<div id="profileChartDiv"></div>
 	<div id="profileTableDiv"></div>
@@ -55,8 +55,8 @@
                <div id="profileEditNameLabel" class="profileTableLabel edit">Profile Name:</div><input class="profileTableField" type="text" id="profileEditName" name="profileEditName" value="" />
                <div class="profileTableLabel edit">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
 	       </div>
-           <button class="wide-button" type="button" id="profileEditNowButton">Start Now</button>
-           <button class="wide-button" type="button" id="profileEditAddCurrentButton">Insert Now</button>
+           <button class="halfwidth-button" type="button" id="profileEditNowButton">Start Now</button>
+           <button class="halfwidth-button" type="button" id="profileEditAddCurrentButton">Insert Now</button>
 	       <div id="profileSaveError">Error Saving Profile!</div>
 	       <div id="profileTableTempsDiv"></div>
 	</div>
