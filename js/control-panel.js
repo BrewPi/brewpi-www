@@ -17,8 +17,8 @@
 
  /* global google, receiveControlSettings, window.googleDocsKey, controlSettings, controlVariables */
 
-var beerTemp = 20.0;
-var fridgeTemp = 20.0;
+var beerTemp = defaultTemp();
+var fridgeTemp = defaultTemp();
 
 function statusMessage(messageType, messageText){
     "use strict";
@@ -75,20 +75,33 @@ function loadControlPanel(){
         }
         window.beerTemp = window.controlSettings.beerSet;
         window.fridgeTemp = window.controlSettings.fridgeSet;
-		// beer and fridge temp can be null when not active (off mode)
-		if(window.beerTemp === null){
-			window.beerTemp = 20.0;
+		// beer and fridge temp can be null/undefined when not active (off mode)
+		if(isNaN(window.beerTemp)){
+			window.beerTemp = defaultTemp();
 		}
-		if(window.fridgeTemp === null){
-			window.fridgeTemp = 20.0;
+		if(isNaN(window.fridgeTemp)){
+			window.fridgeTemp = defaultTemp();
 		}
 		$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
 		$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
 	});
 }
 
+function defaultTemp(){
+    "use strict";
+    if(typeof(window.tempFormat) === 'F'){
+        return 68.0;
+    }
+    else{
+        return 20.0;
+    }
+}
+
 function tempUp(temp){
 	"use strict";
+    if(isNaN(temp)){
+        return defaultTemp();
+    }
 	temp += 0.1;
 	if(temp > window.controlConstants.tempSetMax){
 		temp = window.controlConstants.tempSetMin;
@@ -98,6 +111,9 @@ function tempUp(temp){
 
 function tempDown(temp){
 	"use strict";
+    if(isNaN(temp)){
+        return defaultTemp();
+    }
 	temp -= 0.1;
 	if(temp < window.controlConstants.tempSetMin){
 		temp = window.controlConstants.tempSetMax;
@@ -362,7 +378,7 @@ $(document).ready(function(){
                 $(this).val(temp);
             }
             if(isNaN(temp)){
-                temp = 20.0;
+                temp = defaultTemp();
             }
             $(this).val(temp.toFixed(1));
             if($(this).parent().attr('id').localeCompare("beer-temp") === 0){
