@@ -21,7 +21,11 @@ The default login credentials for the image are username ``pi`` and password ``r
 Configuring your system
 -----------------------
 
-When you have put the image on the card, plug in a keyboard, network cable and a monitor and use the on screen menu to configure the basic settings. If the menu doesn't come up automatically, type:
+As of the final 'Wheezy' distro release, SSH is enabled by default in the image you installed. If you have an Ethernet cable connected, you may SSH into the Pi to begin your configuration (The IP is dynamically assigned by your router at first- many router models allow you to log in and view all devices connected and their associated IP. The Raspberry Pi will, fittingly, appear as 'raspberrypi'). To connect via ssh, you will need an SSH client such as `Putty <http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html>`_ Connect to the IP address your Pi is using (port 22, SSH). When you save your session, you can also save your password. 
+
+Alternatively, you may also plug in a keyboard, network cable and a monitor and use the on screen menu to configure the basic settings. 
+
+If the menu doesn't come up automatically, type:
 
 .. code-block:: bash
 
@@ -88,12 +92,6 @@ My /etc/network/interfaces file looks like this:
     wpa-psk "YOUR_PASSPHRASE"
 
 The right IP addresses depend on your home network setup. You can run ifconfig before editing the interfaces and write the automatically assigned addresses down. However, it is recommended to pick a static Ip address that is outside of your router's DHCP range.
-
-
-Logging in though SSH
----------------------
-
-Now that you have your network settings configured, you can stop using a display and log in through SSH. Get `Putty <http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html>`_ and connect to the IP address you just configured (port 22, SSH). When you save your session, you can also save your password.
 
 
 Updating programs

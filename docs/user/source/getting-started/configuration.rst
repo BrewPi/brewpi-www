@@ -11,7 +11,7 @@ By default, all settings are commented in this file. BrewPi first loads `default
 In this file you will also find the key for your temperature profile. This key now points to the Sample Profile, but you will want to change it to your own profile so you can edit it.
 This is done most easily through the web interface, so we will do that later when the script is running.
 
-If you are not running BrewPi on a Raspberry Pi, but for instance on Windows, you will want to change a few of these parameters. For my setup on Windows I use WAMP as a web server an run the python scripts in IntelliJ IDEA (ask me for a license key).
+If you are not running BrewPi on a Raspberry Pi, but for instance on Windows, you will want to change a few of these parameters. For my setup on Windows I use WAMP as a web server and run the python scripts in IntelliJ IDEA (ask me for a license key).
 
 My config.cfg file for Windows has these settings:
 

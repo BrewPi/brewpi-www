@@ -2,28 +2,31 @@ Setting up users and permissions
 ================================
 For security reasons, we will run the BrewPi python script under its own user account: an account without sudo rights.
 We will set up the ``brewpi`` user and group now. The web interface will run under the user and group ``www-data``. The www-data user already exists.
-We will add the ``brewpi`` user with ``useradd``, which automatically creates the group ``brewpi`` as well.
-Set the password for the brewpi user with passwd and create it's home directory.
+We will add the ``brewpi`` user with ``useradd``, which automatically creates the group ``brewpi`` as well. Additionally, we are adding the user ``brewpi`` to the ``www-data`` and ``dialout`` groups (needed for access to the /var/www/ dir and serial ports, respectively).
+Then, we set the password for the brewpi user with passwd.
 
 .. code-block:: bash
 
-    sudo useradd brewpi
+    sudo useradd -m -G www-data dialout brewpi
     sudo passwd brewpi
-    sudo mkdir /home/brewpi
 
-To give the brewpi user access to serial ports, you have to add it to the dialout group and verify your work:
+Now, verify your work:
 
 .. code-block:: bash
 
-    sudo usermod -a -G dialout brewpi
     id brewpi
+
+You should see something similar to:
+
+.. code-block:: bash
+
+    uid=1001(brewpi) gid=1002(brewpi) groups=1002(brewpi),20(dialout),33(www-data)
 
 The python script will reside in the brewpi home directory. It will log data to the ./data subdirectory, keep settings in ./settings and it will copy everything the web interface needs to know to /var/www/ and chown it to www-data. By doing it this way, the www-data user does not have to have any rights outside its own directory.
 To allow the brewpi user to write to the directories owned by www-data, we will have to add it to the www-data group. We will also add the pi user to both groups to make it easier to work with the files.
 
 .. code-block:: bash
 
-    sudo usermod -a -G www-data brewpi
     sudo usermod -a -G www-data pi
     sudo usermod -a -G brewpi pi
 
