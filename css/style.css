@@ -653,7 +653,7 @@ button#maintenance{
 #profileSaveError { color:red; display:none; }
 
 .profileEditFieldSet { height:54px; }
-.profileTableLabel { float:left; clear: left; width:90px; height:22px; }
+.profileTableLabel { float:left; clear: left; height:22px; }
 .profileTableLabel.edit { padding:4px 0 0 0; }
 .profileTableLabel.error { color:red; font-weight: bold; }
 .profileTableField { float:right; clear: right; width:65%; }

@@ -147,7 +147,7 @@ function renderProfile(beerProfile) {
     profileTable.render(beerProfile);
     $("#profileTableName").text(window.profileName);
     $("button#edit-controls").show();
-    drawProfileChart(profileTable.toCSV(true, ['days', 'temperature']));
+    drawProfileChart(profileTable.toCSV(true, ['date', 'temperature']));
 }
 
 function drawProfileChart(profileData) {
@@ -169,6 +169,7 @@ function drawProfileChart(profileData) {
             legend: 'always',
             labelsDivStyles: { 'textAlign': 'right' },
             strokeWidth: 1,
+            xValueParser: function(x) { return $.datepicker.parseDateTime("dd/mm/yy", "hh:mm:ss", x); },
             "Temperature" : {},
             axes: {
                 y : { valueFormatter: temperatureFormatter }
@@ -191,7 +192,7 @@ function loadProfile(profile, onProfileLoaded) {
                 onProfileLoaded(beerProfile);
             }
         } catch (e) {
-            console.log('Error loading profile: ' + beerProfile);
+            console.log('Error loading profile: ' + e.toString());
         }
     }, 'json');
 }
