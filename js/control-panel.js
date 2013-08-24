@@ -172,6 +172,9 @@ function drawProfileChart(profileData) {
     var temperatureFormatter = function(y) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
+    var dateTimeFormatter = function(x) {
+        profileTable.formatDate(x);
+    }
 
     var chart = new Dygraph(
         document.getElementById("profileChartDiv"),
@@ -189,13 +192,15 @@ function drawProfileChart(profileData) {
             "Temperature" : {},
             axes: {
                 y : { valueFormatter: temperatureFormatter }
+                x : { valueFormatter: dateTimeFormatter }
             },
             highlightCircleSize: 2,
             highlightSeriesOpts: {
                 strokeWidth: 1.5,
                 strokeBorderWidth: 1,
                 highlightCircleSize: 5
-            }
+            },
+            yAxisLabelWidth: 35
         }
     );
 }
