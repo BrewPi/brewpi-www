@@ -185,7 +185,7 @@ function drawProfileChart(profileData) {
             legend: 'always',
             labelsDivStyles: { 'textAlign': 'right' },
             strokeWidth: 1,
-            xValueParser: function(x) { return $.datepicker.parseDateTime("dd/mm/yy", "hh:mm:ss", x); },
+            xValueParser: function(x) { return profileTable.parseDate(x); },
             "Temperature" : {},
             axes: {
                 y : { valueFormatter: temperatureFormatter }
