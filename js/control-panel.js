@@ -191,7 +191,7 @@ function drawProfileChart(profileData) {
             xValueParser: function(x) { return profileTable.parseDate(x); },
             "Temperature" : {},
             axes: {
-                y : { valueFormatter: temperatureFormatter }
+                y : { valueFormatter: temperatureFormatter },
                 x : { valueFormatter: dateTimeFormatter }
             },
             highlightCircleSize: 2,
