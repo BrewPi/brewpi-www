@@ -173,7 +173,7 @@ function drawProfileChart(profileData) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
     var dateTimeFormatter = function(x) {
-        profileTable.formatDate(x);
+        return profileTable.formatDate(x);
     }
 
     var chart = new Dygraph(
