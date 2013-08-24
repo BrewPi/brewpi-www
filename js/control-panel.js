@@ -188,7 +188,7 @@ function drawProfileChart(profileData) {
             legend: 'always',
             labelsDivStyles: { 'textAlign': 'right' },
             strokeWidth: 1,
-            xValueParser: function(x) { return profileTable.parseDate(x, true); },
+            xValueParser: function(x) { return profileTable.parseDate(x); },
             "Temperature" : {},
             axes: {
                 y : { valueFormatter: temperatureFormatter }
