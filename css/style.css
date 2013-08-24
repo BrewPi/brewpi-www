@@ -665,7 +665,7 @@ button#maintenance{
 .fullwidth-button { display:block; width:100%; margin:5px 0 5px 0; }
 .halfwidth-button { display:block; float:left; width:48%; margin:5px 1% 5px 1%}
 
-.profileTableEdit { margin:0; border:1px solid #ccc; border-right: 0; border-bottom: 0; width:100%; }
+.profileTableEdit { margin:0; border:1px solid #ccc; border-right: 0; border-bottom: 0; width:100%; border-collapse:separate; border-spacing: 0; }
 .profileTableEdit tbody TR.odd { background:#f7f7f7; }
 .profileTableEdit tbody TR.even { background:#fff; }
 .profileTableEdit tbody TR:hover { background:#eee; }
