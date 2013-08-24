@@ -254,9 +254,13 @@ BeerProfileTable.prototype = {
     },
     formatDate: function(theDate) {
         "use strict";
-        var strDate = $.datepicker.formatDateTime(this.config.dateFormat, this.config.timeFormat, theDate);
-        var strDate2 = $.datepicker.formatDate(this.config.dateFormatDisplay, this.config.timeFormat, theDate);
-        return { raw: strDate, display: strDate2 };
+        var strDate = $.datepicker.formatDate(this.config.dateFormat, theDate);
+        var strDate2 = $.datepicker.formatDate(this.config.dateFormatDisplay, theDate);
+        var h = theDate.getHours();
+        var m = theDate.getMinutes();
+        var s = theDate.getSeconds();
+        var strTime = ( (h<10) ? '0' + h : h ) + ':' + ( (m<10) ? '0' + m : m ) + ':' + ( (s<10) ? '0' + s : s );
+        return { raw: strDate + ' ' + strTime, display: strDate2 + ' ' + strTime };
     },
     parseStartDate: function(profile) {
         "use strict";
