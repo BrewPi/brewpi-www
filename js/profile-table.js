@@ -269,13 +269,11 @@ BeerProfileTable.prototype = {
         }
         return new Date();
     },
-    parseDate: function(strDate) {
+    parseDate: function(strDate, forDisplay) {
         "use strict";
+        var dateFormat = (forDisplay === true) ? this.config.dateFormatDisplay : this.config.dateFormat;
         try {
-            var startDate = $.datepicker.parseDate(this.config.dateFormat, strDate);
-            var startTime = $.datepicker.parseTime(this.config.timeFormat, strDate.substring(strDate.indexOf(' ')+1));
-            var totalTime = startDate.getTime() + (startTime.hour*60*60*1000) + (startTime.minute*60*1000) + (startTime.second*1000);
-            return new Date( totalTime );
+            return $.datepicker.parseDateTime(dateFormat, this.config.timeFormat, strDate);
         } catch(e) {
             console.log('invalid start date: ' + strDate + ', using current date/time' );
             return 0;
