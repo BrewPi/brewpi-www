@@ -54,8 +54,12 @@ button#maintenance{
 	height: 280px; must be inline*/
 	display: block;
 	overflow: auto;
-    border-collapse:separate; border-spacing: 5px;
 }
+
+#profileTableDiv table {
+    border-collapse:separate; border-spacing: 0;
+}
+
 #profileTableDiv th,
 #profileTableDiv td{
     padding: 3px;
