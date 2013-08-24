@@ -24,7 +24,7 @@ BeerProfileTable.prototype = {
         this.id = id;
         this.profileName = '';
         this.config = (config || {});
-        this.config.timeFormat = ' HH:mm:ss';
+        this.config.timeFormat = 'THH:mm:ss';
         this.selector = '#' + this.id;
         this.menuId = this.id + 'Menu';
         this.menuSelector = '#' + this.menuId;
@@ -260,7 +260,7 @@ BeerProfileTable.prototype = {
         var m = theDate.getMinutes();
         var s = theDate.getSeconds();
         var strTime = ( (h<10) ? '0' + h : h ) + ':' + ( (m<10) ? '0' + m : m ) + ':' + ( (s<10) ? '0' + s : s );
-        return { raw: strDate + ' ' + strTime, display: strDate2 + ' ' + strTime };
+        return { raw: strDate + 'T' + strTime, display: strDate2 + ' ' + strTime };
     },
     parseStartDate: function(profile) {
         "use strict";
@@ -273,7 +273,7 @@ BeerProfileTable.prototype = {
         "use strict";
         var dateFormat = (forDisplay === true) ? this.config.dateFormatDisplay : this.config.dateFormat;
         try {
-            return $.datepicker.parseDateTime(dateFormat, this.config.timeFormat, strDate);
+            return $.datepicker.parseDateTime(dateFormat, this.config.timeFormat, strDate, null, {separator: "T"});
         } catch(e) {
             console.log('invalid start date: ' + strDate + ', using current date/time' );
             return 0;
