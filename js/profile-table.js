@@ -132,6 +132,7 @@ BeerProfileTable.prototype = {
     deleteRow: function(index) {
         "use strict";
         $(this.rowsSelector).eq(index).remove();
+        var me = this;
         window.setTimeout(function() { me.updateDisplay(); }, 200);
     },
     createRow: function(days, temp, theDate) {
