@@ -172,6 +172,9 @@ function drawProfileChart(profileData) {
     var temperatureFormatter = function(y) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
+    var dateTimeFormatter = function(x) {
+        return profileTable.formatDate(x).display;
+    }
 
     var chart = new Dygraph(
         document.getElementById("profileChartDiv"),
@@ -185,17 +188,19 @@ function drawProfileChart(profileData) {
             legend: 'always',
             labelsDivStyles: { 'textAlign': 'right' },
             strokeWidth: 1,
-            xValueParser: function(x) { return $.datepicker.parseDateTime("dd/mm/yy", "hh:mm:ss", x); },
+            xValueParser: function(x) { return profileTable.parseDate(x); },
             "Temperature" : {},
             axes: {
-                y : { valueFormatter: temperatureFormatter }
+                y : { valueFormatter: temperatureFormatter },
+                x : { valueFormatter: dateTimeFormatter }
             },
             highlightCircleSize: 2,
             highlightSeriesOpts: {
                 strokeWidth: 1.5,
                 strokeBorderWidth: 1,
                 highlightCircleSize: 5
-            }
+            },
+            yAxisLabelWidth: 35
         }
     );
 }
@@ -347,7 +352,7 @@ $(document).ready(function(){
         showProfileEditDialog();
     }).hide();
 
-    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() {
+    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "THH:mm:ss", onSelect: function() {
         profileEdit.updateDates();
     }});
 
