@@ -12,6 +12,8 @@
  * }
  */
 
+/* global console */
+
 function BeerProfileTable(id, config) {
     "use strict";
     if (arguments.length > 0 ) {
@@ -50,15 +52,14 @@ BeerProfileTable.prototype = {
     render: function(data) {
         "use strict";
         this.profileName = data.name;
-        this.clearRows();
-        this.renderHeader(data);
-        this.renderRows(data);
-        this.renderFooter(data);
+        this.renderHeader();
+        this.renderRows(data.profile);
+        this.renderFooter();
         // start date inferred from first data row, if not present (empty profile), use current date/time
         var initialDate = this.parseStartDate(data.profile);
         this.updateDisplay( initialDate );
     },
-    renderHeader: function(data) {
+    renderHeader: function() {
         "use strict";
         var headerRow = $(this.newRow);
         $(this.headSelector).append(headerRow);
@@ -69,9 +70,9 @@ BeerProfileTable.prototype = {
         cell = $(this.newHeadCell).text('Date/Time');
         headerRow.append(cell);
     },
-    renderRows: function(data) {
+    renderRows: function(rows) {
         "use strict";
-        var rows = data.profile;
+        this.clearRows();
         for( var i=0; i<rows.length; i++ ) {
             this.renderRow( rows[i] );
         }
@@ -84,7 +85,7 @@ BeerProfileTable.prototype = {
         var newRow = this.createRow(rowData.days, rowData.temperature, rowData.date);
         $(this.bodySelector).append(newRow);
     },
-    renderFooter: function(data) {
+    renderFooter: function() {
     },
     addRow: function() {
         "use strict";
@@ -139,10 +140,10 @@ BeerProfileTable.prototype = {
         "use strict";
         var $newRow = $(this.newRow);
         var cell = $(this.newCell).addClass('profileDays').html( (days || '') );
-        this.attachCellHandlers(cell);
+        this.attachCellHandlers(cell, true); // attach selectAll and blur
         $newRow.append(cell);
         cell = $(this.newCell).addClass('profileTemp').html( (temp || '') );
-        this.attachCellHandlers(cell);
+        this.attachCellHandlers(cell, false); // attach just selectAll
         $newRow.append(cell);
         cell = $(this.newCell).addClass('profileDate').html( (theDate || '') );
         $newRow.append(cell);
@@ -170,16 +171,19 @@ BeerProfileTable.prototype = {
             });
         }
     },
-    attachCellHandlers: function($theCell) {
+    attachCellHandlers: function($theCell, attachBlur) {
         "use strict";
         var me = this;
         if ( this.config.editable ) {
             $theCell.attr('contenteditable', 'true').focus(function() {
                 me.selectAll(this);
-            }).blur(function() {
-                me.updateDates();
-                me.maintainEmptyRow();
             });
+            if(attachBlur){
+                $theCell.blur(function() {
+                    me.updateDisplay();
+                    me.maintainEmptyRow();
+                });
+            }
         }
     },
     clearRows: function() {
@@ -221,9 +225,27 @@ BeerProfileTable.prototype = {
             this.config.contextMenuDisplayHandler(false);
         }
     },
+    sortTable: function(){
+        "use strict";
+        var rows = this.getProfileData();
+        rows.sort(function(a, b){
+            var aDays = parseFloat(a.days);
+            var bDays = parseFloat(b.days);
+            if (aDays === bDays){
+                return a.position - b.position;
+            }
+            if (aDays < bDays){
+                return -1;
+            }
+            return 1;
+        });
+        return rows;
+    },
     updateDisplay: function(initialDate) {
         "use strict";
-        // TODO add sorting to ensure list is always in chrono order
+        if( !this.hasEmptyDateCells()){ // do not sort when some dates are not filled in
+            this.renderRows(this.sortTable());
+        }
         this.updateDates(initialDate);
         this.updateBGColors();
     },
@@ -310,7 +332,6 @@ BeerProfileTable.prototype = {
     updateBGColors: function() {
         "use strict";
         var idx = 0;
-        var me = this;
         $(this.rowsSelector).each(function() {
             var add = 'even';
             var rmv = 'odd';
@@ -351,6 +372,18 @@ BeerProfileTable.prototype = {
         });
         return points;
     },
+    hasEmptyDateCells: function(){
+        "use strict";
+        var me = this;
+        var emptyCells = 0;
+        $(this.rowsSelector).each(function() {
+            var cell = $(this).find('td:first-child');  // test first cell for empty
+            if ( me.isBlankCell(cell) ) {
+                emptyCells++;
+            }
+        });
+        return(emptyCells > 1); // there will always be one empty cell at the bottom when editing
+    },
     toJSON: function() {
         "use strict";
         return { name: this.profileName, profile: this.getProfileData()};
@@ -368,8 +401,8 @@ BeerProfileTable.prototype = {
         var profileData = this.getProfileData();
         for ( var j=0; j<profileData.length; j++ ) {
             var row = profileData[j];
-            for (var i=0; i<colNames.length; i++ ) {
-                ret += ((i!==0) ? ',' : '') + row[colNames[i]];
+            for (var k=0; k<colNames.length; k++ ) {
+                ret += ((k!==0) ? ',' : '') + row[colNames[k]];
             }
             ret += '\n';
         }
