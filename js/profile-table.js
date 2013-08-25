@@ -132,6 +132,7 @@ BeerProfileTable.prototype = {
     deleteRow: function(index) {
         "use strict";
         $(this.rowsSelector).eq(index).remove();
+        window.setTimeout(function() { me.updateDisplay(); }, 200);
     },
     createRow: function(days, temp, theDate) {
         "use strict";
@@ -221,6 +222,7 @@ BeerProfileTable.prototype = {
     },
     updateDisplay: function(initialDate) {
         "use strict";
+        // TODO add sorting to ensure list is always in chrono order
         this.updateDates(initialDate);
         this.updateBGColors();
     },
