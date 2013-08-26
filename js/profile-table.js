@@ -167,7 +167,7 @@ BeerProfileTable.prototype = {
                 $(me.selector).append(newMenu);
                 me.positionMenu(e, newMenu);
                 newMenu.show();
-                if ( typeof(me.config.contextMenuDisplayHandler) === "undefined") {
+                if ( me.config.contextMenuDisplayHandler !== null ) {
                     me.config.contextMenuDisplayHandler(true);
                 }
                 e.preventDefault();
@@ -223,7 +223,7 @@ BeerProfileTable.prototype = {
     closeContextMenu: function() {
         "use strict";
         $(this.menuSelector).remove();
-        if ( typeof(this.config.contextMenuDisplayHandler) !== "undefined" ) {
+        if ( this.config.contextMenuDisplayHandler !== null ) {
             this.config.contextMenuDisplayHandler(false);
         }
     },
