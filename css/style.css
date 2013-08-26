@@ -654,7 +654,10 @@ button#maintenance{
 
 #profileSelectDiv { display:none; }
 #profileEditDiv { display:none; }
+#profileHelpDiv { display:none; }
 #profileSaveError { color:red; display:none; }
+
+.help-h1 { font-weight: bold; }
 
 .profileEditFieldSet { height:54px; }
 .profileTableLabel { float:left; clear: left; height:22px; }

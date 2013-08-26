@@ -308,6 +308,14 @@ function showProfileEditDialog() {
         width: 500
     });
 }
+function showProfileHelpDialog() {
+    "use strict";
+    $("#profileHelpDiv").dialog( {
+        modal: true,
+        title: "Beer Temperature Profile Help",
+        width: 960
+    });
+}
 
 // profile table context menu global click handlers
 function profTableContextMenuHandler(shown) {
@@ -351,6 +359,10 @@ $(document).ready(function(){
         profileEdit.render( profileTable.toJSON() );
         showProfileEditDialog();
     }).hide();
+
+    $("button#help-profile").button({  icons: {primary: "ui-icon-help" } }).click(function() {
+        showProfileHelpDialog();
+    });
 
     $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "THH:mm:ss", onSelect: function() {
         profileEdit.updateDates();
