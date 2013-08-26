@@ -61,6 +61,9 @@ BeerProfileTable.prototype = {
     },
     renderHeader: function() {
         "use strict";
+        if($(this.headSelector + " th").length > 0){
+            return; // header already rendered
+        }
         var headerRow = $(this.newRow);
         $(this.headSelector).append(headerRow);
         var cell = $(this.newHeadCell).text('Days');
