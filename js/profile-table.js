@@ -188,7 +188,6 @@ BeerProfileTable.prototype = {
     },
     clearRows: function() {
         "use strict";
-        $(this.headSelector).empty();
         $(this.bodySelector).empty();
     },
     createContextMenu: function(index) {

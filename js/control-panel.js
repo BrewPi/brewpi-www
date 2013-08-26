@@ -335,11 +335,11 @@ $(document).ready(function(){
         }
 	});
 
-    $("button#load-controls").button({  icons: {primary: "ui-icon-open" } }).click(function() {
+    $("button#load-controls").button({  icons: {primary: "ui-icon-folder-open" } }).click(function() {
         showProfileSelectDialog();
     });
 
-    $("button#new-controls").button({  icons: {primary: "ui-icon-new" } }).click(function() {
+    $("button#new-controls").button({  icons: {primary: "ui-icon-document" } }).click(function() {
         $("#profileEditName").val('');
         $("#profileEditStartDate").val('');
         profileEdit.render( { name: '', profile: [] } );
