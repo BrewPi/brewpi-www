@@ -174,17 +174,25 @@ BeerProfileTable.prototype = {
             });
         }
     },
-    attachCellHandlers: function($theCell, attachBlur) {
+    attachCellHandlers: function($theCell, daysCell) {
         "use strict";
         var me = this;
         if ( this.config.editable ) {
             $theCell.attr('contenteditable', 'true').focus(function() {
                 me.selectAll(this);
             });
-            if(attachBlur){
+            if(daysCell){ // days will need updating, possible re-sort and keep empty row
                 $theCell.blur(function() {
+                    if( !me.hasEmptyDateCells()){ // do not sort when some dates are not filled in
+                        me.renderRows(me.sortTable());
+                    }
                     me.updateDisplay();
                     me.maintainEmptyRow();
+                });
+            }
+            else{ // just update the display
+                $theCell.blur(function() {
+                    me.updateDisplay();
                 });
             }
         }
@@ -245,9 +253,6 @@ BeerProfileTable.prototype = {
     },
     updateDisplay: function(initialDate) {
         "use strict";
-        if( !this.hasEmptyDateCells()){ // do not sort when some dates are not filled in
-            this.renderRows(this.sortTable());
-        }
         this.updateDates(initialDate);
         this.updateBGColors();
     },
@@ -341,7 +346,7 @@ BeerProfileTable.prototype = {
                 add = 'odd';
                 rmv = 'even';
             }
-            $(this).addClass(add).removeClass(rmv).data('rowIndex', idx); // piggy back on loop here to set row index, used for positioning in insert/delete rows
+            $(this).addClass(add).removeClass(rmv).removeClass("selected").data('rowIndex', idx); // piggy back on loop here to set row index, used for positioning in insert/delete rows
             idx++;
         });
     },

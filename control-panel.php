@@ -93,7 +93,7 @@
 		</p>
 		<span class="help-h1">Refresh</span>
 		<p>
-			The refresh button can be useful if you edited the profile outside of the web interface, it reloads the profile from the Raspberry Pi.
+			The refresh button can be useful if you edited the profile outside of the web interface: it reloads the profile from the Raspberry Pi.
 		</p>
 	</div>
 </div>

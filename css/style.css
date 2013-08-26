@@ -671,8 +671,8 @@ button#maintenance{
 .profileTableEdit { margin:0; border:1px solid #ccc; border-right: 0; border-bottom: 0; width:100%; border-collapse:separate; border-spacing: 0; }
 .profileTableEdit tbody TR.odd { background:#f7f7f7; }
 .profileTableEdit tbody TR.even { background:#fff; }
-.profileTableEdit tbody TR:hover { background:#eee; }
-.profileTableEdit tbody TR.selected { background:#ddd; }
+.profileTableEdit tbody TR:hover { background: #ddeeff; }
+.profileTableEdit tbody TR.selected { background: #bbddff; }
 .profileTableEdit TD, .profileTableEdit TH { padding: 3px; height: 1em;}
 .profileTableEdit TD { text-align:center; }
 .profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
