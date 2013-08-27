@@ -364,7 +364,7 @@ $(document).ready(function(){
         showProfileHelpDialog();
     });
 
-    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "THH:mm:ss", onSelect: function() {
+    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() {
         profileEdit.updateDates();
     }});
 
