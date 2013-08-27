@@ -188,11 +188,17 @@ BeerProfileTable.prototype = {
                     }
                     me.updateDisplay();
                     me.maintainEmptyRow();
+                    if ( typeof(me.config.chartUpdateCallBack) !== "undefined") {
+                        me.config.chartUpdateCallBack();
+                    }
                 });
             }
             else{ // just update the display
                 $theCell.blur(function() {
                     me.updateDisplay();
+                    if ( typeof(me.config.chartUpdateCallBack) !== "undefined") {
+                        me.config.chartUpdateCallBack();
+                    }
                 });
             }
         }

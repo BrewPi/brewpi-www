@@ -49,9 +49,13 @@
 	<div id="profileChartDiv"></div>
 	<div id="profileTableDiv"></div>
 	<div id="profileSelectDiv">
+		<div id="profileSelectChartDiv"><span class="chart-placeholder">Click a profile to load a preview here</span></div>
 		<ol id="profileSelect"></ol>
+		<div id="profileSelectTableDiv" style="display: none;"></div>
 	</div>
 	<div id="profileEditDiv">
+		   <div id="profileEditChartDiv"><span class="chart-placeholder">Profile preview will be displayed here</span></div>
+	       <div id="profileEditControls">
 	       <div class="profileEditFieldSet">
                <div id="profileEditNameLabel" class="profileTableLabel edit">Profile Name:</div><input class="profileTableField" type="text" id="profileEditName" name="profileEditName" value="" />
                <div class="profileTableLabel edit">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
@@ -59,7 +63,7 @@
            <button class="halfwidth-button" type="button" id="profileEditNowButton">Start Now</button>
            <button class="halfwidth-button" type="button" id="profileEditAddCurrentButton">Insert Now</button>
 	       <div id="profileSaveError">Error Saving Profile!</div>
-	       <div id="profileTableTempsDiv"></div>
+	       </div>
 	</div>
 	<div id="profileHelpDiv">
 		<p> With BrewPi running in profile mode, you can set a temperature profile ahead of time and BrewPi will follow this profile for you.
@@ -70,7 +74,8 @@
 		<span class="help-h1">Saving and loading profiles</span>
 		<p>
 			Temperature profiles are stored on the Raspberry Pi when you click the <i>Save</i> button.
-			The <i>Load profile</i> button shows a list of saved profiles. Clicking them loads the profile in the web interface, but does <u>not</u> activate it yet.
+			The <i>Load profile</i> button shows a list of saved profiles. Clicking them loads the profile in the web interface, but does <span
+				style="text-decoration: underline;">not</span> activate it yet.
 		</p>
 		<span class="help-h1">Creating a new profile</span>
 		<p>
