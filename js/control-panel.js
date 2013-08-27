@@ -15,7 +15,7 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- /* global google, receiveControlSettings, window.googleDocsKey, controlSettings, controlVariables */
+ /* global Dygraph, BeerProfileTable, receiveControlSettings, window.googleDocsKey, controlSettings, controlVariables, console */
 
 var beerTemp = defaultTemp();
 var fridgeTemp = defaultTemp();
@@ -172,9 +172,9 @@ function drawProfileChart(profileData) {
     var temperatureFormatter = function(y) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
-    var dateTimeFormatter = function(x) {
+    var dateTimeFormatter = function (x) {
         return profileTable.formatDate(x).display;
-    }
+    };
 
     var chart = new Dygraph(
         document.getElementById("profileChartDiv"),

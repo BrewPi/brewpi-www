@@ -95,6 +95,12 @@
 		<p>
 			The refresh button can be useful if you edited the profile outside of the web interface: it reloads the profile from the Raspberry Pi.
 		</p>
+		<span class="help-h1">Empty temperature cells</span>
+		<p>
+			You can leave a temperature cell empty to disable temperature control in profile mode. For example:
+			You can start a profile with an empty temperature cell to postpone starting temperature control or you can end with an empty cell to disable temperature control after a while.
+			Take into account that your points define 'line pieces', to end with 22 degrees for a while and then OFF you define: 22, 22, empty.
+		</p>
 	</div>
 </div>
 <div id="beer-constant-control">
