@@ -659,6 +659,9 @@ button#maintenance{
 
 .help-h1 { font-weight: bold; }
 
+#profileEditChartDiv{ width: 450px; height: 280px; float: left; margin: 20px 0; }
+#profileEditControls{ width: 450px; float: right; margin: 20px 0; }
+
 .profileEditFieldSet { height:54px; }
 .profileTableLabel { float:left; clear: left; height:22px; }
 .profileTableLabel.edit { padding:4px 0 0 0; }
@@ -679,6 +682,8 @@ button#maintenance{
 .profileTableEdit TH { border-right: solid 1px #fff; }
 .profileTableEdit TH:last-child { border-right: 0 }
 
+
+
 .profileTableMenu {
     position: absolute;
     display: none;
@@ -692,8 +697,9 @@ button#maintenance{
 
 #profileSelect .ui-selecting { background: #FECA40; }
 #profileSelect .ui-selected { background: #F39814; color: white; }
-#profileSelect { list-style-type: none; margin: 0; padding: 0; }
+#profileSelect { list-style-type: none; margin: 20px 0; padding: 0; float: right; width: 450px;}
 #profileSelect li { margin: 3px; padding: 0.4em; height: 18px; }
+#profileSelectChartDiv{ width: 450px; height: 280px; float: left; margin: 20px 0;}
 
 #profileNameDate { width: 375px; float:right; }
 #profileNameDate div { float:left; clear: left; width:100%;}
@@ -704,7 +710,8 @@ button#maintenance{
 
 #profileTableDiv { width: 375px; height: 280px; float: right; }
 
-
+/* make sure buttons (Save/Cancel) are on the bottom of all panes, even with floats in the pane */
+.ui-dialog .ui-dialog-buttonpane { clear: both; }
 
 /* css for timepicker */
 
@@ -719,4 +726,4 @@ button#maintenance{
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 
-
+.chart-placeholder{ display: block; margin-top:100px; width: 100%; text-align: center;}

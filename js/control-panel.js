@@ -156,6 +156,7 @@ function applySettings(){
 
 var profileTable;
 var profileEdit;
+var profileSelect;
 
 function renderProfile(beerProfile) {
     "use strict";
@@ -163,12 +164,40 @@ function renderProfile(beerProfile) {
     profileTable.render(beerProfile);
     $("#profileTableName").text(window.profileName);
     $("button#edit-controls").show();
-    drawProfileChart(profileTable.toCSV(true, ['date', 'temperature']));
+    drawProfileChart("profileChartDiv", profileTable.toCSV(true, ['date', 'temperature']));
 }
 
-function drawProfileChart(profileData) {
+function drawSelectPreviewChart(beerProfile) {
     "use strict";
 
+    // display temporary loading message
+    $("#profileSelectChartDiv").html("<span class='chart-loading chart-placeholder'>Loading profile...</span>");
+
+    // render profile in the hidden div and plot
+    loadProfile(beerProfile, function(profileData){
+        profileSelect.render(profileData);
+        drawProfileChart("profileSelectChartDiv", profileSelect.toCSV(true, ['date', 'temperature']));
+    });
+
+    // display error if loading failed: span will still exist
+    $("#profileSelectChartDiv span.chart-loading").text("Error Loading profile!");
+}
+
+function drawEditPreviewChart() {
+    "use strict";
+
+    // display temporary loading message
+    $("#profileEditChartDiv").html("<span class='chart-loading chart-placeholder'>Redrawing profile...</span>");
+
+    drawProfileChart("profileEditChartDiv", profileEdit.toCSV(true, ['date', 'temperature']));
+
+    // display error if loading failed: span will still exist
+    $("#profileEditChartDiv span.chart-loading").text("Error drawing profile chart!");
+}
+
+function drawProfileChart(divId, profileData) {
+    "use strict";
+    console.log("drawProfileChart: " + JSON.stringify(profileData));
     var temperatureFormatter = function(y) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
@@ -177,14 +206,14 @@ function drawProfileChart(profileData) {
     };
 
     var chart = new Dygraph(
-        document.getElementById("profileChartDiv"),
+        document.getElementById(divId),
         profileData,
         {
             colors: [ 'rgb(89, 184, 255)' ],
             axisLabelFontSize:12,
             gridLineColor:'#ccc',
             gridLineWidth:'0.1px',
-            labelsDiv: document.getElementById("profileChartDiv-label"),
+            labelsDiv: document.getElementById(divId + "-label"),
             legend: 'always',
             labelsDivStyles: { 'textAlign': 'right' },
             strokeWidth: 1,
@@ -222,10 +251,11 @@ function showProfileSelectDialog() {
     "use strict";
     var selectedProfile;
     $('#profileSelect').selectable({
-        stop: function(e, ui) {
+        stop: function(event, ui) {
             $(".ui-selected:first", this).each(function() {
                 $(this).siblings().removeClass("ui-selected");
                 selectedProfile = $(this).text();
+                drawSelectPreviewChart(selectedProfile);
             });
         }
     });
@@ -257,7 +287,7 @@ function showProfileSelectDialog() {
                 click: function() { $( this ).dialog( "close" ); }
             }
         ],
-        width: 500
+        width: 960
     });
 }
 function showProfileEditDialog() {
@@ -305,9 +335,11 @@ function showProfileEditDialog() {
                 click: function() { $( this ).dialog( "close" ); }
             }
         ],
-        width: 500
+        width: 960
     });
+    drawEditPreviewChart();
 }
+
 function showProfileHelpDialog() {
     "use strict";
     $("#profileHelpDiv").dialog( {
@@ -334,8 +366,22 @@ function profTableGlobalClickHandler() {
 $(document).ready(function(){
 	"use strict";
 	//Control Panel
-    profileEdit = new BeerProfileTable('profileEditDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: true, startDateFieldSelector: '#profileEditStartDate', dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay, contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler });
-    profileTable = new BeerProfileTable('profileTableDiv', { tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content", editable: false, startDateFieldSelector: '#profileTableStartDate', dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay });
+    profileEdit = new BeerProfileTable('profileEditControls', {
+        tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content",
+        editable: true, startDateFieldSelector: '#profileEditStartDate',
+        dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay,
+        contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler,
+        chartUpdateCallBack: drawEditPreviewChart
+    });
+    profileTable = new BeerProfileTable('profileTableDiv', {
+        tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content",
+        editable: false, startDateFieldSelector: '#profileTableStartDate',
+        dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay
+    });
+    profileSelect = new BeerProfileTable('profileSelectTableDiv', {
+        editable: false,
+        dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay
+    });
 
 	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
         if ( window.profileName !== '' ) {
