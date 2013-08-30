@@ -23,7 +23,7 @@ To program your Arduino from the web interface, take the following steps:
 
 #.  Open the maintenance panel and go to the `Reprogram Arduino` tab.
 
-#.  Download the HEX file appropriate for your setup from http://dl.brewpi.com/brewpi-avr/latest. You can also compile your own hex file with Atmel Studio. Make sure you have the right file for your Arduino type (UNO or Leonardo) and the right shield revision. RevA has white silk screen, RevC has black silkscreen. Click the `Browse` button and select your file.
+#.  Download the HEX file appropriate for your setup from http://dl.brewpi.com/brewpi-avr/stable. You can also compile your own hex file with Atmel Studio. Make sure you have the right file for your Arduino type (UNO or Leonardo) and the right shield revision. RevA has white silk screen, RevC has black silkscreen. Click the `Browse` button and select your file.
 
 #.  The program script can automatically restore your settings and devices after upgrading. If you are uploading to a virgin Arduino, just answer NO to both.
 
