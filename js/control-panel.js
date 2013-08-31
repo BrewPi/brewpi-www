@@ -164,7 +164,8 @@ function renderProfile(beerProfile) {
     profileTable.render(beerProfile);
     $("#profileTableName").text(window.profileName);
     $("button#edit-controls").show();
-    drawProfileChart("profileChartDiv", profileTable.toCSV(true, ['date', 'temperature']));
+    $("button#saveas-controls").show();
+    drawProfileChart("profileChartDiv", profileTable );
 }
 
 function drawSelectPreviewChart(beerProfile) {
@@ -176,7 +177,7 @@ function drawSelectPreviewChart(beerProfile) {
     // render profile in the hidden div and plot
     loadProfile(beerProfile, function(profileData){
         profileSelect.render(profileData);
-        drawProfileChart("profileSelectChartDiv", profileSelect.toCSV(true, ['date', 'temperature']));
+        drawProfileChart("profileSelectChartDiv", profileSelect );
     });
 
     // display error if loading failed: span will still exist
@@ -189,15 +190,24 @@ function drawEditPreviewChart() {
     // display temporary loading message
     $("#profileEditChartDiv").html("<span class='chart-loading chart-placeholder'>Redrawing profile...</span>");
 
-    drawProfileChart("profileEditChartDiv", profileEdit.toCSV(true, ['date', 'temperature']));
+    drawProfileChart("profileEditChartDiv", profileEdit );
 
     // display error if loading failed: span will still exist
     $("#profileEditChartDiv span.chart-loading").text("Error drawing profile chart!");
 }
 
-function drawProfileChart(divId, profileData) {
+// lets hack a little shall we ?
+Dygraph.EVERY2DAYS = -1;
+Dygraph.EVERY3DAYS = -2;
+Dygraph.EVERY4DAYS = -3;
+var _1DAY = 1000 * 86400;
+Dygraph.SHORT_SPACINGS[Dygraph.EVERY2DAYS]    = 2 * _1DAY;
+Dygraph.SHORT_SPACINGS[Dygraph.EVERY3DAYS]    = 3 * _1DAY;
+Dygraph.SHORT_SPACINGS[Dygraph.EVERY4DAYS]    = 4 * _1DAY;
+
+function drawProfileChart(divId, profileObj) {
     "use strict";
-    console.log("drawProfileChart: " + JSON.stringify(profileData));
+
     var temperatureFormatter = function(y) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
@@ -205,32 +215,52 @@ function drawProfileChart(divId, profileData) {
         return profileTable.formatDate(x).display;
     };
 
+    var calculateXAxisTicks = function(duration) {
+        if (duration > 20) {
+            return Dygraph.EVERY4DAYS;
+        } else if (duration > 13) {
+            return Dygraph.EVERY3DAYS;
+        } else if (duration > 7) {
+            return Dygraph.EVERY2DAYS;
+        } else {
+            return Dygraph.DAILY;
+        }
+    }
+
+    var chartConfig = {
+        colors: [ 'rgb(89, 184, 255)' ],
+        axisLabelFontSize:12,
+        gridLineColor:'#ccc',
+        gridLineWidth:'0.1px',
+        labelsDiv: document.getElementById(divId + "-label"),
+        legend: 'always',
+        labelsDivStyles: { 'textAlign': 'right' },
+        strokeWidth: 1,
+        xValueParser: function(x) { return profileTable.parseDate(x); },
+        "Temperature" : {},
+        axes: {
+            y : { valueFormatter: temperatureFormatter },
+            x : { valueFormatter: dateTimeFormatter }
+        },
+        highlightCircleSize: 2,
+        highlightSeriesOpts: {
+            strokeWidth: 1.5,
+            strokeBorderWidth: 1,
+            highlightCircleSize: 5
+        },
+        yAxisLabelWidth: 35
+    };
+    var profileDuration = profileObj.getProfileDuration();
+    if ( profileDuration < 28) {
+        chartConfig.axes.x['ticker'] = function(a, b, pixels, opts, dygraph, vals) {
+            return Dygraph.getDateAxis(a, b, calculateXAxisTicks(profileDuration), opts, dygraph);
+        };
+    }
+
     var chart = new Dygraph(
         document.getElementById(divId),
-        profileData,
-        {
-            colors: [ 'rgb(89, 184, 255)' ],
-            axisLabelFontSize:12,
-            gridLineColor:'#ccc',
-            gridLineWidth:'0.1px',
-            labelsDiv: document.getElementById(divId + "-label"),
-            legend: 'always',
-            labelsDivStyles: { 'textAlign': 'right' },
-            strokeWidth: 1,
-            xValueParser: function(x) { return profileTable.parseDate(x); },
-            "Temperature" : {},
-            axes: {
-                y : { valueFormatter: temperatureFormatter },
-                x : { valueFormatter: dateTimeFormatter }
-            },
-            highlightCircleSize: 2,
-            highlightSeriesOpts: {
-                strokeWidth: 1.5,
-                strokeBorderWidth: 1,
-                highlightCircleSize: 5
-            },
-            yAxisLabelWidth: 35
-        }
+        profileObj.toCSV(true, ['date', 'temperature']),
+        chartConfig
     );
 }
 
@@ -290,40 +320,87 @@ function showProfileSelectDialog() {
         width: 960
     });
 }
-function showProfileEditDialog() {
+function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
     "use strict";
     $('#profileSaveError').hide();
+    var profileNames = [];
+    $.post("get_beer_profiles.php", {}, function(resp) {
+        profileNames = resp.profiles;
+    }, 'json');
+    function callSaveProfile(jqDialog, profName, profData) {
+        $.ajax( {
+            type: "post",
+            url: "save_beer_profile.php",
+            dataType: "json",
+            data: { name: profName, profile: profData },
+            success: function(response) {
+                if ( response.status !== 'error' ) {
+                    loadProfile(profName, renderProfile);
+                    $('#profileSaveError').hide();
+                    $("#profileEditName").removeAttr('disabled');
+                    jqDialog.dialog( "close" );
+                } else {
+                    console.log("profile save error: " + response.message);
+                    $('#profileSaveError').show();
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log("profile save HTTP error - request status: " + xhr.status + " - error: " + thrownError);
+                $('#profileSaveError').show();
+            }
+        });
+    };
     $("#profileEditDiv").dialog( {
         modal: true,
-        title: "Edit Temperature Profile",
+        title: dialogTitle,
+        open: function(event, ui) {
+            if ( !editableName ) {
+                $("#profileEditName").attr('disabled',true);
+            }
+            if (isSaveAs) {
+                $("#profileEditName").focus();
+            } else {
+                $('#profileEditDiv table tr').last().find('td').first().focus();
+            }
+        },
         buttons: [
             {
                 text: "Save",
                 click: function() {
+
+                    function isNameTaken(name) {
+                        for( var i=0; i<profileNames.length; i++ ) {
+                            if ( name == profileNames[i] ) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    };
+
                     var profName = $('#profileEditName').val();
                     if ( typeof( profName ) !== "undefined" && profName !== '' ) {
+                        
                         $('#profileEditNameLabel').removeClass('error');
                         var jqDialog = $( this );
-                        $.ajax( {
-                            type: "post",
-                            url: "save_beer_profile.php",
-                            dataType: "json",
-                            data: { name: profName, profile: profileEdit.toCSV(true) },
-                            success: function(response) {
-                                if ( response.status !== 'error' ) {
-                                    loadProfile(profName, renderProfile);
-                                    $('#profileSaveError').hide();
-                                    jqDialog.dialog( "close" );
-                                } else {
-                                    console.log("profile save error: " + response.message);
-                                    $('#profileSaveError').show();
+                        if ( editableName && isNameTaken(profName) ) {
+                            $("<div>Are you sure you want to overwrite the profile: " + profName + "?</div>").dialog({
+                                resizable: false,
+                                height: 140,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        callSaveProfile(jqDialog, profName, profileEdit.toCSV(true));
+                                        $(this).dialog("close");
+                                    },
+                                    Cancel: function () {
+                                        $('#profileEditName').focus();
+                                        $(this).dialog("close");
+                                    }
                                 }
-                            },
-                            error: function(xhr, ajaxOptions, thrownError) {
-                                console.log("profile save HTTP error - request status: " + xhr.status + " - error: " + thrownError);
-                                $('#profileSaveError').show();
-                            }
-                        });
+                            });
+                        } else {
+                            callSaveProfile(jqDialog, profName, profileEdit.toCSV(true));
+                        }
 
                     } else {
                         $('#profileEditNameLabel').addClass('error');
@@ -332,7 +409,10 @@ function showProfileEditDialog() {
                 }
             },{
                 text: "Cancel",
-                click: function() { $( this ).dialog( "close" ); }
+                click: function() { 
+                    $("#profileEditName").removeAttr('disabled');
+                    $( this ).dialog( "close" );
+                }
             }
         ],
         width: 960
@@ -393,17 +473,23 @@ $(document).ready(function(){
         showProfileSelectDialog();
     });
 
-    $("button#new-controls").button({  icons: {primary: "ui-icon-document" } }).click(function() {
+    $("button#new-controls").button({  icons: {primary: "ui-icon-plus" } }).click(function() {
         $("#profileEditName").val('');
         $("#profileEditStartDate").val('');
         profileEdit.render( { name: '', profile: [] } );
-        showProfileEditDialog();
+        showProfileEditDialog(true, "New Temperature Profile");
     });
 
     $("button#edit-controls").button({  icons: {primary: "ui-icon-wrench" } }).click(function() {
         $("#profileEditName").val(profileTable.profileName);
         profileEdit.render( profileTable.toJSON() );
-        showProfileEditDialog();
+        showProfileEditDialog(false, "Edit Temperature Profile");
+    }).hide();
+
+    $("button#saveas-controls").button({  icons: {primary: "ui-icon-copy" } }).click(function() {
+        $("#profileEditName").val("copy of " + profileTable.profileName);
+        profileEdit.render( profileTable.toJSON() );
+        showProfileEditDialog(true, "Save Temperature Profile As", true);
     }).hide();
 
     $("button#help-profile").button({  icons: {primary: "ui-icon-help" } }).click(function() {

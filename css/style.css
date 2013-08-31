@@ -43,35 +43,11 @@ button#maintenance{
 }
 
 #controls button{
-	width: 140px;
+	width: 96px;
 	display: block;
 	text-align: left;
 }
 
-
-#profileTableDiv{
-	/*width: 375px;
-	height: 280px; must be inline*/
-	display: block;
-	overflow: auto;
-}
-
-#profileTableDiv table {
-    border-collapse:separate; border-spacing: 0;
-}
-
-#profileTableDiv th,
-#profileTableDiv td{
-    padding: 3px;
-    text-align: center;
-}
-
-
-#profileChartDiv{
-	/*width: 400px;
-	height: 280px; replaced by inline*/
-	display: block;
-}
 
 #status-message{
 	width: 400px;
@@ -706,9 +682,18 @@ button#maintenance{
 #profileNameDate .profileTableLabel { display: block; float: left; font-weight: bold; margin-left: 5px}
 #profileNameDate .profileTableValue { display: block; float: right; margin-right:5px; }
 
-#profileChartDiv { width: 400px; height: 280px; float: left; }
+#profileChartDiv { width: 430px; height: 280px; float: left; }
 
-#profileTableDiv { width: 375px; height: 280px; float: right; }
+#profileTableDiv { width: 375px; height: 280px; float: right; overflow: auto; }
+#profileTableDiv table {
+    border-collapse:separate; border-spacing: 0;
+}
+#profileTableDiv th,
+#profileTableDiv td {
+    padding: 3px;
+    text-align: center;
+}
+
 
 /* make sure buttons (Save/Cancel) are on the bottom of all panes, even with floats in the pane */
 .ui-dialog .ui-dialog-buttonpane { clear: both; }

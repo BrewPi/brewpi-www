@@ -20,6 +20,7 @@ function BeerProfileTable(id, config) {
         this.init(id, config);
     }
 }
+
 BeerProfileTable.prototype = {
     init: function(id, config) {
         "use strict";
@@ -39,6 +40,7 @@ BeerProfileTable.prototype = {
         this.newCell = '<td></td>';
         this.newHeadCell = '<th></th>';
         this.numMilliSecondsPerDay = 24 * 60 * 60 * 1000;
+        this.headerTitles = ['Day', 'Temperature', 'Date and Time'];
         this.csvColumns = ['date', 'temperature', 'days'];
         this.prepTable();
     },
@@ -66,11 +68,11 @@ BeerProfileTable.prototype = {
         }
         var headerRow = $(this.newRow);
         $(this.headSelector).append(headerRow);
-        var cell = $(this.newHeadCell).text('Days');
+        var cell = $(this.newHeadCell).text(this.headerTitles[0]);
         headerRow.append(cell);
-        cell = $(this.newHeadCell).text('Temperature');
+        cell = $(this.newHeadCell).text(this.headerTitles[1]);
         headerRow.append(cell);
-        cell = $(this.newHeadCell).text('Date/Time');
+        cell = $(this.newHeadCell).text(this.headerTitles[2]);
         headerRow.append(cell);
     },
     renderRows: function(rows) {
@@ -423,6 +425,14 @@ BeerProfileTable.prototype = {
     },
     toXML: function() {
         // TODO: perhaps interface to other stuff ??
+    },
+    getProfileDuration: function() {
+        var profileData = this.getProfileData();
+        // this might be overthinking it a little
+        // var d1 = this.parseDate(profileData[0].date);
+        // var d2 = this.parseDate(profileData[profileData.length-1].date);
+        // return ((d2 - d1)/ this.numMilliSecondsPerDay);
+        return (profileData.length>0 && parseFloat(profileData[profileData.length-1].days)) ? profileData[profileData.length-1].days : 0;
     },
     isBlankCell: function(cell) {
         "use strict";

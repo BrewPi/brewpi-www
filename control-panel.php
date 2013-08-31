@@ -36,10 +36,11 @@
 </ul>
 <div id="profile-control">
 	<div id="controls">
+		<button id="load-controls">Open</button>
+		<button id="new-controls">New</button>
+		<button id="edit-controls">Edit</button>
+		<button id="saveas-controls">Save As</button>
 		<button id="refresh-controls">Refresh</button>
-		<button id="load-controls">Load profile</button>
-		<button id="new-controls">New profile</button>
-		<button id="edit-controls">Edit profile</button>
 		<button id="help-profile" class="profile-help">Help</button>
 	</div>
 	<div id="profileNameDate">
