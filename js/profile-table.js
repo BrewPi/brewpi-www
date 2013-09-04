@@ -105,9 +105,8 @@ BeerProfileTable.prototype = {
         } else {
             $(this.rowsSelector).eq(index).before(row);
         }
+        this.updateDisplay();
         row.find('td.profileDays').focus();
-        var me = this;
-        window.setTimeout(function() { me.updateDisplay(); }, 200);
     },
     insertRowNow: function() {
         "use strict";
@@ -134,12 +133,13 @@ BeerProfileTable.prototype = {
 
         $(this.rowsSelector).eq(rowIndex).after(row);
         this.updateDisplay();
+        row.find('td.profileTemp').focus();
     },
     deleteRow: function(index) {
         "use strict";
         $(this.rowsSelector).eq(index).remove();
         var me = this;
-        window.setTimeout(function() { me.updateDisplay(); }, 200);
+        this.updateDisplay();
     },
     createRow: function(days, temp, theDate) {
         "use strict";
@@ -182,27 +182,11 @@ BeerProfileTable.prototype = {
         if ( this.config.editable ) {
             $theCell.attr('contenteditable', 'true').focus(function() {
                 me.selectAll(this);
+            }).blur(function() {
+                if ( !me.hasEmptyDayCells() ) {
+                    me.updateDisplay();
+                }
             });
-            if(daysCell){ // days will need updating, possible re-sort and keep empty row
-                $theCell.blur(function() {
-                    if( !me.hasEmptyDateCells()){ // do not sort when some dates are not filled in
-                        me.renderRows(me.sortTable());
-                    }
-                    me.updateDisplay();
-                    me.maintainEmptyRow();
-                    if ( typeof(me.config.chartUpdateCallBack) !== "undefined") {
-                        me.config.chartUpdateCallBack();
-                    }
-                });
-            }
-            else{ // just update the display
-                $theCell.blur(function() {
-                    me.updateDisplay();
-                    if ( typeof(me.config.chartUpdateCallBack) !== "undefined") {
-                        me.config.chartUpdateCallBack();
-                    }
-                });
-            }
         }
     },
     clearRows: function() {
@@ -243,30 +227,8 @@ BeerProfileTable.prototype = {
             this.config.contextMenuDisplayHandler(false);
         }
     },
-    sortTable: function(){
-        "use strict";
-        var rows = this.getProfileData();
-        rows.sort(function(a, b){
-            var aDays = parseFloat(a.days);
-            var bDays = parseFloat(b.days);
-            if (aDays === bDays){
-                return a.position - b.position;
-            }
-            if (aDays < bDays){
-                return -1;
-            }
-            return 1;
-        });
-        return rows;
-    },
     updateDisplay: function(initialDate) {
         "use strict";
-        this.updateDates(initialDate);
-        this.updateBGColors();
-    },
-    updateDates: function(initialDate) {
-        "use strict";
-        var me = this;
         var theDate;
         if ( typeof( initialDate ) !== "undefined" ) {
             theDate = initialDate;
@@ -275,13 +237,40 @@ BeerProfileTable.prototype = {
             theDate = this.getStartDate();
         }
         if ( typeof( theDate ) !== "undefined" ) {
-            $(this.rowsSelector).each(function() {
-                var strDays = $(this).find("td.profileDays").text();
-                if ( typeof( strDays ) !== "undefined" && strDays !== '' ) {
-                    var dates = me.formatNextDate(theDate, strDays);
-                    $(this).find("td.profileDate").text( dates.display ).data('profile-date', dates.raw);
+            var rows = $(this.rowsSelector).get();
+            rows.sort(function(a,b) {
+                var v1 = parseFloat($(a).find('td.profileDays').text());
+                var v2 = parseFloat($(b).find('td.profileDays').text());
+                if ( isNaN(v2) ) {
+                    return -1;
+                } else if ( v1 == v2 ) {
+                    return parseInt($(a).data('rowIndex')) - parseInt($(b).data('rowIndex'));
+                } else {
+                    return v1 - v2;
                 }
             });
+            var idx = 0;
+            var that = this;
+            $.each(rows, function(index, row) {
+                var strDays = $(row).find("td.profileDays").text();
+                if ( typeof( strDays ) !== "undefined" && strDays !== '' ) {
+                    var dates = that.formatNextDate(theDate, strDays);
+                    $(this).find("td.profileDate").text( dates.display ).data('profile-date', dates.raw);
+                }
+                var add = 'even';
+                var rmv = 'odd';
+                if ( idx % 2 === 1 ) {
+                    add = 'odd';
+                    rmv = 'even';
+                }
+                $(row).addClass(add).removeClass(rmv).removeClass("selected").data('rowIndex', idx); // piggy back on loop here to set row index, used for positioning in insert/delete rows
+                $(that.bodySelector).append(row);
+                idx++;
+            });
+        }
+        this.maintainEmptyRow();
+        if ( typeof(this.config.chartUpdateCallBack) !== "undefined") {
+            this.config.chartUpdateCallBack();
         }
     },
     formatNextDate: function(theDate, strDays) {
@@ -344,20 +333,6 @@ BeerProfileTable.prototype = {
             }
         }
     },
-    updateBGColors: function() {
-        "use strict";
-        var idx = 0;
-        $(this.rowsSelector).each(function() {
-            var add = 'even';
-            var rmv = 'odd';
-            if ( idx % 2 === 1 ) {
-                add = 'odd';
-                rmv = 'even';
-            }
-            $(this).addClass(add).removeClass(rmv).removeClass("selected").data('rowIndex', idx); // piggy back on loop here to set row index, used for positioning in insert/delete rows
-            idx++;
-        });
-    },
     selectAll: function(elem) {
         "use strict";
         window.setTimeout(function() {
@@ -387,12 +362,12 @@ BeerProfileTable.prototype = {
         });
         return points;
     },
-    hasEmptyDateCells: function(){
+    hasEmptyDayCells: function(){
         "use strict";
         var me = this;
         var emptyCells = 0;
         $(this.rowsSelector).each(function() {
-            var cell = $(this).find('td:first-child');  // test first cell for empty
+            var cell = $(this).find('td.profileDays');  // test first cell for empty
             if ( me.isBlankCell(cell) ) {
                 emptyCells++;
             }
@@ -428,10 +403,6 @@ BeerProfileTable.prototype = {
     },
     getProfileDuration: function() {
         var profileData = this.getProfileData();
-        // this might be overthinking it a little
-        // var d1 = this.parseDate(profileData[0].date);
-        // var d2 = this.parseDate(profileData[profileData.length-1].date);
-        // return ((d2 - d1)/ this.numMilliSecondsPerDay);
         return (profileData.length>0 && parseFloat(profileData[profileData.length-1].days)) ? profileData[profileData.length-1].days : 0;
     },
     isBlankCell: function(cell) {
@@ -441,12 +412,14 @@ BeerProfileTable.prototype = {
     },
     maintainEmptyRow: function(){
         "use strict";
-        var rows = this.getProfileData();
-        var profileLength = rows.length;
-        var tableLength = $(this.rowsSelector).length;
+        if ( this.config.editable ) {
+            var rows = this.getProfileData();
+            var profileLength = rows.length;
+            var tableLength = $(this.rowsSelector).length;
 
-        if(tableLength === profileLength){
-            this.addRow();
+            if(tableLength === profileLength){
+                this.addRow();
+            }
         }
     }
 };

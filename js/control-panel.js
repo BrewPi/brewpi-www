@@ -497,7 +497,7 @@ $(document).ready(function(){
     });
 
     $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() {
-        profileEdit.updateDates();
+        profileEdit.updateDisplay();
     }});
 
     $("button#profileEditAddCurrentButton").button().click(function() {
@@ -506,7 +506,7 @@ $(document).ready(function(){
 
     $("button#profileEditNowButton").button().click(function() {
         $("#profileEditStartDate").datetimepicker('setDate', (new Date()) );
-        profileEdit.updateDates();
+        profileEdit.updateDisplay();
     });
 
     $("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function() {
