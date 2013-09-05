@@ -377,6 +377,13 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                         return false;
                     };
 
+                    if ( profileEdit.hasEmptyDayCells() ) {
+                        profileEdit.markInvalidCells();
+                        return;
+                    } else {
+                        profileEdit.resetInvalidCells();
+                    }
+
                     var profName = $('#profileEditName').val();
                     if ( typeof( profName ) !== "undefined" && profName !== '' ) {
                         

@@ -183,7 +183,7 @@ BeerProfileTable.prototype = {
             $theCell.attr('contenteditable', 'true').focus(function() {
                 me.selectAll(this);
             }).blur(function() {
-                if ( !me.hasEmptyDayCells() ) {
+                if ( !me.preventFocusEvents && !me.hasEmptyDayCells() ) {
                     me.updateDisplay();
                 }
             });
@@ -355,9 +355,9 @@ BeerProfileTable.prototype = {
         var points = [];
         var me = this;
         $(this.rowsSelector).each(function() {
-            var cell = $(this).find('td:first-child');  // test first cell for empty
-            if ( !me.isBlankCell(cell) ) {
-                points[points.length] = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
+            points[points.length] = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
+            if ( me.config.editable && points[points.length-1].days == '' ) {
+                points.pop();  // remove last row if its blank and we are editing
             }
         });
         return points;
@@ -368,7 +368,7 @@ BeerProfileTable.prototype = {
         var emptyCells = 0;
         $(this.rowsSelector).each(function() {
             var cell = $(this).find('td.profileDays');  // test first cell for empty
-            if ( me.isBlankCell(cell) ) {
+            if ( !me.isValidCell(cell) ) {
                 emptyCells++;
             }
         });
@@ -405,10 +405,29 @@ BeerProfileTable.prototype = {
         var profileData = this.getProfileData();
         return (profileData.length>0 && parseFloat(profileData[profileData.length-1].days)) ? profileData[profileData.length-1].days : 0;
     },
-    isBlankCell: function(cell) {
+    isValidCell: function(cell) {
         "use strict";
         var contents = cell.text();
-        return !( typeof( contents ) !== "undefined" && contents !== '' );
+        return ( typeof( contents ) !== "undefined" && contents !== '' && !isNaN(parseFloat(contents)));
+    },
+    markInvalidCells: function() {
+        "use strict";
+        this.preventFocusEvents = true;
+        $(this.rowsSelector).each(function() {
+            var dayCell = $(this).find('td.profileDays');
+            if ( isNaN(parseFloat(dayCell.text())) ) {
+                $(this).addClass('error');
+                dayCell.focus();
+                return false;
+            } else {
+                $(this).removeClass('error');
+            }
+        });
+        this.preventFocusEvents = false;
+    },
+    resetInvalidCells: function() {
+        "use strict";
+        $(this.rowsSelector+'.error').removeClass('error');
     },
     maintainEmptyRow: function(){
         "use strict";

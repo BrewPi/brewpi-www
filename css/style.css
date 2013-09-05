@@ -652,6 +652,7 @@ button#maintenance{
 .profileTableEdit tbody TR.even { background:#fff; }
 .profileTableEdit tbody TR:hover { background: #ddeeff; }
 .profileTableEdit tbody TR.selected { background: #bbddff; }
+.profileTableEdit tbody TR.error { background: #fef1ec; border:1px solid #cd0a0a; color: #cd0a0a; }
 .profileTableEdit TD, .profileTableEdit TH { padding: 3px; height: 1em;}
 .profileTableEdit TD { text-align:center; }
 .profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
