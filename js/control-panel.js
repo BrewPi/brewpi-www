@@ -225,7 +225,7 @@ function drawProfileChart(divId, profileObj) {
         } else {
             return Dygraph.DAILY;
         }
-    }
+    };
 
     var chartConfig = {
         colors: [ 'rgb(89, 184, 255)' ],
@@ -252,7 +252,7 @@ function drawProfileChart(divId, profileObj) {
     };
     var profileDuration = profileObj.getProfileDuration();
     if ( profileDuration < 28) {
-        chartConfig.axes.x['ticker'] = function(a, b, pixels, opts, dygraph, vals) {
+        chartConfig.axes.x.ticker = function(a, b, pixels, opts, dygraph, vals) {
             return Dygraph.getDateAxis(a, b, calculateXAxisTicks(profileDuration), opts, dygraph);
         };
     }
@@ -349,7 +349,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                 $('#profileSaveError').show();
             }
         });
-    };
+    }
     $("#profileEditDiv").dialog( {
         modal: true,
         title: dialogTitle,
@@ -370,12 +370,12 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
 
                     function isNameTaken(name) {
                         for( var i=0; i<profileNames.length; i++ ) {
-                            if ( name == profileNames[i] ) {
+                            if ( name === profileNames[i] ) {
                                 return true;
                             }
                         }
                         return false;
-                    };
+                    }
 
                     if ( profileEdit.hasEmptyDayCells() ) {
                         profileEdit.markInvalidCells();
@@ -386,7 +386,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
 
                     var profName = $('#profileEditName').val();
                     if ( typeof( profName ) !== "undefined" && profName !== '' ) {
-                        
+
                         $('#profileEditNameLabel').removeClass('error');
                         var jqDialog = $( this );
                         if ( editableName && isNameTaken(profName) ) {
@@ -416,7 +416,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                 }
             },{
                 text: "Cancel",
-                click: function() { 
+                click: function() {
                     $("#profileEditName").removeAttr('disabled');
                     $( this ).dialog( "close" );
                 }
