@@ -376,6 +376,27 @@ function showProfileSelectDialog() {
         width: 960
     });
 }
+function promptToApplyProfile(profName) {
+    "use strict";
+    $("<div>You are editing the current profile: " + profName + ".  Would you like to apply it now?</div>").dialog( {
+        modal: true,
+        title: "Apply Profile: " + profName + "?",
+        buttons: [
+            {
+                text: "Apply",
+                click: function() { 
+                    applySettings();
+                    $( this ).dialog( "close" );
+                }
+            },{
+                text: "Cancel",
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        ]
+    });
+}
 function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
     "use strict";
     $('#profileSaveError').hide();
@@ -395,6 +416,9 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                     $('#profileSaveError').hide();
                     $("#profileEditName").removeAttr('disabled');
                     jqDialog.dialog( "close" );
+                    if ( window.controlSettings.mode == "p" && window.controlSettings.profile == profName ) {
+                        promptToApplyProfile(profName);
+                    }
                 } else {
                     console.log("profile save error: " + response.message);
                     $('#profileSaveError').show();
