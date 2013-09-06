@@ -237,18 +237,24 @@ BeerProfileTable.prototype = {
             theDate = this.getStartDate();
         }
         if ( typeof( theDate ) !== "undefined" ) {
+            // ensure up to date row index - used in sorting
+            var rowIdx = 0;
+            $(this.rowsSelector).each(function() {
+                $(this).data('rowIndex', rowIdx);
+                rowIdx++;
+            });
+            // get dom table rows and sort them
             var rows = $(this.rowsSelector).get();
             rows.sort(function(a,b) {
                 var v1 = parseFloat($(a).find('td.profileDays').text());
                 var v2 = parseFloat($(b).find('td.profileDays').text());
-                if ( isNaN(v2) ) {
-                    return -1;
-                } else if ( v1 == v2 ) {
+                if ( isNaN(v1) || isNaN(v1) || (v1 == v2) ) {
                     return parseInt($(a).data('rowIndex')) - parseInt($(b).data('rowIndex'));
                 } else {
                     return v1 - v2;
                 }
             });
+            // re-append table rows to get them in sorted order in the actual dom/table
             var idx = 0;
             var that = this;
             $.each(rows, function(index, row) {
