@@ -56,7 +56,7 @@ function loadControlPanel(){
         switch(window.controlSettings.mode){
             case 'p':
                 $controlPanel.tabs( "option", "active", 0);
-                statusMessage("normal","Running in beer profile mode");
+                statusMessage("normal","Running beer profile: " + window.controlSettings.profile);
                 break;
             case 'b':
                 $controlPanel.tabs( "option", "active", 1);
