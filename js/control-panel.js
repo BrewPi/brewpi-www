@@ -227,6 +227,61 @@ function drawProfileChart(divId, profileObj) {
         }
     };
 
+    var updateCurrentDateLine = function(canvas, area, g) {
+        canvas.fillStyle = "rgba(255, 100, 100, 1.0)";
+
+        var nowTime = new Date().getTime();
+        var startTime = g.getValue(0,0);
+        var endTime = g.getValue(g.numRows()-1,0);
+
+        if(nowTime < startTime){
+            // all profile dates in the future, show in bottom left corner
+            canvas.textAlign = "start";
+            canvas.font = "14px Arial";
+            canvas.fillText("<< Current time", area.x + 10, area.h - 10);
+        }
+        else if(nowTime > endTime){
+            // all profile dates in the future, show in bottom right corner
+            canvas.textAlign = "end";
+            canvas.font = "14px Arial";
+            canvas.fillText("Current time >>", area.x + area.w - 10, area.h - 10);
+        }
+        else{
+            // draw line at current time
+            var xCoordinate = g.toDomXCoord(nowTime);
+            canvas.fillRect(xCoordinate, area.y+17, 1, area.h-17);
+
+            // display interpolated temperature
+            for( var i=0; i< g.numRows(); i++ ) {
+                if (g.getValue(i,0) > nowTime) {
+                    break; // found surrounding temperature points
+                }
+            }
+            var previousTemperature = parseFloat(g.getValue(i-1,1));
+            var nextTemperature = parseFloat(g.getValue(i,1));
+            var previousTime = g.getValue(i-1,0);
+            var nextTime = g.getValue(i,0);
+            var temperature = (previousTemperature + (nextTemperature - previousTemperature)*(nowTime-previousTime)/(nextTime-previousTime)).toFixed(2);
+            var yCoordinate = g.toDomYCoord(temperature);
+            // Now add the interpolated temp to the cart, left or right of the line depending on which half
+            canvas.font = "20px Arial";
+            if(xCoordinate < 0.5 * area.w){
+                canvas.textAlign = "start";
+                if(nextTemperature >= parseFloat(temperature)){
+                    yCoordinate += 20; // lower so it won't overlap with the chart
+                }
+                canvas.fillText(temperature, xCoordinate + 5, yCoordinate);
+            }
+            else{
+                if(previousTemperature >= parseFloat(temperature)){
+                    yCoordinate += 20; // lower so it won't overlap with the chart
+                }
+                canvas.textAlign = "end";
+                canvas.fillText(temperature, xCoordinate - 5, yCoordinate);
+            }
+        }
+    };
+
     var chartConfig = {
         colors: [ 'rgb(89, 184, 255)' ],
         axisLabelFontSize:12,
@@ -237,6 +292,7 @@ function drawProfileChart(divId, profileObj) {
         labelsDivStyles: { 'textAlign': 'right' },
         strokeWidth: 1,
         xValueParser: function(x) { return profileTable.parseDate(x); },
+        underlayCallback: updateCurrentDateLine,
         "Temperature" : {},
         axes: {
             y : { valueFormatter: temperatureFormatter },
