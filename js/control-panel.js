@@ -228,6 +228,10 @@ function drawProfileChart(divId, profileObj) {
     };
 
     var updateCurrentDateLine = function(canvas, area, g) {
+        if(g.numRows() < 1){
+            return; // when the chart has no data points, return.
+        }
+
         canvas.fillStyle = "rgba(255, 100, 100, 1.0)";
 
         var nowTime = new Date().getTime();
@@ -384,7 +388,7 @@ function promptToApplyProfile(profName) {
         buttons: [
             {
                 text: "Apply",
-                click: function() { 
+                click: function() {
                     applySettings();
                     $( this ).dialog( "close" );
                 }
