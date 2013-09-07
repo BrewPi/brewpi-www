@@ -184,6 +184,8 @@ BeerProfileTable.prototype = {
                 me.selectAll(this);
             }).blur(function() {
                 if ( !me.preventFocusEvents && !me.hasEmptyDayCells() ) {
+                    me.maintainEmptyRow();
+                    me.maintainZeroRow();
                     me.updateDisplay();
                 }
             });
@@ -212,7 +214,7 @@ BeerProfileTable.prototype = {
 
         return $menu;
     },
-    positionMenu: function(e, newMenu) {
+    positionMenu: function(e, newMenu){
 
         // TODO: needs edge detection
 
@@ -274,9 +276,20 @@ BeerProfileTable.prototype = {
                 idx++;
             });
         }
-        this.maintainEmptyRow();
         if ( typeof(this.config.chartUpdateCallBack) !== "undefined") {
             this.config.chartUpdateCallBack();
+        }
+    },
+    maintainZeroRow: function(){
+        "use strict";
+        var firstRowDays = parseFloat($(this.rowsSelector + ":first-child").find("td.profileDays").text());
+        if(isNaN(firstRowDays)){
+            return;
+        }
+        if(firstRowDays !== 0.0){
+            var row = this.createRow('0','');
+            $(this.rowsSelector).eq(0).before(row);
+            this.updateDisplay();
         }
     },
     formatNextDate: function(theDate, strDays) {
