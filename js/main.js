@@ -206,7 +206,7 @@ function checkScriptStatus(){
 		window.setTimeout(refreshLcd, 5000); //alternate refreshing script and lcd
 	});
 }
-google.load('visualization', '1', {packages: ['annotatedtimeline', 'table']});
+google.load('visualization', '1', {packages: ['table']});
 
 $(document).ready(function(){
 	"use strict";

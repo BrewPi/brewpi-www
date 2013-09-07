@@ -64,7 +64,7 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
-		<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>
+		<script type="text/javascript" src="js/dygraph-combined.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;

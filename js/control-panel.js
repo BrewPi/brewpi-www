@@ -420,7 +420,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                     $('#profileSaveError').hide();
                     $("#profileEditName").removeAttr('disabled');
                     jqDialog.dialog( "close" );
-                    if ( window.controlSettings.mode == "p" && window.controlSettings.profile == profName ) {
+                    if ( window.controlSettings.mode === "p" && window.controlSettings.profile === profName ) {
                         promptToApplyProfile(profName);
                     }
                 } else {
