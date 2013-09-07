@@ -48,9 +48,13 @@ $(document).ready(function(){
 		$.post('socketmessage.php', {messageType: "name", message: $("input#beer-name").val()});
 	});
 
-	$("button.apply-profile-key").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
-		$.post('socketmessage.php', {messageType: "profileKey", message: $("input#profile-key").val()});
-	});
+    $("button.apply-profile-name").button({ icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
+        $.post('socketmessage.php', {messageType: "profileName", message: $("input#profile-name").val()});
+    });
+
+    $("button.apply-datetime-format-display").button({ icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
+        $.post('socketmessage.php', {messageType: "dateTimeFormatDisplay", message: $("#datetime-format-display").val()});
+    });
 
 	$("#advanced-settings").find(".send-button").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
 		var jsonString;

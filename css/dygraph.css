@@ -7,7 +7,7 @@
 }
 
 .beer-chart{
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 .dygraph-legend {
@@ -23,7 +23,7 @@
 .beer-chart-label {
     font-weight: normal;
     text-align: center;
-    padding: 5px 0px;
+    padding: 5px 0;
 }
 
 .beer-chart-controls {

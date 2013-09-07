@@ -49,6 +49,7 @@ To switch to a different branch, you use ``git checkout``:
 
 .. code-block:: bash
 
+    cd /home/brewpi
     sudo -u brewpi git checkout develop
 
 
@@ -58,6 +59,7 @@ With the files in version control, updating is easy too:
 
 .. code-block:: bash
 
+    cd /home/brewpi
     sudo -u brewpi git pull
 
 Git pull is a combination of two commands: ``git fetch``, which will update your local copy of the remote, and ``git merge``, which merges the changes from the remote with your local files.

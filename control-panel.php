@@ -36,11 +36,78 @@
 </ul>
 <div id="profile-control">
 	<div id="controls">
+		<button id="load-controls">Open</button>
+		<button id="new-controls">New</button>
+		<button id="edit-controls">Edit</button>
+		<button id="saveas-controls">Save As</button>
 		<button id="refresh-controls">Refresh</button>
-		<button id="edit-controls">Edit profile</button>
+		<button id="help-profile" class="profile-help">Help</button>
 	</div>
-	<div id="profileChartDiv" style="width: 375px;  height: 280px; float: left"></div>
-	<div id="profileTableDiv" style="width: 400px;	height: 280px; float: right"></div>
+	<div id="profileNameDate">
+		<div><span class="profileTableLabel">Profile Name:</span><span class="profileTableValue" id="profileTableName"></span></div>
+		<div><span class="profileTableLabel">Start Date:</span><span class="profileTableValue" id="profileTableStartDate"></span></div>
+	</div>
+	<div id="profileChartDiv"></div>
+	<div id="profileTableDiv"></div>
+	<div id="profileSelectDiv">
+		<div id="profileSelectChartDiv"><span class="chart-placeholder">Click a profile to load a preview here</span></div>
+		<ol id="profileSelect"></ol>
+		<div id="profileSelectTableDiv" style="display: none;"></div>
+	</div>
+	<div id="profileEditDiv">
+		   <div id="profileEditChartDiv"><span class="chart-placeholder">Profile preview will be displayed here</span></div>
+	       <div id="profileEditControls">
+	       <div class="profileEditFieldSet">
+               <div id="profileEditNameLabel" class="profileTableLabel edit">Profile Name:</div><input class="profileTableField" type="text" id="profileEditName" name="profileEditName" value="" />
+               <div class="profileTableLabel edit">Start Date:</div><input class="profileTableField" type="text" id="profileEditStartDate" name="profileEditStartDate" value="" />
+	       </div>
+           <button class="halfwidth-button" type="button" id="profileEditNowButton">Start Now</button>
+           <button class="halfwidth-button" type="button" id="profileEditAddCurrentButton">Insert Now</button>
+	       <div id="profileSaveError">Error Saving Profile!</div>
+	       </div>
+	</div>
+	<div id="profileHelpDiv">
+		<p> With BrewPi running in profile mode, you can set a temperature profile ahead of time and BrewPi will follow this profile for you.
+		    A profile consists of a list of day and temperature points and a start date. Between these points, the temperature setting is interpolated.
+		</p><p>
+			When running in profile mode, the BrewPi python script on the Raspberry Pi will continuously update the beer temperature setting on Arduino.
+		</p>
+		<span class="help-h1">Saving and loading profiles</span>
+		<p>
+			Temperature profiles are stored on the Raspberry Pi when you click the <i>Save</i> button.
+			The <i>Load profile</i> button shows a list of saved profiles. Clicking them loads the profile in the web interface, but does <span
+				style="text-decoration: underline;">not</span> activate it yet.
+		</p>
+		<span class="help-h1">Creating a new profile</span>
+		<p>
+			When you click the <i>New profile</i> button, a dialog will open where you can enter a name for the profile and add temperature points. Decimals are allowed in both columns.
+			The table is kept sorted based on the date column. The 'Date/Time' column cannot be edited directly: it is calculated from the start date and the first column.
+		</p><p>
+			You can right-click on a row to insert a new row or to delete the row. There will always be an empty row at the bottom too.
+		</p><p>
+			The <i>Start Now</i> button sets the start date of the profile to the current date on your computer. Make sure your Pi and your computer are in sync.
+		</p><p>
+			The <i>Insert Now</i> button adds a new point to the profile at the current date and the current beer temperature setting.
+			This allows you to change a running profile 'from now on', while not changing the part of the profile that already passed.
+		</p><p>
+			When you are done with your profile, click <i>Save</i>. This will save the profile on the Raspberry Pi and load it in the web interface.
+		</p>
+		<span class="help-h1">Editing a profile</span>
+		<p>
+			The <i>Edit profile</i> button allows  you to the edit the profile that has been loaded in the web interface.
+			The interface is the same as the 'New Profile' dialog, so you can overwrite the current profile or save it under a new name.
+		</p>
+		<span class="help-h1">Refresh</span>
+		<p>
+			The refresh button can be useful if you edited the profile outside of the web interface: it reloads the profile from the Raspberry Pi.
+		</p>
+		<span class="help-h1">Empty temperature cells</span>
+		<p>
+			You can leave a temperature cell empty to disable temperature control in profile mode. For example:
+			You can start a profile with an empty temperature cell to postpone starting temperature control or you can end with an empty cell to disable temperature control after a while.
+			Take into account that your points define 'line pieces', to end with 22 degrees for a while and then OFF you define: 22, 22, empty.
+		</p>
+	</div>
 </div>
 <div id="beer-constant-control">
 	<div id="beer-temp" class="temp-display">

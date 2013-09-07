@@ -29,7 +29,9 @@ if(is_null($settingsArray)){
 }
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
-$profileKey = $settingsArray["profileKey"];
+$profileName = $settingsArray["profileName"];
+$dateTimeFormat = $settingsArray["dateTimeFormat"];
+$dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 ?>
 
 <!DOCTYPE html >
@@ -59,20 +61,24 @@ $profileKey = $settingsArray["profileKey"];
 		<!-- Load scripts after the body, so they don't block rendering of the page -->
 		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
 		<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;
-			window.googleDocsKey = <?php echo "\"$profileKey\""?>;
 			window.beerName = <?php echo "\"$beerName\""?>;
+			window.profileName = <?php echo "\"$profileName\""?>;
+			window.dateTimeFormat = <?php echo "\"$dateTimeFormat\""?>;
+			window.dateTimeFormatDisplay = <?php echo "\"$dateTimeFormatDisplay\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
+		<script type="text/javascript" src="js/profile-table.js"></script>
 	</body>
 </html>
 

@@ -13,8 +13,8 @@ To install Apache2, execute the following commands:
     sudo apt-get install apache2
     sudo apt-get install libapache2-mod-php5 php5-cli php5-common php5-cgi
 
-To test your server, you can now vist http://your-rpi-ip/.
-By default, the root of your webserver is ``/var/www/``
+To test your server, you can now visit http://your-rpi-ip/.
+By default, the root of your web server is ``/var/www/``
 
 Install PHP
 -----------
