@@ -4,3 +4,4 @@
 !.gitignore
 # And Sample Data
 !Sample Data/*
+!profiles/Sample Profile.csv
