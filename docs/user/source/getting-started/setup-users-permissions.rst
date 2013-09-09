@@ -7,7 +7,7 @@ Then, we set the password for the brewpi user with passwd.
 
 .. code-block:: bash
 
-    sudo useradd -m -k /dev/null -G www-data dialout brewpi
+    sudo useradd -m -k /dev/null -G www-data,dialout brewpi
     sudo passwd brewpi
 
 Now, verify your work:
