@@ -311,7 +311,7 @@ function drawProfileChart(divId, profileObj) {
         yAxisLabelWidth: 35
     };
     var profileDuration = profileObj.getProfileDuration();
-    if ( profileDuration < 28) {
+    if ( profileDuration < 28 && profileDuration > 0) {
         chartConfig.axes.x.ticker = function(a, b, pixels, opts, dygraph, vals) {
             return Dygraph.getDateAxis(a, b, calculateXAxisTicks(profileDuration), opts, dygraph);
         };
@@ -461,7 +461,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                         return false;
                     }
 
-                    if ( profileEdit.hasEmptyDayCells() ) {
+                    if ( profileEdit.hasInvalidDayCells() ) {
                         profileEdit.markInvalidCells();
                         return;
                     } else {

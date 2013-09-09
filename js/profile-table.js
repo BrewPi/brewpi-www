@@ -183,7 +183,7 @@ BeerProfileTable.prototype = {
             $theCell.attr('contenteditable', 'true').focus(function() {
                 me.selectAll(this);
             }).blur(function() {
-                if ( !me.preventFocusEvents && !me.hasEmptyDayCells() ) {
+                if ( !me.preventFocusEvents) {
                     me.maintainEmptyRow();
                     me.maintainZeroRow();
                     me.updateDisplay();
@@ -250,8 +250,8 @@ BeerProfileTable.prototype = {
             rows.sort(function(a,b) {
                 var v1 = parseFloat($(a).find('td.profileDays').text());
                 var v2 = parseFloat($(b).find('td.profileDays').text());
-                if ( isNaN(v1) || isNaN(v1) || (v1 == v2) ) {
-                    return parseInt($(a).data('rowIndex')) - parseInt($(b).data('rowIndex'));
+                if ( isNaN(v1) || isNaN(v2) || (v1 === v2) ) {
+                    return (parseInt($(a).data.rowIndex, 10) - parseInt($(b).data.rowIndex, 10));
                 } else {
                     return v1 - v2;
                 }
@@ -276,7 +276,7 @@ BeerProfileTable.prototype = {
                 idx++;
             });
         }
-        if ( typeof(this.config.chartUpdateCallBack) !== "undefined") {
+        if ( !this.hasInvalidDayCells() && typeof(this.config.chartUpdateCallBack) !== "undefined") {
             this.config.chartUpdateCallBack();
         }
     },
@@ -295,6 +295,9 @@ BeerProfileTable.prototype = {
     formatNextDate: function(theDate, strDays) {
         "use strict";
         var days = parseFloat(strDays);
+        if(isNaN(days)){
+            return { raw: '', display: "Invalid 'Days' value" };
+        }
         var t1 = theDate.getTime();
         var t2 = parseInt(this.numMilliSecondsPerDay * days, 10);
         var newDate = new Date( t1 + t2 );
@@ -312,10 +315,14 @@ BeerProfileTable.prototype = {
     },
     parseStartDate: function(profile) {
         "use strict";
+
         if ( typeof( profile ) !== "undefined" && profile.length > 0 && typeof( profile[0].date ) !== "undefined" ) {
-            return this.parseDate(profile[0].date);
+            var startDate = this.parseDate(profile[0].date);
+            if(startDate){
+                return startDate;
+            }
         }
-        return new Date();
+        return (new Date()); // return current date on parse error
     },
     parseDate: function(strDate, forDisplay) {
         "use strict";
@@ -323,8 +330,8 @@ BeerProfileTable.prototype = {
         try {
             return $.datepicker.parseDateTime(dateFormat, this.config.timeFormat, strDate, null, {separator: "T"});
         } catch(e) {
-            console.log('invalid start date: ' + strDate + ', using current date/time' );
-            return 0;
+            console.log('Cannot parse date: ' + strDate );
+            return null;
         }
     },
     getStartDate: function() {
@@ -375,23 +382,30 @@ BeerProfileTable.prototype = {
         var me = this;
         $(this.rowsSelector).each(function() {
             points[points.length] = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
-            if ( me.config.editable && points[points.length-1].days == '' ) {
+            if ( me.config.editable && points[points.length-1].days === '' ) {
                 points.pop();  // remove last row if its blank and we are editing
             }
         });
         return points;
     },
-    hasEmptyDayCells: function(){
+    hasInvalidDayCells: function(){
         "use strict";
         var me = this;
-        var emptyCells = 0;
+        var invalidCells = 0;
+        var cell = null;
         $(this.rowsSelector).each(function() {
-            var cell = $(this).find('td.profileDays');  // test first cell for empty
-            if ( !me.isValidCell(cell) ) {
-                emptyCells++;
+            cell = $(this).find('td.profileDays');  // test first cell for empty
+            if ( !me.isValidCell(cell)) {
+                invalidCells++;
             }
         });
-        return(emptyCells > 1); // there will always be one empty cell at the bottom when editing
+        if(cell !== null){
+            if(cell.text().length === 0){
+                invalidCells--; // don't count empty last cell, decrease count by 1
+            }
+        }
+        console.log(invalidCells);
+        return (invalidCells > 0);
     },
     toJSON: function() {
         "use strict";
@@ -421,8 +435,15 @@ BeerProfileTable.prototype = {
         // TODO: perhaps interface to other stuff ??
     },
     getProfileDuration: function() {
+        "use strict";
         var profileData = this.getProfileData();
-        return (profileData.length>0 && parseFloat(profileData[profileData.length-1].days)) ? profileData[profileData.length-1].days : 0;
+        for(var i = profileData.length - 1; i >= 0; i--){
+            var maxDays = parseFloat(profileData[i].days);
+            if(!isNaN(maxDays)){
+                return maxDays; // return last valid number in array
+            }
+        }
+        return 0;
     },
     isValidCell: function(cell) {
         "use strict";
