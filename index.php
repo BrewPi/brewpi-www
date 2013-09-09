@@ -18,15 +18,31 @@
 ?>
 
 <?php
-
-$settings = file_get_contents('wwwSettings.json');
-if($settings == false){
-	die("Cannot open settings file");
+// load default settings from file
+$defaultSettings = file_get_contents('defaultSettings.json');
+if($defaultSettings == false){
+	die("Cannot open default settings file: defaultSettings.json");
 }
-$settingsArray = json_decode(prepareJSON($settings), true);
+$settingsArray = json_decode(prepareJSON($defaultSettings), true);
 if(is_null($settingsArray)){
-	die("Cannot decode webSettings.json");
+	die("Cannot decode defaultSettings.json");
 }
+// overwrite default settings with user settings
+if(file_exists('userSettings.json')){
+	$userSettings = file_get_contents('defaultSettings.json');
+	if($userSettings == false){
+		die("Error opening settings file userSettings.json");
+	}
+	$userSettingsArray = json_decode(prepareJSON($userSettings), true);
+	if(is_null($settingsArray)){
+		die("Cannot decode userSettings.json");
+	}
+	foreach ($userSettingsArray as $key => $value) {
+		$settingsArray[$key] = $userSettingsArray[$key];
+	}
+}
+
+
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
 $profileName = $settingsArray["profileName"];
