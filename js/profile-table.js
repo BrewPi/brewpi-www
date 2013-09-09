@@ -404,7 +404,6 @@ BeerProfileTable.prototype = {
                 invalidCells--; // don't count empty last cell, decrease count by 1
             }
         }
-        console.log(invalidCells);
         return (invalidCells > 0);
     },
     toJSON: function() {

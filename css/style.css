@@ -393,16 +393,14 @@ button#maintenance{
 }
 
 #advanced-settings{
+    height: auto;
 }
 
-#control-settings-container{
-    height: 250px;
-    overflow:auto;
-}
-
+#control-settings-container,
 #control-constants-container{
     height: 250px;
     overflow:auto;
+    padding: 5px;
 }
 
 
@@ -417,7 +415,6 @@ button#maintenance{
 #maintenance-panel .setting-container{
     float: left;
     clear: both;
-	padding:10px;
 	margin: 20px 15px;
     width: 90%;
 
@@ -434,6 +431,7 @@ button#maintenance{
 #maintenance-panel .section-explanation{
 	float: left;
 	clear: both;
+    margin: 20px 15px;
 	width: 710px;
 }
 
@@ -456,14 +454,6 @@ button#maintenance{
     position: relative;
 	float: left;
     left: 100px;
-}
-
-
-#control-constants-container,
-#control-settings-container{
-	padding-bottom: 15px;
-	margin-bottom: 15px;
-	overflow: auto;
 }
 
 #maintenance-panel .container-title{
