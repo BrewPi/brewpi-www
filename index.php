@@ -29,7 +29,7 @@ if(is_null($settingsArray)){
 }
 // overwrite default settings with user settings
 if(file_exists('userSettings.json')){
-	$userSettings = file_get_contents('defaultSettings.json');
+	$userSettings = file_get_contents('userSettings.json');
 	if($userSettings == false){
 		die("Error opening settings file userSettings.json");
 	}
