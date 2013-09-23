@@ -127,17 +127,12 @@ function applySettings(){
     var activeTab = $("#control-panel").tabs("option", "active");
     switch(activeTab){
         case 0: // profile
-            // upload profile to pi
-            $.ajax( { async: false, type: "POST", url: 'socketmessage.php', data: {messageType: "uploadProfile", message: window.profileName}, success: function(answer){
-                    if(answer !==''){
-                        statusMessage("highlight", answer);
-                    }
-                }
-            });
-            // set mode to profile
-            $.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
-            $.post('socketmessage.php', {messageType: "profileName", message: window.profileName}, function(){});
-            break;
+        $.post('socketmessage.php', {messageType: "setActiveProfile", message: window.profileName}, function(answer){
+            if(answer !==''){
+                statusMessage("highlight", answer);
+            }
+        });
+        break;
         case 1: // beer constant
         $.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
         statusMessage("highlight","Mode set to beer constant");

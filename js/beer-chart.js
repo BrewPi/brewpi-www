@@ -358,7 +358,6 @@ function isDataEmpty(chart, column, rowStart, rowEnd){
             return false;
         }
     }
-    console.log(column);
     return true;
 }
 

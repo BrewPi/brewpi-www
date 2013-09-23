@@ -50,6 +50,10 @@ $sock = open_socket();
 if($sock !== false){
 	if(isset($data) && $data != ""){
 		switch($messageType){
+			case "setActiveProfile":
+				socket_write($sock, $messageType . "=" . $data, 4096);
+				echo socket_read($sock, 4096);
+				break;
 			default:
 				socket_write($sock, $messageType . "=" . $data, 4096);
 				break;
@@ -81,8 +85,7 @@ if($sock !== false){
 			default:
 				// just pass the command to the socket and read the answer if needed
 				socket_write($sock, $messageType, 4096);
-
-				if(startsWith($messageType, "get") || $messageType == "uploadProfile"){
+				if(startsWith($messageType, "get")){
 					// return data expected, read from socket
 					echo socket_read($sock, 4096);
 				}
