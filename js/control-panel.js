@@ -134,11 +134,13 @@ function applySettings(){
         });
         break;
         case 1: // beer constant
-        $.post('socketmessage.php', {messageType: "setBeer", message: String(window.beerTemp)}, function(){});
+        var $beerTemp = $("#beer-temp").find("input.temperature");
+        $.post('socketmessage.php', {messageType: "setBeer", message: $beerTemp.val()}, function(){});
         statusMessage("highlight","Mode set to beer constant");
         break;
         case 2: // fridge constant
-        $.post('socketmessage.php', {messageType: "setFridge", message: String(window.fridgeTemp)}, function(){});
+        var $fridgeTemp = $("#fridge-temp").find("input.temperature");
+        $.post('socketmessage.php', {messageType: "setFridge", message: $fridgeTemp.val()}, function(){});
         statusMessage("highlight","Mode set to fridge constant");
         break;
         case 3: // off
