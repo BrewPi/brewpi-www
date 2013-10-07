@@ -60,7 +60,7 @@
 				var url = "data/" + String($("select#prev-beer-name").val()) + "/" + String($("select#prev-beer-name").val()) + ".csv";
 				window.open(encodeURI(url), 'Download CSV' );
 			});
-			$("#prev-beer-chart-controls button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
+			$("#prev-beer-chart-controls button.chart-help").button({	icons: {primary: "ui-icon-help" }, text: false }).click(function(){
 				$("#chart-help-popup").dialog("open");
 			});
 		});

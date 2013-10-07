@@ -401,7 +401,6 @@
 			</div>
 		</div>
 		<button class="refresh-device-list">Refresh device list</button>
-		<!--  <button class="get-device-list">Get device list</button>-->
 	</div>
 	<div class="device-list-container ui-widget-content ui-corner-all">
 		<div class ="spinner-position"></div>

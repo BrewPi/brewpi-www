@@ -413,7 +413,7 @@ function applyStateColors(){
 
 $(document).ready(function(){
     "use strict";
-    $("button#refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
+    $("button#refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" }, text: false }).click(function(){
         drawBeerChart(window.beerName, 'curr-beer-chart');
     });
 
@@ -428,7 +428,7 @@ $(document).ready(function(){
     $("#chart-help-popup").css("visibility", "visible");
 
 
-    $("button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
+    $("button.chart-help").button({	icons: {primary: "ui-icon-help" }, text: false }).click(function(){
         $("#chart-help-popup").dialog("open");
     });
     applyStateColors();

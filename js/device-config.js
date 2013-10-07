@@ -2,10 +2,7 @@
 
 function initDeviceConfiguration(){
     "use strict";
-    $(".refresh-device-list").button({icons: {primary: "ui-icon-refresh" } })
-        .click(refreshDeviceList);
-    $(".get-device-list").button({icons: {primary: "ui-icon-arrowthickstop-1-s" } })
-        .click(getDeviceList);
+    $(".refresh-device-list").button({icons: {primary: "ui-icon-refresh" } }).click(refreshDeviceList);
 }
 
 var deviceListTimeout = 0;
