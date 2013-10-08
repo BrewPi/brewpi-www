@@ -600,7 +600,7 @@ button#maintenance{
 	text-align: center;
 }
 
-#logo-container span#beername{
+#logo-container div#beer-name-container{
 	float: left;
 	display: block;
 	line-height: 0.5em;
@@ -617,6 +617,38 @@ button#maintenance{
 	margin-bottom: 20px;
 	width: inherit;
 }
+
+.beer-name-dialog{
+    text-align: center;
+}
+
+.dialog-intro{
+    display: block;
+    margin: 15px;
+}
+
+.beer-name-dialog button.back{
+    height: 26px;
+    width: 26px;
+    float: left;
+    margin: 15px;
+}
+.beer-name-dialog input{
+    display:block;
+    margin: 10px auto 0 auto;
+}
+.beer-name-buttons{
+    display: inline-block; /* scale to content */
+    margin-top: 10px;
+}
+
+.beer-name-buttons button{
+    display: block;
+    clear: both;
+    margin: 10px 0;
+    width: 100%; /* scale to biggest button */
+}
+
 
 #profileSelectDiv { display:none; }
 #profileEditDiv { display:none; }
