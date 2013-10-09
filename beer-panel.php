@@ -28,6 +28,7 @@
 		<img src="brewpi_logo.png">
 		<div id=beer-name-container>
 			<span>Fermenting: </span><a href='#' id="beer-name"><?php echo $beerName;?></a>
+			<span class="data-logging-state"></span>
 		</div>
 	</div>
 	<button class="script-status ui-state-error"></button>

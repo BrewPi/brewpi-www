@@ -62,6 +62,20 @@ function receiveControlSettings(callback){
 				$('.cs.'+i+' .val').text(window.controlSettings[i]);
 			}
 		}
+        if(typeof(controlSettings.dataLogging) !== 'undefined'){
+            var $loggingState = $("span.data-logging-state");
+            if(controlSettings.dataLogging === 'paused'){
+                $loggingState.text("(logging paused)");
+                $loggingState.show();
+            }
+            else if (controlSettings.dataLogging === 'stopped'){
+                $loggingState.text("(logging stopped)");
+                $loggingState.show();
+            }
+            else{
+                $loggingState.hide();
+            }
+        }
 		// execute optional callback function
 		if (callback && typeof(callback) === "function") {
 			callback();
@@ -225,25 +239,55 @@ function beerNameDialogStart($body, $backButton){
     "use strict";
     $body.empty();
     $backButton.hide();
-    $body.append($("<span  class='dialog-intro'>You are currently fermenting '" + $("#beer-name").text() + "'.<br>What would you like to do?</span>"));
+    var beerName = $("#beer-name").text();
+    var introText = "";
+
+    var stopButton = true;
+    var pauseButton = true;
+    var continueButton = true;
+
+    var dataLogging = 'undefined';
+    if(typeof(window.controlSettings.dataLogging) !== 'undefined'){
+        dataLogging = window.controlSettings.dataLogging;
+    }
+    if(dataLogging === 'stopped'){
+        introText += "You are currently not logging data.";
+        stopButton = false;
+        pauseButton = false;
+        continueButton = false;
+    }
+    else if(dataLogging === 'paused'){
+        introText += "You have temporarily disabled data logging for the brew '" + beerName + "'.";
+        pauseButton = false;
+    }
+    else if(dataLogging === 'active'){
+        introText += "You are currently logging data for the brew '" + beerName + "'.";
+        continueButton = false;
+    }
+    else{
+        introText += "You are logging data for brew '" + beerName + "'.";
+    }
+
+    $body.append($("<span  class='dialog-intro'>" + introText + "<br>What would you like to do?</span>"));
     var $buttons = $("<div class='beer-name-buttons'></div>");
     $buttons.append($("<button>Start new brew</button>").button({icons: {primary: "ui-icon-plus"} }).click(function(){
         beerNameDialogNew($body, $backButton);
     }));
-    $buttons.append($("<button>Stop this brew</button>").button({icons: {primary: "ui-icon-stop"} }).click(function(){
-        beerNameDialogStop($body, $backButton);
-    }));
-    /*
-    $buttons.append($("<button>Continue existing brew</button>").button({icons: {primary: "ui-icon-folder-open"} }).click(function(){
-
-    }));*/
-    $buttons.append($("<button>Pause logging</button>").button({icons: {primary: "ui-icon-pause"} }).click(function(){
-        beerNameDialogPause($body, $backButton);
-    }));
-    $buttons.find("button").click(function(){
-        $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
-    });
-
+    if(stopButton){
+        $buttons.append($("<button>Stop this brew</button>").button({icons: {primary: "ui-icon-stop"} }).click(function(){
+            beerNameDialogStop($body, $backButton);
+        }));
+    }
+    if(pauseButton){
+        $buttons.append($("<button>Pause logging</button>").button({icons: {primary: "ui-icon-pause"} }).click(function(){
+            beerNameDialogPause($body, $backButton);
+        }));
+    }
+    if(continueButton){
+        $buttons.append($("<button>Continue logging</button>").button({icons: {primary: "ui-icon-play"} }).click(function(){
+            beerNameDialogResume($body, $backButton);
+        }));
+    }
     $body.append($buttons);
 }
 
@@ -254,9 +298,13 @@ function beerNameDialogNew($body, $backButton){
     $body.append($("<input id='new-beer-name' type='text' size='30' placeholder='Enter new beer name..'> </input>"));
     var $buttons = $("<div class='beer-name-buttons'></div>");
     $buttons.append($("<button>Start new brew</button>").button({	icons: {primary: "ui-icon-check" } }).click(function(){
-        $.post('socketmessage.php', {messageType: "name", message: $("input#new-beer-name").val()});
+        $.post('socketmessage.php', {messageType: "startNewBrew", message: $("input#new-beer-name").val()}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogNew($body, $backButton);}});
+            beerNameDialogResult($body, $backButton, reply);
+        });
     }));
     $body.append($buttons);
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
 }
 
 function beerNameDialogStop($body, $backButton){
@@ -266,21 +314,67 @@ function beerNameDialogStop($body, $backButton){
 
     var $buttons = $("<div class='beer-name-buttons'></div>");
     $buttons.append($("<button>Stop this brew</button>").button({	icons: {primary: "ui-icon-stop" } }).click(function(){
-        $.post('socketmessage.php', {messageType: "stoplogging", message: ""});
+        $.post('socketmessage.php', {messageType: "stopLogging", message: ""}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogStop($body, $backButton);}});
+            receiveControlSettings();
+            beerNameDialogResult($body, $backButton, reply);
+        });
     }));
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
     $body.append($buttons);
 }
 
 function beerNameDialogPause($body, $backButton){
     "use strict";
     $body.empty();
-    $body.append($("<span  class='dialog-intro'>Clicking pause will temporarily disable data logging for this brew. You can later continue logging data for the same brew.</span>"));
+    $body.append($("<span  class='dialog-intro'>Clicking the button below will temporarily disable data logging for this brew. You can later continue logging data for the same brew.</span>"));
 
     var $buttons = $("<div class='beer-name-buttons'></div>");
     $buttons.append($("<button>Pause logging temporarily</button>").button({	icons: {primary: "ui-icon-pause" } }).click(function(){
-        $.post('socketmessage.php', {messageType: "pauselogging", message: ""});
+        $.post('socketmessage.php', {messageType: "pauseLogging", message: ""}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogPause($body, $backButton);}});
+            receiveControlSettings();
+            beerNameDialogResult($body, $backButton, reply);
+        });
     }));
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
     $body.append($buttons);
+}
+
+function beerNameDialogResume($body, $backButton){
+    "use strict";
+    $body.empty();
+    $body.append($("<span  class='dialog-intro'>Clicking the button below will resume logging for your currently active brew.</span>"));
+
+    var $buttons = $("<div class='beer-name-buttons'></div>");
+    $buttons.append($("<button>Resume logging for current brew</button>").button({	icons: {primary: "ui-icon-pause" } }).click(function(){
+        $.post('socketmessage.php', {messageType: "resumeLogging", message: ""}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogResume($body, $backButton);}});
+            receiveControlSettings();
+            beerNameDialogResult($body, $backButton, reply);
+        });
+    }));
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
+    $body.append($buttons);
+}
+
+function beerNameDialogResult($body, $backButton, result){
+    "use strict";
+    $body.empty();
+    console.log(result);
+    if(result === ""){
+        result = { status: 2, statusMessage: "Could not receive reply from script" };
+    }
+    else{
+        result = $.parseJSON(result);
+    }
+    if(result.status === 0){
+        $body.append($("<span  class='dialog-result-success'>Success!</span>"));
+    }
+    else{
+        $body.append($("<span  class='dialog-result-error'>Error:</span>"));
+    }
+    $body.append($("<span  class='dialog-result-message'>" + result.statusMessage + "</span>"));
 }
 
 google.load('visualization', '1', {packages: ['table']});

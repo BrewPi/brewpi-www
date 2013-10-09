@@ -627,6 +627,11 @@ button#maintenance{
     margin: 15px;
 }
 
+span.data-logging-state{
+    color: #cc0a0a;
+    font-size: 0.8em;
+}
+
 .beer-name-dialog button.back{
     height: 26px;
     width: 26px;
@@ -647,6 +652,29 @@ button#maintenance{
     clear: both;
     margin: 10px 0;
     width: 100%; /* scale to biggest button */
+}
+
+span.dialog-result-success{
+    color: green;
+    display: block;
+    margin: 20px auto;
+}
+
+span.dialog-result-error{
+    color: red;
+    display: block;
+    margin: 20px auto;
+}
+
+span.dialog-result-message{
+    display: block;
+    margin: 20px auto;
+}
+
+span.chart-error{
+    text-align: center;
+    display: block;
+    margin-top: 100px;
 }
 
 
