@@ -220,7 +220,7 @@ $("#maintenance-panel" ).on( "tabsactivate", function( event, ui ) {
 
 function programmingError(string){
     "use strict";
-    window.alert(string);
+    window.alert("Error while programming: " + string);
 }
 
 function programmingDone(){
