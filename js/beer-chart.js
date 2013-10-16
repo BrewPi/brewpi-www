@@ -236,7 +236,9 @@ function drawBeerChart(beerToDraw, div){
             files = $.parseJSON(answer);
         }
         catch (e){
-            $("#"+div).html("<span class='chart-error'>Could not receive files for beer, did you just start it?</span>");
+            $("#"+div).html("<span class='chart-error'>Could not receive files for beer." +
+                "If you just started this brew, refresh the page after a few minutes. " +
+                "A chart will appear after the first data point is logged.</span>");
             return;
         }
 
