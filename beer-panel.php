@@ -26,7 +26,10 @@
 	</div>
 	<div id="logo-container">
 		<img src="brewpi_logo.png">
-		<span id="beername">Fermenting: <?php echo $beerName;?></span>
+		<div id=beer-name-container>
+			<span>Fermenting: </span><a href='#' id="beer-name"><?php echo $beerName;?></a>
+			<span class="data-logging-state"></span>
+		</div>
 	</div>
 	<button class="script-status ui-state-error"></button>
 	<button id="maintenance">Maintenance panel</button>
