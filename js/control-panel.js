@@ -690,7 +690,7 @@ $(document).ready(function(){
 	});
     $('#control-panel').tabs();
     // unhide after loading
-    $("#control-panel").css("visibility", "visible");
+    $("#control-panel").show();
 });
 
 function startFridgeTempUpInterval(){

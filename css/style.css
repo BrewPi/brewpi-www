@@ -18,14 +18,16 @@ body {
 }
 button.script-status{
 	width: 200px;
-	float: right;
+    float: right;
 	clear: right;
+    min-height: 25px;
 }
 
 button#maintenance{
 	width: 200px;
-	float: right;
+    float: right;
 	clear:right;
+    min-height: 25px;
 	margin: 10px 10px 10px 10px;
 }
 
@@ -80,6 +82,7 @@ button#maintenance{
 
 #beer-panel{
 	width: 980px;
+    height: 555px;
 	margin-bottom: 10px;
     float:left;
 }
@@ -92,7 +95,7 @@ button#maintenance{
 
 #control-panel{
 	width: 976px;
-    min-height: 360px;
+    min-height: 390px;
     float: left;
 }
 

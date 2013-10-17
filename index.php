@@ -64,12 +64,12 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 				include 'beer-panel.php';
 			?>
 		</div>
-		<div id="control-panel" style="visibility:hidden"> <!--// hide while loading -->
+		<div id="control-panel" style="display:none"> <!--// hide while loading -->
 			<?php
 				include 'control-panel.php';
 			?>
 		</div>
-		<div id="maintenance-panel" style="visibility:hidden"> <!--// hide while loading -->
+		<div id="maintenance-panel" style="display:none"> <!--// hide while loading -->
 			<?php
 				include 'maintenance-panel.php';
 			?>

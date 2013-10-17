@@ -24,6 +24,8 @@
     font-weight: normal;
     text-align: center;
     padding: 5px 0;
+    display: block;
+    clear: both;
 }
 
 .beer-chart-controls {

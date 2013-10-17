@@ -326,7 +326,7 @@ function drawBeerChart(beerToDraw, div){
         var beerChart = chart.date_graph;
         beerChart.setVisibility(beerChart.indexFromSetName('State')-1, 0);  // turn off state line
         var $chartContainer = $('#'+ div).parent();
-        $chartContainer.find('.beer-chart-controls').css('visibility','visible');
+        $chartContainer.find('.beer-chart-controls').show();
 
         if(div.localeCompare('curr-beer-chart') === 0){
             currBeerChart = beerChart;
@@ -431,10 +431,6 @@ $(document).ready(function(){
             height: 600,
             width: 960
         });
-
-    // unhide after loading
-    $("#chart-help-popup").css("visibility", "visible");
-
 
     $("button.chart-help").button({	icons: {primary: "ui-icon-help" }, text: false }).click(function(){
         $("#chart-help-popup").dialog("open");
