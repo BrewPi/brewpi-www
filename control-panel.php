@@ -67,21 +67,19 @@
 	       </div>
 	</div>
 	<div id="profileHelpDiv">
-		<p> With BrewPi running in profile mode, you can set a temperature profile ahead of time and BrewPi will follow this profile for you.
-		    A profile consists of a list of day and temperature points and a start date. Between these points, the temperature setting is interpolated.
-		</p><p>
-			When running in profile mode, the BrewPi python script on the Raspberry Pi will continuously update the beer temperature setting on Arduino.
+		<p> A temperature profile is a set of timestamps and beer temperature settings. Between the points you define, the temperature is interpolated.
+			Using profile mode, you can easily do slow temperature increases/decreases, for example: set the temperature to 20 degrees on day 1 and 23 on day 4.
+			This will result in a temperature of 22 degrees on day 3.
 		</p>
-		<span class="help-h1">Saving and loading profiles</span>
+		<span class="help-h1">Open</span>
 		<p>
-			Temperature profiles are stored on the Raspberry Pi when you click the <i>Save</i> button.
-			The <i>Load profile</i> button shows a list of saved profiles. Clicking them loads the profile in the web interface, but does <span
-				style="text-decoration: underline;">not</span> activate it yet.
+			The <i>Open</i> button shows a list of saved profiles. Clicking them loads the profile in the web interface, but does <span
+				style="text-decoration: underline;">not</span> activate it yet. When you hit 'Apply', the profile is set as active and the script will start following it.
+			Remember to change the start date when loading an old profile!
 		</p>
-		<span class="help-h1">Creating a new profile</span>
+		<span class="help-h1">New</span>
 		<p>
-			When you click the <i>New profile</i> button, a dialog will open where you can enter a name for the profile and add temperature points. Decimals are allowed in both columns.
-			The table is kept sorted based on the date column. The 'Date/Time' column cannot be edited directly: it is calculated from the start date and the first column.
+			When you click the <i>New</i> button, a dialog will open where you can enter a name for the profile and add temperature points. Decimals are allowed in both columns!
 		</p><p>
 			You can right-click on a row to insert a new row or to delete the row. There will always be an empty row at the bottom too.
 		</p><p>
@@ -92,20 +90,29 @@
 		</p><p>
 			When you are done with your profile, click <i>Save</i>. This will save the profile on the Raspberry Pi and load it in the web interface.
 		</p>
-		<span class="help-h1">Editing a profile</span>
+		<p>Note: The table is kept sorted based on the Date and Time column. The 'Date and Time' column cannot be edited directly: it is calculated from the start date and the Day column.</p>
+		<span class="help-h1">Edit</span>
 		<p>
-			The <i>Edit profile</i> button allows  you to the edit the profile that has been loaded in the web interface.
-			The interface is the same as the 'New Profile' dialog, so you can overwrite the current profile or save it under a new name.
+			The <i>Edit profile</i> button allows you to the edit the currently loaded profile.
+		</p>
+		<span class="help-h1">Save As</span>
+		<p>
+			The <i>Save As</i> opens the same dialog as the Edit button, but allows you to save under a new name after editing.
 		</p>
 		<span class="help-h1">Refresh</span>
 		<p>
 			The refresh button can be useful if you edited the profile outside of the web interface: it reloads the profile from the Raspberry Pi.
 		</p>
-		<span class="help-h1">Empty temperature cells</span>
+		<span class="help-h1">Final notes..</span>
 		<p>
-			You can leave a temperature cell empty to disable temperature control in profile mode. For example:
-			You can start a profile with an empty temperature cell to postpone starting temperature control or you can end with an empty cell to disable temperature control after a while.
+			If your start date is in the future, BrewPi will use the first temperature in the profile. If your last date is in the past, BrewPi will use the last temperature.
+		</p><p>
+			You can leave a temperature cell empty to temporarily disable temperature control in profile mode.
+			You can start a profile with an empty temperature cell at day 0 to postpone starting temperature control or you can end with an empty cell to disable temperature control after a while.
+		</p><p>
 			Take into account that your points define 'line pieces', to end with 22 degrees for a while and then OFF you define: 22, 22, empty.
+		</p><p>
+			It might sound a bit complicated now, but just play around with the editor a bit and look at the changes in the chart. It is not as complicated as it sounds here.
 		</p>
 	</div>
 </div>
