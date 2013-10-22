@@ -41,7 +41,7 @@
 	<div class="chart-container">
 		<div id="prev-beer-chart-label" class="beer-chart-label"></div>
 		<div id="prev-beer-chart" class="beer-chart" style="width:800px; height:500px"></div>
-		<div id="prev-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
+		<div id="prev-beer-chart-controls" class="beer-chart-controls" style="display: none">
 			<button class="chart-help"></button>
 			<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)">
 			<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)">
@@ -60,7 +60,7 @@
 				var url = "data/" + String($("select#prev-beer-name").val()) + "/" + String($("select#prev-beer-name").val()) + ".csv";
 				window.open(encodeURI(url), 'Download CSV' );
 			});
-			$("#prev-beer-chart-controls button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
+			$("#prev-beer-chart-controls button.chart-help").button({	icons: {primary: "ui-icon-help" }, text: false }).click(function(){
 				$("#chart-help-popup").dialog("open");
 			});
 		});

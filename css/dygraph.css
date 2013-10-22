@@ -7,7 +7,7 @@
 }
 
 .beer-chart{
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 .dygraph-legend {
@@ -23,7 +23,9 @@
 .beer-chart-label {
     font-weight: normal;
     text-align: center;
-    padding: 5px 0px;
+    padding: 5px 0;
+    display: block;
+    clear: both;
 }
 
 .beer-chart-controls {
@@ -41,10 +43,6 @@
     margin-left: auto;
     display:block;
     clear:right;
-}
-
-.beer-chart-controls button span.ui-icon{
-    margin-left: -2px; /* fix centering of icon for small button */
 }
 
 button.toggle{

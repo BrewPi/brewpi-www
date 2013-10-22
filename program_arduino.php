@@ -31,7 +31,7 @@ if(file_exists('config.php')) {
 else {
 	$error = "Unable to open required file (config.php)";
 	?>
-	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
 	<?php
 	die($error);
 }
@@ -42,7 +42,7 @@ if(isset($_POST['boardType'])){
 else{
 	$error = "boardType not specified!";
 	?>
-	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
 	<?php
 	die($error);
 }
@@ -52,7 +52,7 @@ if(isset($_POST['restoreSettings'])){
 else{
 	$error = "restoreSettings not specified!";
 	?>
-	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
 	<?php
 	die($error);
 }
@@ -62,7 +62,7 @@ if(isset($_POST['restoreDevices'])){
 else{
 	$error = "restoreDevices not specified!";
 	?>
-	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
 	<?php
 	die($error);
 }
@@ -70,7 +70,7 @@ else{
 if ($_FILES["file"]["error"] > 0){
 	$error = "Hex file error: " . $_FILES["file"]["error"];
 	?>
-	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
 	<?php
 	die($error);
 }
@@ -82,7 +82,7 @@ if(move_uploaded_file($tempFileName, "$instanceRoot/uploads/" . $fileName)){
 else{
 	$error = "cannot move uploaded file";
 	?>
-	<script type="text/javascript">window.top.window.programmingError(<?php echo $error ?>)</script>
+	<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
 	<?php
 	die($error);
 }
@@ -106,6 +106,6 @@ if($sock !== false){
 		window.top.window.programmingDone()
 	}
 	else{
-		window.top.window.programmingFailed()
+		// window.top.window.programmingFailed() // commented out because it reported errors when there were none
 	}
 </script>

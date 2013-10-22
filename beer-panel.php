@@ -26,15 +26,18 @@
 	</div>
 	<div id="logo-container">
 		<img src="brewpi_logo.png">
-		<span id="beername">Fermenting: <?php echo $beerName;?></span>
+		<div id=beer-name-container>
+			<span>Fermenting: </span><a href='#' id="beer-name"><?php echo $beerName;?></a>
+			<span class="data-logging-state"></span>
+		</div>
 	</div>
 	<button class="script-status ui-state-error"></button>
-	<button id="maintenance">Maintenance panel</button>
+	<button id="maintenance" class="ui-state-default">Maintenance panel</button>
 </div>
 <div class="chart-container">
     <div id="curr-beer-chart-label" class="beer-chart-label"></div>
     <div id="curr-beer-chart" class="beer-chart" style="width:900px; height:390px"></div>
-	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
+	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="display: none">
 		<button id="refresh-curr-beer-chart"></button>
 		<button class="chart-help"></button>
 		<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)">
@@ -45,7 +48,7 @@
 		<button class="toggleAnnotations" title="Annotations" onClick="toggleAnnotations(this)">A</button>
 	</div>
 </div>
-<div id="chart-help-popup" title="Beer graph help" style="visibility: hidden">
+<div id="chart-help-popup" title="Beer graph help" style="display: none">
 	<p>This chart displays all temperatures and state information logged by BrewPi.
 		Not all temperatures are shown by default, but you can toggle them with the colored dots.</p>
 	<p>Click and drag left or right to zoom horizontally, click and drag up or down to zoom vertically. Double click to zoom out.
