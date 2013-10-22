@@ -14,6 +14,8 @@ you can do it with the following command. This will clone it from GitHub into yo
 
 Updating BrewPi
 ---------------
+Please stop the script before running the updater, using the web interface.
+
 To run the update script, use the following command:
 
 .. code-block:: bash
