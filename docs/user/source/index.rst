@@ -17,6 +17,7 @@ If you really want to, you can still do your setup manually or just check the ma
     :numbered:
 
     installing-your-pi/rpi-setup
+    automated-brewpi-install/automated-brewpi-install.rst
     manual-brewpi-install/manual-brewpi-install.rst
     after-install/program-arduino
     after-install/device-configuration
