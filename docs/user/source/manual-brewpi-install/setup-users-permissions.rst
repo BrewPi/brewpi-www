@@ -57,10 +57,11 @@ This script just executes the commands above. Run it with:
 
 .. code-block:: bash
 
-    sudo sh /home/brewpi/fixPermissions.sh
+    sudo /home/brewpi/utils/fixPermissions.sh
 
 
 Starting and stopping the python script
 ---------------------------------------
 There is a button in the web interface to start and stop the brewpi script. But allowing the www-data user to start python scripts would create a huge security risk.
-This is solved by running a CRON job: every minute the system checks whether the script should be running and starts it when it does. This way the www-data user only has to create/remove a file in the web directory. We will set this up after getting the BrewPi files from Git.
+This is solved by running a CRON job: every minute the system checks whether the script should be running and starts it when it does.
+This way the www-data user only has to create/remove a file in the web directory. We will set this up after getting the BrewPi files from Git.

@@ -111,7 +111,9 @@ The directory should be empty, so check if you have left any files from previous
 
 The other git commands for easy copy pasting in /var/www
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-Here are the other git commands again, but now ran as the www-data user, so you can easily copy/paste them. They should all be run from the /var/www directory.
+Here are the other git commands again, but now ran as the www-data user, so you can easily copy/paste them.
+They should all be run from the /var/www directory.
+You don't have to run these now.
 
 .. code-block:: bash
 
@@ -123,3 +125,8 @@ Here are the other git commands again, but now ran as the www-data user, so you 
 
 
 Now that we have checked out all the BrewPi files, we just have to set a few settings.
+
+Fixing permissions after git commands
+"""""""""""""""""""""""""""""""""""""
+Not all permissions can be stored in git, which is why the permissions are usually wrong after working with git.
+You can run the fixPermissions script in the brewpi-script/utils directory for fix all permissions at once.

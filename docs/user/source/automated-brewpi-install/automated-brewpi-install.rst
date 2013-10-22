@@ -24,3 +24,5 @@ After the install has finished
 ------------------------------
 If the installation was successful, your next step is to program the Arduino via the web interface.
 You can find the instructions :doc:`here <../after-install/program-arduino>`.
+
+After that, your last step will be to :doc:`to set up your devices in the device manager <../after-install/device-configuration>`.
