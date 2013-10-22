@@ -11,5 +11,6 @@ Python, users and permissions, cloning the files from GitHub, modifying the conf
     python-setup
     setup-users-permissions
     using-git-for-brewpi
-    configuration
+    config-files
+    setting-up-cron
 
