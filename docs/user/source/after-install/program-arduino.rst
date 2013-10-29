@@ -1,6 +1,6 @@
 Programming your Arduino with BrewPi
 ====================================
-Uploading a new hes file to your Arduino can be done straight from the BrewPi web interface.
+Uploading a new hex file to your Arduino can be done straight from the BrewPi web interface.
 The serial port is read from the config file (``/home/brewpi/settings/config.cfg``), so make sure the settings are correct.
 The default should normally work (``/dev/ttyACM0``), but if your script fails to start because the serial port is not found, run this to see the candidates:
 
