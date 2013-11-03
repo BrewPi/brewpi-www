@@ -227,7 +227,7 @@ function showChartLegend(e, x, pts) {
         html += createLegendItem(i, pts[i].name, pts[i].yval);
     }
     var hpos = 'left';
-    if ( e.x <= ( $('#curr-beer-chart').offsetLeft() + ( $('#curr-beer-chart').width() / 2 ) ) ) {
+    if ( e.x <= ( $('#curr-beer-chart').offset().left + ( $('#curr-beer-chart').width() / 2 ) ) ) {
         hpos = 'right';
     }
     $("#curr-beer-chart-legend").html(html).css(hpos, 150).css('top', 150);
