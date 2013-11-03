@@ -219,14 +219,18 @@ function paintBackgroundImpl(canvas, area, g) {
 }
 
 var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
-function showChartLegend(x, pts) {
+function showChartLegend(e, x, pts) {
     "use strict";
     var time = profileTable.formatDate(new Date(x)).display
     var html = '<div class="beer-chart-legend-row"><div class="beer-chart-legend-time">' + time + '</div></div>';
     for (var i = 0; i < pts.length; i++) {
         html += createLegendItem(i, pts[i].name, pts[i].yval);
     }
-    $("#curr-beer-chart-legend").html(html).show();
+    var hpos = 'left';
+    if ( e.x <= ( $('#curr-beer-chart').offsetLeft() + ( $('#curr-beer-chart').width() / 2 ) ) ) {
+        hpos = 'right';
+    }
+    $("#curr-beer-chart-legend").html(html).css(hpos, 150).css('top', 150);
 }
 function hideChartLegend() {
     "use strict";
@@ -335,7 +339,7 @@ function drawBeerChart(beerToDraw, div){
                     highlightCircleSize: 5
                 },
                 highlightCallback: function(e, x, pts, row) {
-                    showChartLegend(x,pts);
+                    showChartLegend(e, x,pts);
                 },
                 unhighlightCallback: function(e) {
                     hideChartLegend();
