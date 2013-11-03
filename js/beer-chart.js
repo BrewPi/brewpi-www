@@ -222,7 +222,7 @@ function showChartLegend(x, pts) {
     "use strict";
     var html = createLegendItem("Time", profileTable.formatDate(new Date(x)).display);
     for (var i = 0; i < pts.length; i++) {
-        html += createLegendItem(p.name, p.yval);
+        html += createLegendItem(pts[i].name, pts[i].yval);
     }
     $("#curr-beer-chart-legend").html(html).show();
 }
