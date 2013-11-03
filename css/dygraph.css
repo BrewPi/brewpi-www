@@ -34,8 +34,6 @@
     background-color: rgba(255,255,255,0.85);
     position:absolute;
     border:1px solid #777;
-    top:150px;
-    left:100px;
     z-index:999;
 }
 .beer-chart-legend-row { clear:both; margin:2px 0 2px 0; }
