@@ -233,7 +233,7 @@ function hideChartLegend() {
     $("#curr-beer-chart-legend").hide();
 }
 function createLegendItem(idx, name, val) {
-    var html = '<div class="beer-chart-legend-row" style=color:"' + chartColors[idx] + ';"><div class="beer-chart-legend-label">' + name + '</div>';
+    var html = '<div class="beer-chart-legend-row" style="color:' + chartColors[idx] + ';"><div class="beer-chart-legend-label">' + name + '</div>';
     html += '<div class="beer-chart-legend-value">' + val + '</div></div>';
     return html;
 }
