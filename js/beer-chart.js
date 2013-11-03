@@ -226,11 +226,11 @@ function showChartLegend(e, x, pts) {
     for (var i = 0; i < pts.length; i++) {
         html += createLegendItem(i, pts[i].name, pts[i].yval);
     }
-    var hpos = 'left';
+    var hpos = 200;
     if ( e.x <= ( $('#curr-beer-chart').offset().left + ( $('#curr-beer-chart').width() / 2 ) ) ) {
-        hpos = 'right';
+        hpos = ($('#curr-beer-chart').offset().left + $('#curr-beer-chart').width()) - hpos;
     }
-    $("#curr-beer-chart-legend").html(html).css( {hpos: 150,'top': 150} ).show();
+    $("#curr-beer-chart-legend").html(html).css( { 'left': hpos, 'top': 150 } ).show();
 }
 function hideChartLegend() {
     "use strict";
