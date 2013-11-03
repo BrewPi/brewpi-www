@@ -20,13 +20,19 @@
     text-align:right !important;
 }
 
+/* leave beer-chart-label there and invisible as we are puposefully hiding dygraphs shitty impl of legends */
 .beer-chart-label {
-    font-weight: normal;
-    text-align: center;
-    padding: 5px 0;
-    display: block;
-    clear: both;
+    display: none;
 }
+.beer-chart-legend {
+    padding: 5px;
+    display: none;
+    clear: both;
+    width:240px;
+}
+.beer-chart-legend-row { clear:both; }
+.beer-chart-legend-name { float:left; width: 120px; margin:0; padding:0; }
+.beer-chart-legend-value { float:right; width: 120px; margin:0; padding:0; }
 
 .beer-chart-controls {
     display: block;

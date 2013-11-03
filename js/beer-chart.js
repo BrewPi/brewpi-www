@@ -218,7 +218,23 @@ function paintBackgroundImpl(canvas, area, g) {
     }
 }
 
-
+function showChartLegend(x, pts) {
+    "use strict";
+    var html = createLegendItem("Time", profileTable.formatDate(x).display);
+    for (var i = 0; i < pts.length; i++) {
+        html += createLegendItem(p.name, p.yval);
+    }
+    $("#curr-beer-chart-legend").html(html).show();
+}
+function hideChartLegend() {
+    "use strict";
+    $("#curr-beer-chart-legend").hide();
+}
+function createLegendItem(name, val) {
+    var html = '<div class="beer-chart-legend-row"><div class="beer-chart-legend-label">' + name + '</div>';
+    html += '<div class="beer-chart-legend-value">' + val + '</div></div>';
+    return html;
+}
 /* Give name of the beer to display and div to draw the graph in */
 function drawBeerChart(beerToDraw, div){
     "use strict";
@@ -287,10 +303,8 @@ function drawBeerChart(beerToDraw, div){
                 gridLineColor:'#ccc',
                 gridLineWidth:'0.1px',
                 labelsDiv: document.getElementById(div+"-label"),
-                legend: 'always',
                 displayAnnotations:true,
                 displayAnnotationsFilter:true,
-                labelsDivStyles: { 'textAlign': 'right' },
                 //showRangeSelector: true,
                 strokeWidth: 1,
 
@@ -318,7 +332,12 @@ function drawBeerChart(beerToDraw, div){
                     strokeBorderWidth: 1,
                     highlightCircleSize: 5
                 },
-
+                highlightCallback: function(e, x, pts, row) {
+                    showChartLegend(x,pts);
+                },
+                unhighlightCallback: function(e) {
+                    hideChartLegend();
+                },
                 underlayCallback: paintBackground
             }
         );
