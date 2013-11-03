@@ -220,7 +220,7 @@ function paintBackgroundImpl(canvas, area, g) {
 
 function showChartLegend(x, pts) {
     "use strict";
-    var html = createLegendItem("Time", profileTable.formatDate(x).display);
+    var html = createLegendItem("Time", profileTable.formatDate(new Date(x)).display);
     for (var i = 0; i < pts.length; i++) {
         html += createLegendItem(p.name, p.yval);
     }
