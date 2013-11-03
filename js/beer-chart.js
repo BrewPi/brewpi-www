@@ -218,11 +218,13 @@ function paintBackgroundImpl(canvas, area, g) {
     }
 }
 
+var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
 function showChartLegend(x, pts) {
     "use strict";
-    var html = createLegendItem("Time", profileTable.formatDate(new Date(x)).display);
+    var time = profileTable.formatDate(new Date(x)).display
+    var html = '<div class="beer-chart-legend-row"><div class="beer-chart-legend-time">' + time + '</div></div>';
     for (var i = 0; i < pts.length; i++) {
-        html += createLegendItem(pts[i].name, pts[i].yval);
+        html += createLegendItem(i, pts[i].name, pts[i].yval);
     }
     $("#curr-beer-chart-legend").html(html).show();
 }
@@ -230,8 +232,8 @@ function hideChartLegend() {
     "use strict";
     $("#curr-beer-chart-legend").hide();
 }
-function createLegendItem(name, val) {
-    var html = '<div class="beer-chart-legend-row"><div class="beer-chart-legend-label">' + name + '</div>';
+function createLegendItem(idx, name, val) {
+    var html = '<div class="beer-chart-legend-row" style=color:"' + chartColors[idx] + ';"><div class="beer-chart-legend-label">' + name + '</div>';
     html += '<div class="beer-chart-legend-value">' + val + '</div></div>';
     return html;
 }
@@ -297,7 +299,7 @@ function drawBeerChart(beerToDraw, div){
         var chart = new Dygraph.GVizChart(document.getElementById(div));
         chart.draw(
                 beerData, {
-                colors: [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ],
+                colors: chartColors,
                 axisLabelFontSize:12,
                 animatedZooms: true,
                 gridLineColor:'#ccc',

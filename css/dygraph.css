@@ -28,11 +28,15 @@
     padding: 5px;
     display: none;
     clear: both;
-    width:240px;
+    width:250px;
+    font-size:10px;
+    border-radius: 5px;
+    background-color: #fff 0.8;
 }
 .beer-chart-legend-row { clear:both; }
+.beer-chart-legend-time { float:left; width: 240px; margin:0; padding:0; }
 .beer-chart-legend-name { float:left; width: 120px; margin:0; padding:0; }
-.beer-chart-legend-value { float:right; width: 120px; margin:0; padding:0; }
+.beer-chart-legend-value { float:right; width: 120px; margin:0; padding:0; text-align: right; font-weight:bold; }
 
 .beer-chart-controls {
     display: block;
