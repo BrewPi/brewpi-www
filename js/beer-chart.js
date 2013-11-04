@@ -226,7 +226,7 @@ function showChartLegend(e, x, pts) {
     for (var i = 0; i < pts.length; i++) {
         var key = findLineByName(pts[i].name);
         var val = pts[i].yval;
-        $('#curr-beer-chart-legend .beer-chart-legend-row.' + key + ' .beer-chart-legend-row-value').text(val);
+        $('#curr-beer-chart-legend .beer-chart-legend-row.' + key + ' .beer-chart-legend-value').text(val);
     }
 }
 function hideChartLegend() {
