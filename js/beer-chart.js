@@ -218,7 +218,29 @@ function paintBackgroundImpl(canvas, area, g) {
     }
 }
 
-
+var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
+function showChartLegend(e, x, pts) {
+    "use strict";
+    var time = profileTable.formatDate(new Date(x)).display
+    var html = '<div class="beer-chart-legend-row"><div class="beer-chart-legend-time">' + time + '</div></div>';
+    for (var i = 0; i < pts.length; i++) {
+        html += createLegendItem(i, pts[i].name, pts[i].yval);
+    }
+    var hpos = 150;
+    if ( e.x <= ( $('#curr-beer-chart').offset().left + ( $('#curr-beer-chart').width() / 2 ) ) ) {
+        hpos = ($('#curr-beer-chart').offset().left + $('#curr-beer-chart').width()) - 250;
+    }
+    $("#curr-beer-chart-legend").html(html).css( { 'left': hpos, 'top': 150 } ).show();
+}
+function hideChartLegend() {
+    "use strict";
+    $("#curr-beer-chart-legend").hide();
+}
+function createLegendItem(idx, name, val) {
+    var html = '<div class="beer-chart-legend-row" style="color:' + chartColors[idx] + ';"><div class="beer-chart-legend-label">' + name + '</div>';
+    html += '<div class="beer-chart-legend-value">' + val + '</div></div>';
+    return html;
+}
 /* Give name of the beer to display and div to draw the graph in */
 function drawBeerChart(beerToDraw, div){
     "use strict";
@@ -281,16 +303,14 @@ function drawBeerChart(beerToDraw, div){
         var chart = new Dygraph.GVizChart(document.getElementById(div));
         chart.draw(
                 beerData, {
-                colors: [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ],
+                colors: chartColors,
                 axisLabelFontSize:12,
                 animatedZooms: true,
                 gridLineColor:'#ccc',
                 gridLineWidth:'0.1px',
                 labelsDiv: document.getElementById(div+"-label"),
-                legend: 'always',
                 displayAnnotations:true,
                 displayAnnotationsFilter:true,
-                labelsDivStyles: { 'textAlign': 'right' },
                 //showRangeSelector: true,
                 strokeWidth: 1,
 
@@ -318,7 +338,12 @@ function drawBeerChart(beerToDraw, div){
                     strokeBorderWidth: 1,
                     highlightCircleSize: 5
                 },
-
+                highlightCallback: function(e, x, pts, row) {
+                    showChartLegend(e, x,pts);
+                },
+                unhighlightCallback: function(e) {
+                    hideChartLegend();
+                },
                 underlayCallback: paintBackground
             }
         );
