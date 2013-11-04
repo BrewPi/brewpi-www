@@ -86,11 +86,6 @@
 			<button id="apply-interval" class="apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Start new beer:</span>
-			<input id="beer-name" value="Enter new or existing name.." size=30 type="text">
-			<button class="apply-beer-name apply-button">Apply</button>
-		</div>
-		<div class="setting-container">
 			<span class="setting-name">Profile name:</span>
 			<input id="profile-name" value="<?php echo $profileName ?>" size=30 type="text">
 			<button class="apply-profile-name apply-button">Apply</button>
