@@ -25,20 +25,12 @@
     display: none;
 }
 .beer-chart-legend {
-    padding: 5px;
-    display: none;
     clear: both;
-    width:180px;
     font-size:12px;
-    border-radius: 5px;
-    background-color: rgba(255,255,255,0.85);
-    position:absolute;
-    border:1px solid #777;
-    z-index:999;
 }
 .beer-chart-legend-row { clear:both; margin:2px 0 2px 0; }
-.beer-chart-legend-time { float:left; width: 180px; margin:0; padding:0; }
-.beer-chart-legend-label { float:left; width: 130px; margin:0; padding:0; }
+.beer-chart-legend-time { width: 180px; margin:0; padding:0; }
+.beer-chart-legend-label { width: 180px; margin:0; padding:0; }
 .beer-chart-legend-value { float:right; width: 50px; margin:0; padding:0; text-align: right; font-weight:bold; }
 
 .beer-chart-controls {
