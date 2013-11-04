@@ -29,8 +29,8 @@
     font-size:12px;
 }
 .beer-chart-legend-row { clear:both; margin:2px 0 2px 0; }
-.beer-chart-legend-time { width: 180px; margin:0; padding:0; }
-.beer-chart-legend-label { width: 180px; margin:0; padding:0; }
+.beer-chart-legend-time { width: 130px; margin:0; padding:0; }
+.beer-chart-legend-label { width: 130px; margin:0; padding:0; }
 .beer-chart-legend-value { float:right; width: 50px; margin:0; padding:0; text-align: right; font-weight:bold; }
 
 .beer-chart-controls {

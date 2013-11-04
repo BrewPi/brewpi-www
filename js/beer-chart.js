@@ -364,17 +364,16 @@ function drawBeerChart(beerToDraw, div){
         // hide buttons for lines that are not in the chart
         for (var key in lineNames){
             if(lineNames.hasOwnProperty(key)){
-                var $button = $chartContainer.find('button.toggle.'+ key);
+                var $row = $chartContainer.find('.beer-chart-legend-row.' + key);
                 var series = beerChart.getPropertiesForSeries(lineNames[key]);
                 if(series === null){
-                    $button.css('display', 'none');
-                }
-                else{
+                    $row.hide();
+                } else {
                     var numRows = beerChart.numRows();
                     if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
-                        $button.css('display', 'none');
+                        $row.hide();
                     }
-                    updateVisibility(key, $button);
+                    updateVisibility(key, $row.find('button.toggle'));
                 }
                 if($(div + " .toggleAnnotations ").hasClass("inactive")){
                     $(beerChart).find('.dygraphDefaultAnnotation').css('visibility', 'hidden');

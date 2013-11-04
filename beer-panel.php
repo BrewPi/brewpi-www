@@ -36,7 +36,7 @@
 </div>
 <div class="chart-container">
     <div id="curr-beer-chart-label" class="beer-chart-label"></div>
-    <div id="curr-beer-chart" class="beer-chart" style="width:900px; height:390px"></div>
+    <div id="curr-beer-chart" class="beer-chart" style="width:830px; height:390px"></div>
 	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="display: none">
 		<button id="refresh-curr-beer-chart"></button>
 		<button class="chart-help"></button>
@@ -44,27 +44,27 @@
 	    	<div class="beer-chart-legend-row"><div class="beer-chart-legend-time"></div></div>
 	    	<div class="beer-chart-legend-row beerTemp">
 	    		<div class="beer-chart-legend-label">Beer Temp</div>
-	    		<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)">
+	    		<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)"></button>
 	    		<div class="beer-chart-legend-value"></div>
 	    	</div>
-	    	<div class="beer-chart-legend-row beerTemp">
+	    	<div class="beer-chart-legend-row beerSet">
 	    		<div class="beer-chart-legend-label">Beer Temp</div>
-				<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)">
+				<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)"></button>
 	    		<div class="beer-chart-legend-value"></div>
 	    	</div>
-	    	<div class="beer-chart-legend-row beerTemp">
+	    	<div class="beer-chart-legend-row fridgeTemp">
 	    		<div class="beer-chart-legend-label">Beer Temp</div>
-				<button class="toggle fridgeTemp" title="Fridge temperature" onClick="toggleLine(this)">
+				<button class="toggle fridgeTemp" title="Fridge temperature" onClick="toggleLine(this)"></button>
 	    		<div class="beer-chart-legend-value"></div>
 	    	</div>
-	    	<div class="beer-chart-legend-row beerTemp">
+	    	<div class="beer-chart-legend-row fridgeSet">
 	    		<div class="beer-chart-legend-label">Beer Temp</div>
-				<button class="toggle fridgeSet inactive" title="Fridge setting" onClick="toggleLine(this)">
+				<button class="toggle fridgeSet inactive" title="Fridge setting" onClick="toggleLine(this)"></button>
 	    		<div class="beer-chart-legend-value"></div>
 	    	</div>
-	    	<div class="beer-chart-legend-row beerTemp">
+	    	<div class="beer-chart-legend-row roomTemp">
 	    		<div class="beer-chart-legend-label">Beer Temp</div>
-				<button class="toggle roomTemp inactive" title="Room temperature" onClick="toggleLine(this)">
+				<button class="toggle roomTemp inactive" title="Room temperature" onClick="toggleLine(this)"></button>
 	    		<div class="beer-chart-legend-value"></div>
 	    	</div>
 	    </div>
