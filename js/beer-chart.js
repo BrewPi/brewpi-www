@@ -237,7 +237,7 @@ function hideChartLegend() {
 }
 function findLineByName(name) {
     for (var key in lineNames) {
-        if ( key == name )
+        if ( lineNames[key] == name )
             return key;
     }
     return null;
