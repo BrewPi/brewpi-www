@@ -38,7 +38,7 @@
     <div id="curr-beer-chart-label" class="beer-chart-label"></div>
     <div id="curr-beer-chart" class="beer-chart" style="width:900px; height:390px"></div>
 	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="display: none">
-		<button id="refresh-curr-beer-chart"></button>
+		<button class="refresh-curr-beer-chart"></button>
 		<button class="chart-help"></button>
 		<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)">
 		<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)">
