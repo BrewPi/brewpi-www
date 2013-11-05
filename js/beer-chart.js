@@ -221,25 +221,26 @@ function paintBackgroundImpl(canvas, area, g) {
 var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
 function showChartLegend(e, x, pts) {
     "use strict";
-    var time = profileTable.formatDate(new Date(x)).display
-    var html = '<div class="beer-chart-legend-row"><div class="beer-chart-legend-time">' + time + '</div></div>';
+    var time = profileTable.formatDate(new Date(x)).display;
+    $('#curr-beer-chart-legend .beer-chart-legend-time').text(time);
     for (var i = 0; i < pts.length; i++) {
-        html += createLegendItem(i, pts[i].name, pts[i].yval);
+        var key = findLineByName(pts[i].name);
+        var val = pts[i].yval;
+        $('#curr-beer-chart-legend .beer-chart-legend-row.' + key + ' .beer-chart-legend-value').text(val);
     }
-    var hpos = 150;
-    if ( e.x <= ( $('#curr-beer-chart').offset().left + ( $('#curr-beer-chart').width() / 2 ) ) ) {
-        hpos = ($('#curr-beer-chart').offset().left + $('#curr-beer-chart').width()) - 250;
-    }
-    $("#curr-beer-chart-legend").html(html).css( { 'left': hpos, 'top': 150 } ).show();
 }
 function hideChartLegend() {
     "use strict";
-    $("#curr-beer-chart-legend").hide();
+    $('#curr-beer-chart-legend .beer-chart-legend-row').each(function() {
+        $(this).find('.beer-chart-legend-value').text('--');
+    });
 }
-function createLegendItem(idx, name, val) {
-    var html = '<div class="beer-chart-legend-row" style="color:' + chartColors[idx] + ';"><div class="beer-chart-legend-label">' + name + '</div>';
-    html += '<div class="beer-chart-legend-value">' + val + '</div></div>';
-    return html;
+function findLineByName(name) {
+    for (var key in lineNames) {
+        if ( lineNames[key] == name )
+            return key;
+    }
+    return null;
 }
 /* Give name of the beer to display and div to draw the graph in */
 function drawBeerChart(beerToDraw, div){
@@ -363,17 +364,16 @@ function drawBeerChart(beerToDraw, div){
         // hide buttons for lines that are not in the chart
         for (var key in lineNames){
             if(lineNames.hasOwnProperty(key)){
-                var $button = $chartContainer.find('button.toggle.'+ key);
+                var $row = $chartContainer.find('.beer-chart-legend-row.' + key);
                 var series = beerChart.getPropertiesForSeries(lineNames[key]);
                 if(series === null){
-                    $button.css('display', 'none');
-                }
-                else{
+                    $row.hide();
+                } else {
                     var numRows = beerChart.numRows();
                     if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
-                        $button.css('display', 'none');
+                        $row.hide();
                     }
-                    updateVisibility(key, $button);
+                    updateVisibility(key, $row.find('button.toggle'));
                 }
                 if($(div + " .toggleAnnotations ").hasClass("inactive")){
                     $(beerChart).find('.dygraphDefaultAnnotation').css('visibility', 'hidden');
