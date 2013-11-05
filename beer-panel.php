@@ -38,7 +38,7 @@
     <div id="curr-beer-chart-label" class="beer-chart-label"></div>
     <div id="curr-beer-chart" class="beer-chart" style="width:830px; height:390px"></div>
 	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="display: none">
-		<button id="refresh-curr-beer-chart"></button>
+		<button class="refresh-curr-beer-chart"></button>
 		<button class="chart-help"></button>
 	    <div id="curr-beer-chart-legend" class="beer-chart-legend">
 	    	<div class="beer-chart-legend-row"><div class="beer-chart-legend-time"></div></div>

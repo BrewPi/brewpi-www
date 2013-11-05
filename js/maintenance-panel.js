@@ -44,10 +44,6 @@ $(document).ready(function(){
 		$.post('socketmessage.php', {messageType: "interval", message: String($("select#interval").val())});
 	});
 
-	$("button.apply-beer-name").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
-		$.post('socketmessage.php', {messageType: "name", message: $("input#beer-name").val()});
-	});
-
     $("button.apply-profile-name").button({ icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
         $.post('socketmessage.php', {messageType: "profileName", message: $("input#profile-name").val()});
     });
