@@ -48,16 +48,16 @@ var STATE_LINE_WIDTH = 15;
  * @type {Array}
  */
 var STATES = [
-    { name: "IDLE", color:colorIdle },
-    { name: "STATE_OFF", color:colorIdle },
-    { name: "DOOR_OPEN", color:"#eee", doorOpen:true },
-    { name: "HEATING", color:colorHeat },
-    { name: "COOLING", color:colorCool },
-    { name: "WAITING_TO_COOL", color:colorWaitingCool, waiting:true  },
-    { name: "WAITING_TO_HEAT", color:colorWaitingHeat, waiting:true  },
-    { name: "WAITING_FOR_PEAK_DETECT", color:colorWaitingPeakDetect, waiting:true },
-    { name: "COOLING_MIN_TIME", color:colorCoolingMinTime, extending:true },
-    { name: "HEATING_MIN_TIME", color:colorHeatingMinTime, extending:true }
+    { name: "IDLE", color:colorIdle, text: "Idle" },
+    { name: "STATE_OFF", color:colorIdle, text: "Off" },
+    { name: "DOOR_OPEN", color:"#eee", text: "Door Open", doorOpen:true },
+    { name: "HEATING", color:colorHeat, text: "Heating" },
+    { name: "COOLING", color:colorCool, text: "Cooling" },
+    { name: "WAITING_TO_COOL", color:colorWaitingCool, text: "Waiting to Cool", waiting:true  },
+    { name: "WAITING_TO_HEAT", color:colorWaitingHeat, text: "Waiting to Heat", waiting:true  },
+    { name: "WAITING_FOR_PEAK_DETECT", color:colorWaitingPeakDetect, text: "Waiting for Peak", waiting:true },
+    { name: "COOLING_MIN_TIME", color:colorCoolingMinTime, text: "Cooling Min Time", extending:true },
+    { name: "HEATING_MIN_TIME", color:colorHeatingMinTime, text: "Heating Min Time", extending:true }
 ];
 
 
@@ -235,9 +235,7 @@ function showChartLegend(e, x, pts, row, g) {
     val = parseFloat(currentDataSet.getValue(row, 5)).toFixed(2) + "\u00B0" + window.tempFormat;
     $('#curr-beer-chart-legend .beer-chart-legend-row.roomTemp .beer-chart-legend-value').text( val );
     var state = currentDataSet.getValue(row, STATE_COLUMN);
-    if ( state != null && state != '' ) {
-        $('#curr-beer-chart-legend .beer-chart-legend-row.state').text(state);
-    }
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state').text(STATES[state].text);
 }
 function hideChartLegend() {
     "use strict";
