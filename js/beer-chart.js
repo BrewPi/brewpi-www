@@ -243,7 +243,7 @@ function hideChartLegend() {
         $(this).find('.beer-chart-legend-value').text('--');
     });
     $('#curr-beer-chart-legend .beer-chart-legend-time').text('Date/Time');
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state').text('');
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state').text('--');
 }
 function findLineByName(name) {
     for (var key in lineNames) {
