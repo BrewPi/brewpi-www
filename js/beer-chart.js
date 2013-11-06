@@ -487,6 +487,9 @@ $(document).ready(function(){
 function toggleAnnotations(el){
     "use strict";
     var $el = $(el);
+    if ( $el.hasClass('beer-chart-legend-label') ) {
+        $el = $el.prev();
+    }
     $el.toggleClass('inactive');
     var $chart = $el.closest('.chart-container').find('.beer-chart');
     var chartId = $chart.attr('id');

@@ -77,13 +77,12 @@
 	    		<br class="crystal" />
 	    	</div>
 	    	<div class="beer-chart-legend-row state">
-				<div class="toggle roomTemp inactive" onClick="toggleLine(this)"></div>
-	    		<div class="beer-chart-legend-value">--</div>
+	    		<div class="beer-chart-legend-label">--</div>
 	    		<br class="crystal" />
 	    	</div>
 	    	<div class="beer-chart-legend-row annotation last">
 				<div class="toggleAnnotations dygraphDefaultAnnotation" onClick="toggleAnnotations(this)">A</div>
-	    		<div class="beer-chart-legend-label">Annotations</div>
+	    		<div class="beer-chart-legend-label" onClick="toggleAnnotations(this)">Annotations</div>
 	    		<br class="crystal" />
 	    	</div>
 	    </div>
