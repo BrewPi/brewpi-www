@@ -39,8 +39,16 @@
     <div id="curr-beer-chart" class="beer-chart" style="width:815px; height:390px"></div>
 	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="display: none">
 	    <div id="curr-beer-chart-buttons" class="beer-chart-buttons">
-			<button id="refresh-curr-beer-chart" class="chart-refresh" title="Refresh"></button>
-			<button id="chart-help" class="chart-help" title="Help"></button>
+	    	<div class="beer-chart-legend-row">
+				<button id="refresh-curr-beer-chart" title="Refresh"></button>
+	    		<div class="beer-chart-legend-label">Refresh Chart</div>
+	    		<br class="crystal" />
+	    	</div>
+	    	<div class="beer-chart-legend-row">
+				<button id="chart-help" class="chart-help" title="Help"></button>
+	    		<div class="beer-chart-legend-label">Help</div>
+    			<br class="crystal" />
+	    	</div>
 		</div>
 	    <div id="curr-beer-chart-legend" class="beer-chart-legend">
 	    	<div class="beer-chart-legend-row time">

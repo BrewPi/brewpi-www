@@ -27,10 +27,9 @@ BR.crystal { clear:both; }
 .beer-chart-buttons button {
     height:26px;
     width: 26px;
-    margin: 10px 25px;
+    margin: 5px 0;
+    float:left;
 }
-.chart-refresh { float:left; }
-.chart-help { float:right; }
 
 .beer-chart-legend, .beer-chart-buttons {
     clear: both;
@@ -39,11 +38,10 @@ BR.crystal { clear:both; }
     border:solid 1px #777;
     border-radius: 5px;
 }
-.beer-chart-buttons { border:0px; }
 .beer-chart-legend-row { clear:both; padding:8px 5px 8px 5px; }
 .beer-chart-legend-row.alt { background-color: #eee; }
-.beer-chart-legend-row.time { background-color: #ddd; border-top-right-radius: 0px; border-top-left-radius: 0px; }
-.beer-chart-legend-row.last { border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; }
+.beer-chart-legend-row.time { background-color: #ddd; border-top-right-radius: 5px; border-top-left-radius: 5px; }
+.beer-chart-legend-row.last { border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
 .beer-chart-legend-row.beerTemp{
     color:rgba(41, 170, 41, 1);
 }
@@ -62,6 +60,7 @@ BR.crystal { clear:both; }
 .beer-chart-legend-row.annotation .beer-chart-legend-label { padding:2px 5px 0 5px; }
 .beer-chart-legend-time { margin:0; padding:0; }
 .beer-chart-legend-label { width:65px; margin:0; padding:0 5px 0 5px; float:left; cursor:pointer; }
+.beer-chart-buttons .beer-chart-legend-label { width:80px; padding:10px 5px; cursor:default; }
 .beer-chart-legend-value { float:right; width: 44px; margin:0; padding:0; text-align: right; }
 
 .beer-chart-legend-row .toggle {
