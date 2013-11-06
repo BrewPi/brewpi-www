@@ -48,31 +48,31 @@
 	    	</div>
 	    	<div class="beer-chart-legend-row beerTemp">
 	    		<div class="toggle beerTemp" onClick="toggleLine(this)"></div>
-	    		<div class="beer-chart-legend-label">Beer Temp</div>
+	    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Beer Temp</div>
 	    		<div class="beer-chart-legend-value">--</div>
 	    		<br class="crystal" />
 	    	</div>
 	    	<div class="beer-chart-legend-row beerSet">
 				<div class="toggle beerSet" onClick="toggleLine(this)"></div>
-	    		<div class="beer-chart-legend-label">Beer Setting</div>
+	    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Beer Setting</div>
 	    		<div class="beer-chart-legend-value">--</div>
 	    		<br class="crystal" />
 	    	</div>
 	    	<div class="beer-chart-legend-row fridgeTemp">
 				<div class="toggle fridgeTemp" onClick="toggleLine(this)"></div>
-	    		<div class="beer-chart-legend-label">Fridge Temp</div>
+	    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Fridge Temp</div>
 	    		<div class="beer-chart-legend-value">--</div>
 	    		<br class="crystal" />
 	    	</div>
 	    	<div class="beer-chart-legend-row fridgeSet">
 				<div class="toggle fridgeSet inactive" onClick="toggleLine(this)"></div>
-	    		<div class="beer-chart-legend-label">Fridge Setting</div>
+	    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Fridge Setting</div>
 	    		<div class="beer-chart-legend-value">--</div>
 	    		<br class="crystal" />
 	    	</div>
 	    	<div class="beer-chart-legend-row roomTemp">
 				<div class="toggle roomTemp inactive" onClick="toggleLine(this)"></div>
-	    		<div class="beer-chart-legend-label">Room Temp</div>
+	    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Room Temp</div>
 	    		<div class="beer-chart-legend-value">--</div>
 	    		<br class="crystal" />
 	    	</div>

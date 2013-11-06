@@ -61,7 +61,7 @@ BR.crystal { clear:both; }
 }
 .beer-chart-legend-row.annotation .beer-chart-legend-label { padding:2px 5px 0 5px; }
 .beer-chart-legend-time { margin:0; padding:0; }
-.beer-chart-legend-label { width:65px; margin:0; padding:0 5px 0 5px; float:left; }
+.beer-chart-legend-label { width:65px; margin:0; padding:0 5px 0 5px; float:left; cursor:pointer; }
 .beer-chart-legend-value { float:right; width: 44px; margin:0; padding:0; text-align: right; }
 
 .beer-chart-legend-row .toggle {
@@ -70,6 +70,7 @@ BR.crystal { clear:both; }
     border-radius:5px;
     float:left;
     margin:2px 0 0 0;
+    cursor:pointer;
 }
 .beer-chart-legend-row .toggle.beerTemp{
     background-color:rgba(41, 170, 41, 0.5);

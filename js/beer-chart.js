@@ -243,6 +243,7 @@ function hideChartLegend() {
         $(this).find('.beer-chart-legend-value').text('--');
     });
     $('#curr-beer-chart-legend .beer-chart-legend-time').text('Date/Time');
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state').text('');
 }
 function findLineByName(name) {
     for (var key in lineNames) {
@@ -414,6 +415,9 @@ function isDataEmpty(chart, column, rowStart, rowEnd){
 function toggleLine(el) {
     "use strict";
     var $el = $(el);
+    if ( $el.hasClass('beer-chart-legend-label') ) {
+        $el = $el.prev();
+    }
     $el.toggleClass('inactive');
     // get line name from classes
     var classString = $el.attr('class');
