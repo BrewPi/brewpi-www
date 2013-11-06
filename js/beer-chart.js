@@ -160,9 +160,10 @@ function findDataRow(g, time) {
     return low;
 }
 
-
+currentDataSet = null;
 function paintBackground(canvas, area, g) {
     "use strict";
+    currentDataSet = g;
     canvas.save();
     try {
         paintBackgroundImpl(canvas, area, g);
@@ -219,14 +220,23 @@ function paintBackgroundImpl(canvas, area, g) {
 }
 
 var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
-function showChartLegend(e, x, pts) {
+function showChartLegend(e, x, pts, row, g) {
     "use strict";
     var time = profileTable.formatDate(new Date(x)).display;
     $('#curr-beer-chart-legend .beer-chart-legend-time').text(time);
-    for (var i = 0; i < pts.length; i++) {
-        var key = findLineByName(pts[i].name);
-        var val = pts[i].yval;
-        $('#curr-beer-chart-legend .beer-chart-legend-row.' + key + ' .beer-chart-legend-value').text(val);
+    var val = parseFloat(currentDataSet.getValue(row, 1)).toFixed(2) + "\u00B0" + window.tempFormat;
+    $('#curr-beer-chart-legend .beer-chart-legend-row.beerTemp .beer-chart-legend-value').text( val );
+    val = parseFloat(currentDataSet.getValue(row, 2)).toFixed(2) + "\u00B0" + window.tempFormat;
+    $('#curr-beer-chart-legend .beer-chart-legend-row.beerSet .beer-chart-legend-value').text( val );
+    val = parseFloat(currentDataSet.getValue(row, 3)).toFixed(2) + "\u00B0" + window.tempFormat;
+    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeTemp .beer-chart-legend-value').text( val );
+    val = parseFloat(currentDataSet.getValue(row, 4)).toFixed(2) + "\u00B0" + window.tempFormat;
+    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( val );
+    val = parseFloat(currentDataSet.getValue(row, 5)).toFixed(2) + "\u00B0" + window.tempFormat;
+    $('#curr-beer-chart-legend .beer-chart-legend-row.roomTemp .beer-chart-legend-value').text( val );
+    var state = currentDataSet.getValue(row, STATE_COLUMN);
+    if ( state != null && state != '' ) {
+        $('#curr-beer-chart-legend .beer-chart-legend-row.state').text(state);
     }
 }
 function hideChartLegend() {
@@ -234,6 +244,7 @@ function hideChartLegend() {
     $('#curr-beer-chart-legend .beer-chart-legend-row').each(function() {
         $(this).find('.beer-chart-legend-value').text('--');
     });
+    $('#curr-beer-chart-legend .beer-chart-legend-time').text('Date/Time');
 }
 function findLineByName(name) {
     for (var key in lineNames) {
@@ -340,7 +351,7 @@ function drawBeerChart(beerToDraw, div){
                     highlightCircleSize: 5
                 },
                 highlightCallback: function(e, x, pts, row) {
-                    showChartLegend(e, x,pts);
+                    showChartLegend(e, x, pts, row, chart);
                 },
                 unhighlightCallback: function(e) {
                     hideChartLegend();
@@ -373,13 +384,21 @@ function drawBeerChart(beerToDraw, div){
                     if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
                         $row.hide();
                     }
-                    updateVisibility(key, $row.find('button.toggle'));
+                    updateVisibility(key, $row.find('.toggle'));
                 }
                 if($(div + " .toggleAnnotations ").hasClass("inactive")){
                     $(beerChart).find('.dygraphDefaultAnnotation').css('visibility', 'hidden');
                 }
             }
         }
+        var idx = 0;
+        $('#curr-beer-chart-legend .beer-chart-legend-row').each(function() {
+            if ( ! $(this).hasClass("time") && ! $(this).is(":hidden") ) {
+                $(this).addClass( (idx % 2 == 1) ? 'alt' : '' );
+                idx++;
+            }
+        });
+
     });
 }
 
