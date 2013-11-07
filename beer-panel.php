@@ -44,7 +44,7 @@
 	    		<div class="beer-chart-legend-label">Refresh Chart</div>
 	    		<br class="crystal" />
 	    	</div>
-	    	<div class="beer-chart-legend-row">
+	    	<div class="beer-chart-legend-row last">
 				<button class="chart-help" title="Help"></button>
 	    		<div class="beer-chart-legend-label">Help</div>
     			<br class="crystal" />
