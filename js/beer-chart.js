@@ -220,20 +220,22 @@ function paintBackgroundImpl(canvas, area, g) {
 }
 
 var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
+function formatForChartLegend(v) {
+    var val = parseFloat(v);
+    if ( !isNaN(val) ) {
+        return val.toFixed(2) + "\u00B0" + window.tempFormat;
+    }
+    return "--";
+}
 function showChartLegend(e, x, pts, row, g) {
     "use strict";
     var time = profileTable.formatDate(new Date(x)).display;
     $('#curr-beer-chart-legend .beer-chart-legend-time').text(time);
-    var val = parseFloat(currentDataSet.getValue(row, 1)).toFixed(2) + "\u00B0" + window.tempFormat;
-    $('#curr-beer-chart-legend .beer-chart-legend-row.beerTemp .beer-chart-legend-value').text( val );
-    val = parseFloat(currentDataSet.getValue(row, 2)).toFixed(2) + "\u00B0" + window.tempFormat;
-    $('#curr-beer-chart-legend .beer-chart-legend-row.beerSet .beer-chart-legend-value').text( val );
-    val = parseFloat(currentDataSet.getValue(row, 3)).toFixed(2) + "\u00B0" + window.tempFormat;
-    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeTemp .beer-chart-legend-value').text( val );
-    val = parseFloat(currentDataSet.getValue(row, 4)).toFixed(2) + "\u00B0" + window.tempFormat;
-    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( val );
-    val = parseFloat(currentDataSet.getValue(row, 5)).toFixed(2) + "\u00B0" + window.tempFormat;
-    $('#curr-beer-chart-legend .beer-chart-legend-row.roomTemp .beer-chart-legend-value').text( val );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.beerTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 1)) );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.beerSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 2)) );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 3)) );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 4)) );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.roomTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 5)) );
     var state = currentDataSet.getValue(row, STATE_COLUMN);
     $('#curr-beer-chart-legend .beer-chart-legend-row.state').text(STATES[state].text);
 }
