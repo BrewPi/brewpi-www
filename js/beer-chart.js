@@ -160,7 +160,7 @@ function findDataRow(g, time) {
     return low;
 }
 
-currentDataSet = null;
+var currentDataSet = null;
 function paintBackground(canvas, area, g) {
     "use strict";
     currentDataSet = g;
@@ -221,6 +221,7 @@ function paintBackgroundImpl(canvas, area, g) {
 
 var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
 function formatForChartLegend(v) {
+    "use strict";
     var val = parseFloat(v);
     if ( !isNaN(val) ) {
         return val.toFixed(2) + "\u00B0" + window.tempFormat;
@@ -248,9 +249,13 @@ function hideChartLegend() {
     $('#curr-beer-chart-legend .beer-chart-legend-row.state').text('--');
 }
 function findLineByName(name) {
+    "use strict";
     for (var key in lineNames) {
-        if ( lineNames[key] == name )
+        if(lineNames.hasOwnProperty(key)){
+            if ( lineNames[key] === name ){
             return key;
+    }
+        }
     }
     return null;
 }
@@ -408,11 +413,10 @@ function drawBeerChart(beerToDraw, div){
         var idx = 0;
         $('#curr-beer-chart-legend .beer-chart-legend-row').each(function() {
             if ( ! $(this).hasClass("time") && ! $(this).is(":hidden") ) {
-                $(this).addClass( (idx % 2 == 1) ? 'alt' : '' );
+                $(this).addClass( (idx % 2 === 1) ? 'alt' : '' );
                 idx++;
             }
         });
-
     });
 }
 
@@ -438,9 +442,11 @@ function toggleLine(el) {
     var classString = $el.attr('class');
     var classList = classString.split(/\s+/);
     for (var i in classList){
+        if(classList.hasOwnProperty(i)){
         if (classList[i] in lineNames){
             break;
         }
+    }
     }
     updateVisibility(classList[i], $el);
 }
