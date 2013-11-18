@@ -15,39 +15,67 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-prevScriptStatus=-1;
+/* global google, loadControlPanel, drawBeerChart */
 
-controlConstants = {};
-controlSettings = {};
-controlVariables = {};
+var prevScriptStatus=-1;
+
+var controlConstants = {};
+var controlSettings = {};
+var controlVariables = {};
 
 function receiveControlConstants(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
-		controlConstants = jQuery.parseJSON(controlConstantsJSON);
-		for (var i in controlConstants) {
-			if($('select[name="'+i+'"]').length){
-				$('select[name="'+i+'"]').val(controlConstants[i]);
+		if(controlConstantsJSON === ''){
+			return;
+		}
+		window.controlConstants = jQuery.parseJSON(controlConstantsJSON);
+		for (var i in window.controlConstants){
+			if(window.controlConstants.hasOwnProperty(i)){
+				if($('select[name="'+i+'"]').length){
+					$('select[name="'+i+'"]').val(window.controlConstants[i]);
+				}
+				if($('input[name="'+i+'"]').length){
+					$('input[name="'+i+'"]').val(window.controlConstants[i]);
+				}
+				$('.cc.'+i+' .val').text(window.controlConstants[i]);
 			}
-			if($('input[name="'+i+'"]').length){
-				$('input[name="'+i+'"]').val(controlConstants[i]);
-			}
-			$('.cc.'+i+' .val').text(controlConstants[i]);
 		}
 	});
 }
 
 function receiveControlSettings(callback){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
-		controlSettings = jQuery.parseJSON(controlSettingsJSON);
-		for (var i in controlSettings) {
-			if($('select[name="'+i+'"]').length){
-				$('select[name="'+i+'"]').val(controlSettings[i]);
-			}
-			if($('input[name="'+i+'"]').length){
-				$('input[name="'+i+'"]').val(controlSettings[i]);
-			}
-			$('.cs.'+i+' .val').text(controlSettings[i]);
+		if(controlSettingsJSON === ''){
+			return;
 		}
+		window.controlSettings = jQuery.parseJSON(controlSettingsJSON);
+		for (var i in controlSettings) {
+			if(controlSettings.hasOwnProperty(i)){
+				if($('select[name="'+i+'"]').length){
+					$('select[name="'+i+'"]').val(window.controlSettings[i]);
+				}
+				if($('input[name="'+i+'"]').length){
+					$('input[name="'+i+'"]').val(window.controlSettings[i]);
+				}
+				$('.cs.'+i+' .val').text(window.controlSettings[i]);
+			}
+		}
+        if(typeof(controlSettings.dataLogging) !== 'undefined'){
+            var $loggingState = $("span.data-logging-state");
+            if(controlSettings.dataLogging === 'paused'){
+                $loggingState.text("(logging paused)");
+                $loggingState.show();
+            }
+            else if (controlSettings.dataLogging === 'stopped'){
+                $loggingState.text("(logging stopped)");
+                $loggingState.show();
+            }
+            else{
+                $loggingState.hide();
+            }
+        }
 		// execute optional callback function
 		if (callback && typeof(callback) === "function") {
 			callback();
@@ -56,115 +84,134 @@ function receiveControlSettings(callback){
 }
 
 function receiveControlVariables(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
-		controlVariables = jQuery.parseJSON(controlVariablesJSON);
-		for (var i in controlVariables) {
-			$('.cv.'+i+' .val').text(controlVariables[i]);
+		if(controlVariablesJSON === ''){
+			return;
 		}
-		$('.cv.pid-result .val').text(Math.round(1000*(controlVariables['p']+controlVariables['i']+controlVariables['d']))/1000);
+		window.controlVariables = jQuery.parseJSON(controlVariablesJSON);
+		for (var i in window.controlVariables) {
+			if(window.controlVariables.hasOwnProperty(i)){
+				$('.cv.'+i+' .val').text(window.controlVariables[i]);
+			}
+		}
+		$('.cv.pid-result .val').text(Math.round(1000*(window.controlVariables.p+window.controlVariables.i+window.controlVariables.d))/1000);
 	});
 }
 
 function loadDefaultControlSettings(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "loadDefaultControlSettings", message: ""}, function(){
 		receiveControlSettings();
 	});
 }
 
 function loadDefaultControlConstants(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "loadDefaultControlConstants", message: ""}, function(){
 		receiveControlConstants();
 	});
 }
 function reloadControlConstantsFromArduino(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "refreshControlConstants", message: ""}, function(){
 		receiveControlConstants();
 	});
 }
 
 function reloadControlSettingsFromArduino(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "refreshControlSettings", message: ""}, function(){
 		receiveControlSettings();
 	});
 }
 
 function reloadControlVariablesFromArduino(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "refreshControlVariables", message: ""}, function(){
 		receiveControlVariables();
 	});
 }
 
 function stopScript(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "stopScript", message: ""}, function(){});
 }
 
 function startScript(){
+	"use strict";
 	$.get('start_script.php');
 }
 
 function refreshLcd(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
+		var $lcdText = $('#lcd .lcd-text');
 		try
 		{
-		   	lcdText = JSON.parse(lcdText);
+			lcdText = JSON.parse(lcdText);
 			for (var i = lcdText.length - 1; i >= 0; i--) {
-				$('#lcd .lcd-text #lcd-line-' + i).html(lcdText[i]);
-			};
-			window.setTimeout(checkScriptStatus,5000);
+				$lcdText.find('#lcd-line-' + i).html(lcdText[i]);
+			}
 		}
 		catch(e)
 		{
-		   alert(lcdText);
-		   $('#lcd .lcd-text #lcd-line-0').html("Cannot connect to");
-		   $('#lcd .lcd-text #lcd-line-1').html("script. Refresh");
-		   $('#lcd .lcd-text #lcd-line-2').html("page to try again");
-		   $('#lcd .lcd-text #lcd-line-3').html(" ");
+			$lcdText.find('#lcd-line-0').html("Cannot receive");
+			$lcdText.find('#lcd-line-1').html("LCD text from");
+			$lcdText.find('#lcd-line-2').html("Python script");
+			$lcdText.find('#lcd-line-3').html(" ");
 		}
+		window.setTimeout(checkScriptStatus,5000);
 	});
 }
 
 function checkScriptStatus(){
+	"use strict";
 	$.post('socketmessage.php', {messageType: "checkScript", message: ""}, function(answer){
-		if(answer !=prevScriptStatus){
-			if(answer==1){
-				$(".script-status span.ui-icon").removeClass("ui-icon-alert").addClass("ui-icon-check");
-				$(".script-status").removeClass("ui-state-error").addClass("ui-state-default");
-				$(".script-status span.ui-button-text").text("Script running");
-				$(".script-status").unbind();
-				$(".script-status").bind({
+		answer = answer.replace(/\s/g, ''); //strip all whitespace, including newline.
+		if(answer !== prevScriptStatus){
+			var $scriptStatus = $(".script-status");
+			var $scriptStatusIcon = $scriptStatus.find("span.ui-icon");
+			var $scriptStatusButtonText = $scriptStatus.find("span.ui-button-text");
+			if(answer==='1'){
+				$scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-check");
+				$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+				$scriptStatusButtonText.text("Script running");
+				$scriptStatus.unbind();
+				$scriptStatus.bind({
 						click: function(){
 							stopScript();
 						},
 						mouseenter: function(){
-							$(".script-status p span#icon").removeClass("ui-icon-check").addClass("ui-icon-stop");
-							$(".script-status").removeClass("ui-state-default").addClass("ui-state-error");
-							$(".script-status span.ui-button-text").text("Stop script");
+							$scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-stop");
+							$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+							$scriptStatusButtonText.text("Stop script");
 						},
 						mouseleave: function(){
-							$(".script-status p span#icon").removeClass("ui-icon-stop").addClass("ui-icon-check");
-							$(".script-status").removeClass("ui-state-error").addClass("ui-state-default");
-							$(".script-status span.ui-button-text").text("Script running");
+							$scriptStatusIcon.removeClass("ui-icon-stop").addClass("ui-icon-check");
+							$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+							$scriptStatusButtonText.text("Script running");
 						}
 				});
 			}
 			else{
-				$(".script-status span.ui-icon").removeClass("ui-icon-check").addClass("ui-icon-alert");
-				$(".script-status").removeClass("ui-state-default").addClass("ui-state-error");
-				$(".script-status span.ui-button-text").text("Script not running!");
-				$(".script-status").unbind();
-				$(".script-status").bind({
+				$scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-alert");
+				$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+				$scriptStatusButtonText.text("Script not running!");
+				$scriptStatus.unbind();
+				$scriptStatus.bind({
 				click: function(){
 					startScript();
 				},
 				mouseenter: function(){
-					$(".script-status span.ui-icon").removeClass("ui-icon-alert").addClass("ui-icon-play");
-					$(".script-status").removeClass("ui-state-error").addClass("ui-state-default");
-					$(".script-status span.ui-button-text").text("Start script");
+					$scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-play");
+					$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+					$scriptStatusButtonText.text("Start script");
 				},
 				mouseleave: function(){
-					$(".script-status span.ui-icon").removeClass("ui-icon-play").addClass("ui-icon-alert");
-					$(".script-status").removeClass("ui-state-default").addClass("ui-state-error");
-					$(".script-status span.ui-button-text").text("Script not running!");
+					$scriptStatusIcon.removeClass("ui-icon-play").addClass("ui-icon-alert");
+					$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+					$scriptStatusButtonText.text("Script not running!");
 				}
 				});
 			}
@@ -174,26 +221,176 @@ function checkScriptStatus(){
 	});
 }
 
-google.load('visualization', '1', {packages: ['annotatedtimeline', 'table']});
+function beerNameDialogInit(){
+    "use strict";
+    var $dialog = $("<div class='beer-name-dialog'></div>").dialog( {
+        modal: true,
+        title: "Switch active brew",
+        width: 480
+    });
+    var $backButton = $("<button class='back' title='Go back'></button>").button({icons: {primary: "ui-icon-arrowthick-1-w"}, text: false });
+    $dialog.append($backButton);
+    var $body = $("<div class='dialog-body'></div>");
+    $dialog.append($body);
+    beerNameDialogStart($body, $backButton);
+}
+
+function beerNameDialogStart($body, $backButton){
+    "use strict";
+    $body.empty();
+    $backButton.hide();
+    var beerName = $("#beer-name").text();
+    var introText = "";
+
+    var stopButton = true;
+    var pauseButton = true;
+    var continueButton = true;
+
+    var dataLogging = 'undefined';
+    if(typeof(window.controlSettings.dataLogging) !== 'undefined'){
+        dataLogging = window.controlSettings.dataLogging;
+    }
+    if(dataLogging === 'stopped'){
+        introText += "You are currently not logging data.";
+        stopButton = false;
+        pauseButton = false;
+        continueButton = false;
+    }
+    else if(dataLogging === 'paused'){
+        introText += "You have temporarily disabled data logging for the brew '" + beerName + "'.";
+        pauseButton = false;
+    }
+    else if(dataLogging === 'active'){
+        introText += "You are currently logging data for the brew '" + beerName + "'.";
+        continueButton = false;
+    }
+    else{
+        introText += "You are logging data for brew '" + beerName + "'.";
+    }
+
+    $body.append($("<span  class='dialog-intro'>" + introText + "<br>What would you like to do?</span>"));
+    var $buttons = $("<div class='beer-name-buttons'></div>");
+    $buttons.append($("<button>Start new brew</button>").button({icons: {primary: "ui-icon-plus"} }).click(function(){
+        beerNameDialogNew($body, $backButton);
+    }));
+    if(stopButton){
+        $buttons.append($("<button>Stop this brew</button>").button({icons: {primary: "ui-icon-stop"} }).click(function(){
+            beerNameDialogStop($body, $backButton);
+        }));
+    }
+    if(pauseButton){
+        $buttons.append($("<button>Pause logging</button>").button({icons: {primary: "ui-icon-pause"} }).click(function(){
+            beerNameDialogPause($body, $backButton);
+        }));
+    }
+    if(continueButton){
+        $buttons.append($("<button>Continue logging</button>").button({icons: {primary: "ui-icon-play"} }).click(function(){
+            beerNameDialogResume($body, $backButton);
+        }));
+    }
+    $body.append($buttons);
+}
+
+function beerNameDialogNew($body, $backButton){
+    "use strict";
+    $body.empty();
+    $body.append($("<span  class='dialog-intro'>Please enter a name for your new brew. Your current brew will be stopped and BrewPi will start logging data for your new brew.</span>"));
+    $body.append($("<input id='new-beer-name' type='text' size='30' placeholder='Enter new beer name..'> </input>"));
+    var $buttons = $("<div class='beer-name-buttons'></div>");
+    $buttons.append($("<button>Start new brew</button>").button({	icons: {primary: "ui-icon-check" } }).click(function(){
+        $.post('socketmessage.php', {messageType: "startNewBrew", message: $("input#new-beer-name").val()}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogNew($body, $backButton);}});
+            beerNameDialogResult($body, $backButton, reply);
+        });
+    }));
+    $body.append($buttons);
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
+}
+
+function beerNameDialogStop($body, $backButton){
+    "use strict";
+    $body.empty();
+    $body.append($("<span  class='dialog-intro'>Clicking stop will finish your current brew and will stop logging data. You can use this when you are between brews.</span>"));
+
+    var $buttons = $("<div class='beer-name-buttons'></div>");
+    $buttons.append($("<button>Stop this brew</button>").button({	icons: {primary: "ui-icon-stop" } }).click(function(){
+        $.post('socketmessage.php', {messageType: "stopLogging", message: ""}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogStop($body, $backButton);}});
+            receiveControlSettings();
+            beerNameDialogResult($body, $backButton, reply);
+        });
+    }));
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
+    $body.append($buttons);
+}
+
+function beerNameDialogPause($body, $backButton){
+    "use strict";
+    $body.empty();
+    $body.append($("<span  class='dialog-intro'>Clicking the button below will temporarily disable data logging for this brew. You can later continue logging data for the same brew.</span>"));
+
+    var $buttons = $("<div class='beer-name-buttons'></div>");
+    $buttons.append($("<button>Pause logging temporarily</button>").button({	icons: {primary: "ui-icon-pause" } }).click(function(){
+        $.post('socketmessage.php', {messageType: "pauseLogging", message: ""}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogPause($body, $backButton);}});
+            receiveControlSettings();
+            beerNameDialogResult($body, $backButton, reply);
+        });
+    }));
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
+    $body.append($buttons);
+}
+
+function beerNameDialogResume($body, $backButton){
+    "use strict";
+    $body.empty();
+    $body.append($("<span  class='dialog-intro'>Clicking the button below will resume logging for your currently active brew.</span>"));
+
+    var $buttons = $("<div class='beer-name-buttons'></div>");
+    $buttons.append($("<button>Resume logging for current brew</button>").button({	icons: {primary: "ui-icon-pause" } }).click(function(){
+        $.post('socketmessage.php', {messageType: "resumeLogging", message: ""}, function(reply){
+            $backButton.show().unbind().bind({click: function(){beerNameDialogResume($body, $backButton);}});
+            receiveControlSettings();
+            beerNameDialogResult($body, $backButton, reply);
+        });
+    }));
+    $backButton.show().unbind().bind({click: function(){beerNameDialogStart($body, $backButton);}});
+    $body.append($buttons);
+}
+
+function beerNameDialogResult($body, $backButton, result){
+    "use strict";
+    $body.empty();
+    console.log(result);
+    if(result === ""){
+        result = { status: 2, statusMessage: "Could not receive reply from script" };
+    }
+    else{
+        result = $.parseJSON(result);
+    }
+    if(result.status === 0){
+        $body.append($("<span  class='dialog-result-success'>Success!</span>"));
+    }
+    else{
+        $body.append($("<span  class='dialog-result-error'>Error:</span>"));
+    }
+    $body.append($("<span  class='dialog-result-message'>" + result.statusMessage + "</span>"));
+}
+
+google.load('visualization', '1', {packages: ['table']});
 
 $(document).ready(function(){
-	$('#maintenance-panel').tabs();
-
-	$("button#maintenance").button({	icons: {primary: "ui-icon-newwin" } }).click(function(){
-		$("#maintenance-panel").dialog("open");
-	});
-
+	"use strict";
 	$(".script-status").button({	icons: {primary: "ui-icon-alert" } });
 	$(".script-status span.ui-button-text").text("Checking script..");
-
-	$("button#refresh-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
-		drawBeerChart(beerName, 'beer-chart');
-	});
+    $("#beer-name").click(beerNameDialogInit);
 
 	loadControlPanel();
-	checkScriptStatus(); //will call refreshLcd and alternate between the two
-	drawBeerChart(beerName, 'beer-chart');
+	drawBeerChart(window.beerName, 'curr-beer-chart');
+
 	receiveControlConstants();
 	receiveControlSettings();
 	receiveControlVariables();
+	checkScriptStatus(); //will call refreshLcd and alternate between the two
 });
+

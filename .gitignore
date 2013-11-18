@@ -161,4 +161,12 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
-sftp-config.json
+
+phpinfo.php
+test.php
+
+docs/build
+userSettings.json
+do_not_run_brewpi
+config_user.php
+.idea/*

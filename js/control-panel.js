@@ -15,243 +15,776 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-beerTemp = 20.0;
-fridgeTemp = 20.0;
+ /* global Dygraph, BeerProfileTable, receiveControlSettings, window.googleDocsKey, controlSettings, controlVariables, console */
 
-function drawProfileChart() {
-	var query = new google.visualization.Query(
-		'https://docs.google.com/spreadsheet/tq?range=D:E&key=' + googleDocsKey);
-	query.send(handleProfileChartQueryResponse);
-}
-
-function handleProfileChartQueryResponse(response) {
-  if (response.isError()) {
-	alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-	return;
-  }
-	var profileData = response.getDataTable();
-	profileChart = new google.visualization.AnnotatedTimeLine(document.getElementById('profileChartDiv'));
-	profileChart.draw(profileData, {
-		'displayAnnotations': true,
-		'scaleType': 'maximized',
-		'displayZoomButtons': false,
-		'allValuesSuffix': '\u00B0',
-		'numberFormats': '##.0',
-		'displayAnnotationsFilter': true});
-}
-
-function drawProfileTable() {
-	var query = new google.visualization.Query(
-		'https://docs.google.com/spreadsheet/tq?range=C:E&where=D<date "2070-01-01"&key=' + googleDocsKey);
-	query.send(handleProfileTableQueryResponse);
-}
-
-function handleProfileTableQueryResponse(response){
-	if (response.isError()) {
-		alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-		return;
-	}
-
-	var profileData = response.getDataTable();
-	var profileTable = new google.visualization.Table(document.getElementById('profileTableDiv'));
-	profileTable.draw(profileData,null);
-}
+var beerTemp = defaultTemp();
+var fridgeTemp = defaultTemp();
 
 function statusMessage(messageType, messageText){
-	$("#status-message").removeClass("ui-state-error ui-state-default ui-state-highlight");
-	$("#status-message p span#icon").removeClass("ui-icon-error ui-icon-check ui-icon-info");
-	switch(messageType){
-		case "normal":
-				$("#status-message p span#icon").addClass("ui-icon-check");
-				$("#status-message").addClass("ui-state-default");
-			break;
-		case "error":
-				$("#status-message p span#icon").addClass("ui-icon-error");
-				$("#status-message").addClass("ui-state-error");
-			break;
-		case "highlight":
-				$("#status-message p span#icon").addClass("ui-icon-info");
-				$("#status-message").addClass("ui-state-highlight");
-				$("#status-message").addClass( "ui-state-highlight");
-			break;
-	}
-	$("#status-message p span#message").text(messageText);
+    "use strict";
+    var $statusMessage = $("#status-message");
+    var $statusMessageIcon = $statusMessage.find("p span#icon");
+    $statusMessage.removeClass("ui-state-error ui-state-default ui-state-highlight");
+    $statusMessageIcon.removeClass("ui-icon-error ui-icon-check ui-icon-info");
+    switch(messageType){
+        case "normal":
+            $statusMessageIcon.addClass("ui-icon-check");
+            $statusMessage.addClass("ui-state-default");
+            break;
+        case "error":
+            $statusMessageIcon.addClass("ui-icon-error");
+            $statusMessage.addClass("ui-state-error");
+            break;
+        case "highlight":
+            $statusMessageIcon.addClass("ui-icon-info");
+            $statusMessage.addClass("ui-state-highlight");
+            break;
+    }
+    $statusMessage.find("p span#message").text(messageText);
 }
 
 function loadControlPanel(){
-	drawProfileChart();
-	drawProfileTable();
+	"use strict";
+    if ( window.profileName !== '' ) {
+        loadProfile(window.profileName, renderProfile);
+    }
 	receiveControlSettings(function(){
-		switch(controlSettings.mode){
-			case 'p':
-				$('#control-panel').tabs( "select" , 0);
-				statusMessage("normal","Running in beer profile mode");
-				break;
-			case 'b':
-				$('#control-panel').tabs( "select" , 1);
-				statusMessage("normal","Running in beer constant mode");
-				break;
-			case 'f':
-				$('#control-panel').tabs( "select" , 2);
-				statusMessage("normal","Running in fridge constant mode");
-				break;
-			case 'o':
-				$('#control-panel').tabs( "select" , 3);
-				statusMessage("normal","Temperature control disabled");
-				break;
-			default:
-				statusMessage("error","Invalid mode ("+mode+") received");
+        if(window.controlSettings === {}){
+            return;
+        }
+        var $controlPanel = $('#control-panel');
+        switch(window.controlSettings.mode){
+            case 'p':
+                $controlPanel.tabs( "option", "active", 0);
+                statusMessage("normal","Running beer profile: " + window.controlSettings.profile);
+                break;
+            case 'b':
+                $controlPanel.tabs( "option", "active", 1);
+                statusMessage("normal","Running in beer constant mode");
+                break;
+            case 'f':
+                $controlPanel.tabs( "option", "active", 2);
+                statusMessage("normal","Running in fridge constant mode");
+                break;
+            case 'o':
+                $controlPanel.tabs( "option", "active", 3);
+                statusMessage("normal","Temperature control disabled");
+                break;
+            default:
+                statusMessage("error","Invalid mode ("+window.controlSettings.mode+") received");
+        }
+        window.beerTemp = window.controlSettings.beerSet;
+        window.fridgeTemp = window.controlSettings.fridgeSet;
+		// beer and fridge temp can be null/undefined when not active (off mode)
+		if(isNaN(window.beerTemp)){
+			window.beerTemp = defaultTemp();
 		}
-		beerTemp = controlSettings.beerSet;
-		fridgeTemp = controlSettings.fridgeSet;
-		// beer and fridge temp can be null when not active (off mode)
-		if(beerTemp === null){
-			beerTemp = 20.0;
+		if(isNaN(window.fridgeTemp)){
+			window.fridgeTemp = defaultTemp();
 		}
-		if(fridgeTemp === null){
-			fridgeTemp = 20.0;
-		}
-		$("#beer-temp span.temperature").text(String(beerTemp.toFixed(1)));
-		$("#fridge-temp span.temperature").text(String(fridgeTemp.toFixed(1)));
+		$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+		$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
 	});
 }
 
+function defaultTemp(){
+    "use strict";
+    if(typeof(window.tempFormat) === 'F'){
+        return 68.0;
+    }
+    else{
+        return 20.0;
+    }
+}
+
 function tempUp(temp){
-	temp = temp+0.1;
-	if(temp > controlConstants['tempSetMax']){
-		temp = controlConstants['tempSetMin'];
+	"use strict";
+    if(isNaN(temp)){
+        return defaultTemp();
+    }
+	temp += 0.1;
+	if(temp > window.controlConstants.tempSetMax){
+		temp = window.controlConstants.tempSetMin;
 	}
 	return temp;
 }
 
 function tempDown(temp){
-	temp = temp-0.1;
-	if(temp < controlConstants['tempSetMin']){
-		temp = controlConstants['tempSetMax'];
+	"use strict";
+    if(isNaN(temp)){
+        return defaultTemp();
+    }
+	temp -= 0.1;
+	if(temp < window.controlConstants.tempSetMin){
+		temp = window.controlConstants.tempSetMax;
 	}
 	return temp;
 }
 
 function applySettings(){
+	"use strict";
 	//Check which tab is open
-	if($("#profile-control").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setProfile", message: ""}, function(){});
-		statusMessage("highlight","Mode set to beer profile");
-	}
-	else if($("#beer-constant-control").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setBeer", message: String(beerTemp)}, function(){});
-		statusMessage("highlight","Mode set to beer constant");
-	}
-	else if($("#fridge-constant-control").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setFridge", message: String(fridgeTemp)}, function(){});
-		statusMessage("highlight","Mode set to fridge constant");
-	}
-	else if($("#temp-control-off").hasClass('ui-tabs-hide') === false){
-		$.post('socketmessage.php', {messageType: "setOff", message: ""}, function(){});
-		statusMessage("highlight","Temperature control disabled");
-	}
-	setTimeout(loadControlPanel,5000);
+    var activeTab = $("#control-panel").tabs("option", "active");
+    switch(activeTab){
+        case 0: // profile
+        $.post('socketmessage.php', {messageType: "setActiveProfile", message: window.profileName}, function(answer){
+            if(answer !==''){
+                statusMessage("highlight", answer);
+            }
+        });
+        break;
+        case 1: // beer constant
+        var $beerTemp = $("#beer-temp").find("input.temperature");
+        $.post('socketmessage.php', {messageType: "setBeer", message: $beerTemp.val()}, function(){});
+        statusMessage("highlight","Mode set to beer constant");
+        break;
+        case 2: // fridge constant
+        var $fridgeTemp = $("#fridge-temp").find("input.temperature");
+        $.post('socketmessage.php', {messageType: "setFridge", message: $fridgeTemp.val()}, function(){});
+        statusMessage("highlight","Mode set to fridge constant");
+        break;
+        case 3: // off
+        $.post('socketmessage.php', {messageType: "setOff", message: ""}, function(){});
+        statusMessage("highlight","Temperature control disabled");
+        break;
+    }
+    setTimeout(loadControlPanel,5000);
+}
+
+var profileTable;
+var profileEdit;
+var profileSelect;
+
+function renderProfile(beerProfile) {
+    "use strict";
+    window.profileName = beerProfile.name;
+    profileTable.render(beerProfile);
+    $("#profileTableName").text(window.profileName);
+    $("button#edit-controls").show();
+    $("button#saveas-controls").show();
+    drawProfileChart("profileChartDiv", profileTable );
+}
+
+function drawSelectPreviewChart(beerProfile) {
+    "use strict";
+
+    // display temporary loading message
+    $("#profileSelectChartDiv").html("<span class='chart-loading chart-placeholder'>Loading profile...</span>");
+
+    // render profile in the hidden div and plot
+    loadProfile(beerProfile, function(profileData){
+        profileSelect.render(profileData);
+        drawProfileChart("profileSelectChartDiv", profileSelect );
+    });
+
+    // display error if loading failed: span will still exist
+    $("#profileSelectChartDiv span.chart-loading").text("Error Loading profile!");
+}
+
+function drawEditPreviewChart() {
+    "use strict";
+
+    // display temporary loading message
+    $("#profileEditChartDiv").html("<span class='chart-loading chart-placeholder'>Redrawing profile...</span>");
+
+    drawProfileChart("profileEditChartDiv", profileEdit );
+
+    // display error if loading failed: span will still exist
+    $("#profileEditChartDiv span.chart-loading").text("Error drawing profile chart!");
+}
+
+// lets hack a little shall we ?
+Dygraph.EVERY2DAYS = -1;
+Dygraph.EVERY3DAYS = -2;
+Dygraph.EVERY4DAYS = -3;
+var _1DAY = 1000 * 86400;
+Dygraph.SHORT_SPACINGS[Dygraph.EVERY2DAYS]    = 2 * _1DAY;
+Dygraph.SHORT_SPACINGS[Dygraph.EVERY3DAYS]    = 3 * _1DAY;
+Dygraph.SHORT_SPACINGS[Dygraph.EVERY4DAYS]    = 4 * _1DAY;
+
+function drawProfileChart(divId, profileObj) {
+    "use strict";
+
+    var temperatureFormatter = function(y) {
+        return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
+    };
+    var dateTimeFormatter = function (x) {
+        return profileTable.formatDate(x).display;
+    };
+
+    var calculateXAxisTicks = function(duration) {
+        if (duration > 20) {
+            return Dygraph.EVERY4DAYS;
+        } else if (duration > 13) {
+            return Dygraph.EVERY3DAYS;
+        } else if (duration > 7) {
+            return Dygraph.EVERY2DAYS;
+        } else {
+            return Dygraph.DAILY;
+        }
+    };
+
+    var updateCurrentDateLine = function(canvas, area, g) {
+        if(g.numRows() < 1){
+            return; // when the chart has no data points, return.
+        }
+
+        canvas.fillStyle = "rgba(255, 100, 100, 1.0)";
+
+        var nowTime = new Date().getTime();
+        var startTime = g.getValue(0,0);
+        var endTime = g.getValue(g.numRows()-1,0);
+
+        if(nowTime < startTime){
+            // all profile dates in the future, show in bottom left corner
+            canvas.textAlign = "start";
+            canvas.font = "14px Arial";
+            canvas.fillText("<< Current time", area.x + 10, area.h - 10);
+        }
+        else if(nowTime > endTime){
+            // all profile dates in the future, show in bottom right corner
+            canvas.textAlign = "end";
+            canvas.font = "14px Arial";
+            canvas.fillText("Current time >>", area.x + area.w - 10, area.h - 10);
+        }
+        else{
+            // draw line at current time
+            var xCoordinate = g.toDomXCoord(nowTime);
+            canvas.fillRect(xCoordinate, area.y+17, 1, area.h-17);
+
+            // display interpolated temperature
+            for( var i=0; i< g.numRows(); i++ ) {
+                if (g.getValue(i,0) > nowTime) {
+                    break; // found surrounding temperature points
+                }
+            }
+            var previousTemperature = parseFloat(g.getValue(i-1,1));
+            var nextTemperature = parseFloat(g.getValue(i,1));
+            var previousTime = g.getValue(i-1,0);
+            var nextTime = g.getValue(i,0);
+            var temperature = (previousTemperature + (nextTemperature - previousTemperature)*(nowTime-previousTime)/(nextTime-previousTime)).toFixed(2);
+            var yCoordinate = g.toDomYCoord(temperature);
+            // Now add the interpolated temp to the cart, left or right of the line depending on which half
+            canvas.font = "20px Arial";
+            if(xCoordinate < 0.5 * area.w){
+                canvas.textAlign = "start";
+                if(nextTemperature >= parseFloat(temperature)){
+                    yCoordinate += 20; // lower so it won't overlap with the chart
+                }
+                canvas.fillText(temperature, xCoordinate + 5, yCoordinate);
+            }
+            else{
+                if(previousTemperature >= parseFloat(temperature)){
+                    yCoordinate += 20; // lower so it won't overlap with the chart
+                }
+                canvas.textAlign = "end";
+                canvas.fillText(temperature, xCoordinate - 5, yCoordinate);
+            }
+        }
+    };
+
+    var chartConfig = {
+        colors: [ 'rgb(89, 184, 255)' ],
+        axisLabelFontSize:12,
+        gridLineColor:'#ccc',
+        gridLineWidth:'0.1px',
+        labelsDiv: document.getElementById(divId + "-label"),
+        legend: 'always',
+        labelsDivStyles: { 'textAlign': 'right' },
+        strokeWidth: 1,
+        xValueParser: function(x) { return profileTable.parseDate(x); },
+        underlayCallback: updateCurrentDateLine,
+        "Temperature" : {},
+        axes: {
+            y : { valueFormatter: temperatureFormatter },
+            x : { valueFormatter: dateTimeFormatter }
+        },
+        highlightCircleSize: 2,
+        highlightSeriesOpts: {
+            strokeWidth: 1.5,
+            strokeBorderWidth: 1,
+            highlightCircleSize: 5
+        },
+        yAxisLabelWidth: 35
+    };
+    var profileDuration = profileObj.getProfileDuration();
+    if ( profileDuration < 28 && profileDuration > 0) {
+        chartConfig.axes.x.ticker = function(a, b, pixels, opts, dygraph, vals) {
+            return Dygraph.getDateAxis(a, b, calculateXAxisTicks(profileDuration), opts, dygraph);
+        };
+    }
+
+    var chart = new Dygraph(
+        document.getElementById(divId),
+        profileObj.toCSV(true, ['date', 'temperature']),
+        chartConfig
+    );
+}
+
+function loadProfile(profile, onProfileLoaded) {
+    "use strict";
+    $.post("get_beer_profile.php", { "name": profile }, function(beerProfile) {
+        try {
+            if ( typeof( onProfileLoaded ) !== "undefined" ) {
+                onProfileLoaded(beerProfile);
+            }
+        } catch (e) {
+            console.log('Error loading profile: ' + e.toString());
+        }
+    }, 'json');
+}
+
+function showProfileSelectDialog() {
+    "use strict";
+    var selectedProfile;
+    $('#profileSelect').selectable({
+        stop: function(event, ui) {
+            $(".ui-selected:first", this).each(function() {
+                $(this).siblings().removeClass("ui-selected");
+                selectedProfile = $(this).text();
+                drawSelectPreviewChart(selectedProfile);
+            });
+        }
+    });
+    $.post("get_beer_profiles.php", {}, function(beerProfiles) {
+        try {
+            $('#profileSelect').empty();
+            for( var i=0; i<beerProfiles.profiles.length; i++) {
+                var $li = $("<li></li>").addClass("ui-widget-content").text(beerProfiles.profiles[i]);
+                $('#profileSelect').append($li);
+            }
+        } catch (e) {
+            console.log('Can not load temperature profiles');
+        }
+    }, 'json');
+    $("#profileSelectDiv").dialog( {
+        modal: true,
+        title: "Select Temperature Profile",
+        buttons: [
+            {
+                text: "OK",
+                click: function() {
+                    if ( typeof( selectedProfile ) !== "undefined" ) {
+                        loadProfile(selectedProfile, renderProfile);
+                    }
+                    $( this ).dialog( "close" );
+                }
+            },{
+                text: "Cancel",
+                click: function() { $( this ).dialog( "close" ); }
+            }
+        ],
+        width: 960
+    });
+}
+function promptToApplyProfile(profName) {
+    "use strict";
+    $("<div>You are editing the current profile: " + profName + ".  Would you like to apply it now?</div>").dialog( {
+        modal: true,
+        title: "Apply Profile: " + profName + "?",
+        buttons: [
+            {
+                text: "Apply",
+                click: function() {
+                    applySettings();
+                    $( this ).dialog( "close" );
+                }
+            },{
+                text: "Cancel",
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        ]
+    });
+}
+function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
+    "use strict";
+    $('#profileSaveError').hide();
+    var profileNames = [];
+    $.post("get_beer_profiles.php", {}, function(resp) {
+        profileNames = resp.profiles;
+    }, 'json');
+    function callSaveProfile(jqDialog, profName, profData) {
+        $.ajax( {
+            type: "post",
+            url: "save_beer_profile.php",
+            dataType: "json",
+            data: { name: profName, profile: profData },
+            success: function(response) {
+                if ( response.status !== 'error' ) {
+                    loadProfile(profName, renderProfile);
+                    $('#profileSaveError').hide();
+                    $("#profileEditName").removeAttr('disabled');
+                    jqDialog.dialog( "close" );
+                    if ( window.controlSettings.mode === "p" && window.controlSettings.profile === profName ) {
+                        promptToApplyProfile(profName);
+                    }
+                } else {
+                    console.log("profile save error: " + response.message);
+                    $('#profileSaveError').show();
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log("profile save HTTP error - request status: " + xhr.status + " - error: " + thrownError);
+                $('#profileSaveError').show();
+            }
+        });
+    }
+    $("#profileEditDiv").dialog( {
+        modal: true,
+        title: dialogTitle,
+        open: function(event, ui) {
+            if ( !editableName ) {
+                $("#profileEditName").attr('disabled',true);
+            }
+            if (isSaveAs) {
+                $("#profileEditName").focus();
+            } else {
+                $('#profileEditDiv table tr').last().find('td').first().focus();
+            }
+        },
+        buttons: [
+            {
+                text: "Save",
+                click: function() {
+
+                    function isNameTaken(name) {
+                        for( var i=0; i<profileNames.length; i++ ) {
+                            if ( name === profileNames[i] ) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                    if ( profileEdit.hasInvalidDayCells() ) {
+                        profileEdit.markInvalidCells();
+                        return;
+                    } else {
+                        profileEdit.resetInvalidCells();
+                    }
+
+                    var profName = $('#profileEditName').val();
+                    if ( typeof( profName ) !== "undefined" && profName !== '' ) {
+
+                        $('#profileEditNameLabel').removeClass('error');
+                        var jqDialog = $( this );
+                        if ( editableName && isNameTaken(profName) ) {
+                            $("<div>Are you sure you want to overwrite the profile: " + profName + "?</div>").dialog({
+                                resizable: false,
+                                height: 140,
+                                modal: true,
+                                buttons: {
+                                    Ok: function () {
+                                        callSaveProfile(jqDialog, profName, profileEdit.toCSV(true));
+                                        $(this).dialog("close");
+                                    },
+                                    Cancel: function () {
+                                        $('#profileEditName').focus();
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        } else {
+                            callSaveProfile(jqDialog, profName, profileEdit.toCSV(true));
+                        }
+
+                    } else {
+                        $('#profileEditNameLabel').addClass('error');
+                        $('#profileEditName').focus();
+                    }
+                }
+            },{
+                text: "Cancel",
+                click: function() {
+                    $("#profileEditName").removeAttr('disabled');
+                    $( this ).dialog( "close" );
+                }
+            }
+        ],
+        width: 960
+    });
+    drawEditPreviewChart();
+}
+
+function showProfileHelpDialog() {
+    "use strict";
+    $("#profileHelpDiv").dialog( {
+        modal: true,
+        title: "Beer Temperature Profile Help",
+        width: 960
+    });
+}
+
+// profile table context menu global click handlers
+function profTableContextMenuHandler(shown) {
+    "use strict";
+    if (shown) {
+        $('html').bind('click', profTableGlobalClickHandler );
+    } else {
+        $('html').unbind('click', profTableGlobalClickHandler );
+    }
+}
+function profTableGlobalClickHandler() {
+    "use strict";
+    profileEdit.closeContextMenu();
 }
 
 $(document).ready(function(){
+	"use strict";
 	//Control Panel
-	$('#control-panel').tabs();
+    profileEdit = new BeerProfileTable('profileEditControls', {
+        tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content",
+        editable: true, startDateFieldSelector: '#profileEditStartDate',
+        dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay,
+        contextMenuCssClass: 'profileTableMenu', contextMenuDisplayHandler: profTableContextMenuHandler,
+        chartUpdateCallBack: drawEditPreviewChart
+    });
+    profileTable = new BeerProfileTable('profileTableDiv', {
+        tableClass: "profileTableEdit ui-widget", theadClass: "ui-widget-header", tbodyClass: "ui-widget-content",
+        editable: false, startDateFieldSelector: '#profileTableStartDate',
+        dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay
+    });
+    profileSelect = new BeerProfileTable('profileSelectTableDiv', {
+        editable: false,
+        dateFormat: window.dateTimeFormat, dateFormatDisplay: window.dateTimeFormatDisplay
+    });
 
-	$("#controls button#refresh").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
-		drawProfileChart();
-		drawProfileTable();
+	$("button#refresh-controls").button({icons: {primary: "ui-icon-arrowrefresh-1-e"} }).click(function(){
+        if ( window.profileName !== '' ) {
+            loadProfile(window.profileName, renderProfile);
+        }
 	});
 
-	$("#controls button#edit").button({	icons: {primary: "ui-icon-wrench" } }).click(function(){
-		window.open("https://docs.google.com/spreadsheet/ccc?key=" + googleDocsKey);
-	});
+    $("button#load-controls").button({  icons: {primary: "ui-icon-folder-open" } }).click(function() {
+        showProfileSelectDialog();
+    });
 
-	$("#controls button#upload").button({ icons: {primary: "ui-icon-arrowthickstop-1-n"}}).click(function(){
-		$.post('socketmessage.php', {messageType: "uploadProfile", message: ""}, function(answer){
-			statusMessage("highlight", answer);
-		});
-	});
+    $("button#new-controls").button({  icons: {primary: "ui-icon-plus" } }).click(function() {
+        $("#profileEditName").val('');
+        $("#profileEditStartDate").val('');
+        profileEdit.render( { name: '', profile: [] } );
+        showProfileEditDialog(true, "New Temperature Profile");
+    });
 
-	$("button#apply-settings").button({ icons: {primary: "ui-icon-check"} })	.click(function(){
-		applySettings();
-	});
+    $("button#edit-controls").button({  icons: {primary: "ui-icon-wrench" } }).click(function() {
+        $("#profileEditName").val(profileTable.profileName);
+        profileEdit.render( profileTable.toJSON() );
+        showProfileEditDialog(false, "Edit Temperature Profile");
+    }).hide();
+
+    $("button#saveas-controls").button({  icons: {primary: "ui-icon-copy" } }).click(function() {
+        $("#profileEditName").val("copy of " + profileTable.profileName);
+        profileEdit.render( profileTable.toJSON() );
+        showProfileEditDialog(true, "Save Temperature Profile As", true);
+    }).hide();
+
+    $("button#help-profile").button({  icons: {primary: "ui-icon-help" } }).click(function() {
+        showProfileHelpDialog();
+    });
+
+    $("#profileEditStartDate").datetimepicker({ dateFormat: window.dateTimeFormatDisplay, timeFormat: "HH:mm:ss", onSelect: function() {
+        profileEdit.updateDisplay();
+    }});
+
+    $("button#profileEditAddCurrentButton").button().click(function() {
+        profileEdit.insertRowNow();
+    });
+
+    $("button#profileEditNowButton").button().click(function() {
+        $("#profileEditStartDate").datetimepicker('setDate', (new Date()) );
+        profileEdit.updateDisplay();
+    });
+
+    $("button#apply-settings").button({ icons: {primary: "ui-icon-check"} }).click(function() {
+        applySettings();
+    });
+
+	// set functions to validate and mask temperature input
+	$("input.temperature").each( function(){
+        $(this).blur(function(){
+            // validate input when leaving field
+            var temp = parseFloat($(this).val());
+            if(temp < window.controlConstants.tempSetMin){
+                temp = window.controlConstants.tempSetMin;
+                $(this).val(temp);
+            }
+            if(temp > window.controlConstants.tempSetMax){
+                temp = window.controlConstants.tempSetMax;
+                $(this).val(temp);
+            }
+            if(isNaN(temp)){
+                temp = defaultTemp();
+            }
+            $(this).val(temp.toFixed(1));
+            if($(this).parent().attr('id').localeCompare("beer-temp") === 0){
+                window.beerTemp=parseFloat(temp);
+            }
+            if($(this).parent().attr('id').localeCompare("fridge-temp") === 0){
+                window.fridgeTemp=parseFloat(temp);
+            }
+        });
+        $(this).keyup(function(event) {
+            if($(this).parent().attr('id').localeCompare("beer-temp") === 0){
+                if (event.which === 38){ // arrow up
+                    clearBeerTempUpInterval();
+                }
+                else if (event.which === 40){
+                    clearBeerTempDownInterval();
+                }
+            }
+            if($(this).parent().attr('id').localeCompare("fridge-temp") === 0){
+                if (event.which === 38){ // arrow up
+                    clearFridgeTempUpInterval();
+                }
+                else if (event.which === 40){
+                    clearFridgeTempDownInterval();
+                }
+            }
+        });
+        $(this).keydown(function(event) {
+            if($(this).parent().attr('id').localeCompare("beer-temp") === 0){
+                if (event.which === 38){ // arrow up
+                    startBeerTempUpInterval();
+                }
+                else if (event.which === 40){
+                    startBeerTempDownInterval();
+                }
+            }
+            if($(this).parent().attr('id').localeCompare("fridge-temp") === 0){
+                if (event.which === 38){ // arrow up
+                    startFridgeTempUpInterval();
+                }
+                else if (event.which === 40){
+                    startFridgeTempDownInterval();
+                }
+            }
+        });
+    });
 
 	//Constant temperature control buttons
 	$("button#beer-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"} }).bind({
-		mousedown: function(){
-			beerTemp=tempUp(beerTemp);
-			$("#beer-temp span.temperature").text(String(beerTemp.toFixed(1)));
-			beerTempUpTimeOut = window.setInterval(function(){
-				beerTemp=tempUp(beerTemp);
-				$("#beer-temp span.temperature").text(String(beerTemp.toFixed(1)));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(beerTempUpTimeOut)!='undefined')
-				clearInterval(beerTempUpTimeOut);
-		},
-		mouseleave: function(){
-			if(typeof(beerTempUpTimeOut)!='undefined')
-				clearInterval(beerTempUpTimeOut);
-		}
+		mousedown: startBeerTempUpInterval,
+		mouseup: clearBeerTempUpInterval,
+		mouseleave: clearBeerTempUpInterval
 	});
 
 	$("button#beer-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"} }).bind({
-		mousedown: function() {
-			beerTemp=tempDown(beerTemp);
-			$("#beer-temp span.temperature").text(String(beerTemp.toFixed(1)));
-			beerTempDownTimeOut = window.setInterval(function(){
-				beerTemp=tempDown(beerTemp);
-				$("#beer-temp span.temperature").text(String(beerTemp.toFixed(1)));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(beerTempDownTimeOut)!='undefined')
-				clearInterval(beerTempDownTimeOut);
-		},
-		mouseleave: function(){
-			if(typeof(beerTempDownTimeOut)!='undefined')
-				clearInterval(beerTempDownTimeOut);
-		}
+		mousedown: startBeerTempDownInterval,
+		mouseup: clearBeerTempDownInterval,
+		mouseleave: clearBeerTempDownInterval
 	});
 
 	//Constant fridge temperature control buttons
 	$("button#fridge-temp-up").button({icons: {primary: "ui-icon-triangle-1-n"}	}).bind({
-		mousedown: function() {
-			fridgeTemp=tempUp(fridgeTemp);
-			$("#fridge-temp span.temperature").text(String(fridgeTemp.toFixed(1)));
-			fridgeTempUpTimeOut = window.setInterval(function(){
-				fridgeTemp=tempUp(fridgeTemp);
-				$("#fridge-temp span.temperature").text(String(fridgeTemp.toFixed(1)));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(fridgeTempUpTimeOut)!='undefined')
-				clearInterval(fridgeTempUpTimeOut);
-		},
-		mouseleave: function(){
-			if(typeof(fridgeTempUpTimeOut)!='undefined')
-				clearInterval(fridgeTempUpTimeOut);
-		}
+		mousedown: startFridgeTempUpInterval,
+		mouseup: clearFridgeTempUpInterval,
+		mouseleave: clearFridgeTempUpInterval
 	});
 
 	$("button#fridge-temp-down").button({icons: {primary: "ui-icon-triangle-1-s"}	}).bind({
-		mousedown: function() {
-			fridgeTemp=tempDown(fridgeTemp);
-			$("#fridge-temp span.temperature").text(String(fridgeTemp.toFixed(1)));
-			fridgeTempDownTimeOut = window.setInterval(function(){
-				fridgeTemp=tempDown(fridgeTemp);
-				$("#fridge-temp span.temperature").text(String(fridgeTemp.toFixed(1)));
-			}, 100);
-		},
-		mouseup: function(){
-			if(typeof(fridgeTempDownTimeOut)!='undefined')
-				clearInterval(fridgeTempDownTimeOut);
-		},
-		mouseleave: function(){
-			if(typeof(fridgeTempDownTimeOut)!='undefined')
-				clearInterval(fridgeTempDownTimeOut);
-		}
+		mousedown: startFridgeTempDownInterval,
+		mouseup: clearFridgeTempDownInterval,
+		mouseleave: clearFridgeTempDownInterval
 	});
-
+    $('#control-panel').tabs();
+    // unhide after loading
+    $("#control-panel").show();
 });
+
+function startFridgeTempUpInterval(){
+    "use strict";
+    clearFridgeTempUpInterval();
+    var $fridgeTemp = $("#fridge-temp").find("input.temperature");
+    if($fridgeTemp.find(":focus")){
+        window.fridgeTemp = tempUp(parseFloat($fridgeTemp.val()));
+    }
+    else{
+        window.fridgeTemp = tempUp(window.fridgeTemp);
+    }
+    $fridgeTemp.val(window.fridgeTemp.toFixed(1));
+    window.fridgeTempUpTimeOut = window.setInterval(function(){
+        window.fridgeTemp=tempUp(window.fridgeTemp);
+        $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    }, 100);
+}
+
+function clearFridgeTempUpInterval(){
+    "use strict";
+    if(typeof(window.fridgeTempUpTimeOut)!=='undefined'){
+        clearInterval(window.fridgeTempUpTimeOut);
+    }
+}
+
+function startFridgeTempDownInterval(){
+    "use strict";
+    clearFridgeTempDownInterval();
+    var $fridgeTemp = $("#fridge-temp").find("input.temperature");
+    if($fridgeTemp.find(":focus")){
+        window.fridgeTemp = tempDown(parseFloat($fridgeTemp.val()));
+    }
+    else{
+        window.fridgeTemp = tempDown(window.fridgeTemp);
+    }
+    $fridgeTemp.val(window.fridgeTemp.toFixed(1));
+    window.fridgeTempDownTimeOut = window.setInterval(function(){
+        window.fridgeTemp=tempDown(window.fridgeTemp);
+        $("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+    }, 100);
+}
+
+function clearFridgeTempDownInterval(){
+    "use strict";
+    if(typeof(window.fridgeTempDownTimeOut)!=='undefined'){
+        clearInterval(window.fridgeTempDownTimeOut);
+    }
+}
+
+function startBeerTempUpInterval(){
+    "use strict";
+    clearBeerTempUpInterval();
+    var $beerTemp = $("#beer-temp").find("input.temperature");
+    if($beerTemp.find(":focus")){
+        window.beerTemp = tempUp(parseFloat($beerTemp.val()));
+    }
+    else{
+        window.beerTemp = tempUp(window.beerTemp);
+    }
+    $beerTemp.val(window.beerTemp.toFixed(1));
+    window.beerTempUpTimeOut = window.setInterval(function(){
+        window.beerTemp=tempUp(window.beerTemp);
+        $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    }, 100);
+}
+
+function clearBeerTempUpInterval(){
+    "use strict";
+    if(typeof(window.beerTempUpTimeOut)!=='undefined'){
+        clearInterval(window.beerTempUpTimeOut);
+    }
+}
+
+function startBeerTempDownInterval(){
+    "use strict";
+    clearBeerTempDownInterval();
+    var $beerTemp = $("#beer-temp").find("input.temperature");
+    if($beerTemp.find(":focus")){
+        window.beerTemp = tempDown(parseFloat($beerTemp.val()));
+    }
+    else{
+        window.beerTemp = tempDown(window.beerTemp);
+    }
+    $beerTemp.val(window.beerTemp.toFixed(1));
+    window.beerTempDownTimeOut = window.setInterval(function(){
+        window.beerTemp=tempDown(window.beerTemp);
+        $("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
+    }, 100);
+}
+
+function clearBeerTempDownInterval(){
+    "use strict";
+    if(typeof(window.beerTempDownTimeOut)!=='undefined'){
+        clearInterval(window.beerTempDownTimeOut);
+    }
+}
