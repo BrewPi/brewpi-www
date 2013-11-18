@@ -527,7 +527,8 @@ function getDeviceConfigString(deviceNr){
     }
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
-    configString = addToConfigString(configString,"h", $deviceContainer.find(".ds2431-pin select").val());
+    configString = addToConfigString(configString,"n", $deviceContainer.find(".ds2413-pin select").val());
+
     //configString = addToConfigString(configString,"d", 0); // hardwire deactivate for now
     //configString = addToConfigString(configString,"j", 0); // hardwire calibration for now
 
