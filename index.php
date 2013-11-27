@@ -48,6 +48,7 @@ $tempFormat = $settingsArray["tempFormat"];
 $profileName = $settingsArray["profileName"];
 $dateTimeFormat = $settingsArray["dateTimeFormat"];
 $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
+require_once("./include/membersite_config.php");
 ?>
 
 <!DOCTYPE html >
@@ -72,6 +73,11 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 		<div id="maintenance-panel" style="display:none"> <!--// hide while loading -->
 			<?php
 				include 'maintenance-panel.php';
+			?>
+		</div>
+		<div id="login-panel" style="visibility:hidden"> <!--// hide while loading -->
+			<?php
+				include 'login-panel.php';
 			?>
 		</div>
 		<!-- Load scripts after the body, so they don't block rendering of the page -->

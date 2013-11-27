@@ -32,6 +32,13 @@ button#maintenance{
 	margin: 10px 10px 10px 10px;
 }
 
+button#login{
+	width: 200px;
+	float: right;
+	clear: right;
+	margin: 10px 10px 10px 10px;
+}
+
 /* Control Panel */
 .google-visualization-table-td{
 	text-align: center !important;
