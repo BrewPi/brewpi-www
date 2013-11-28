@@ -24,33 +24,36 @@ require_once("./include/membersite_config.php");
 <div id="top-bar" class="ui-widget ui-widget-header ui-corner-all">
 	<div id="lcd" class="lcddisplay">
 		<span class="lcd-text">
-		  <span class="lcd-line" id="lcd-line-0">Live LCD waiting</span>
-		  <span class="lcd-line" id="lcd-line-1">for update from</span>
-		  <span class="lcd-line" id="lcd-line-2">script...</span>
-		  <span class="lcd-line" id="lcd-line-3"></span>
+			<span class="lcd-line" id="lcd-line-0">Live LCD waiting</span>
+			<span class="lcd-line" id="lcd-line-1">for update from</span>
+			<span class="lcd-line" id="lcd-line-2">script...</span>
+			<span class="lcd-line" id="lcd-line-3"></span>
 		</span>
 	</div>
 	<div id="logo-container">
 		<img src="brewpi_logo.png">
-		<span id="beername">Fermenting: <?php echo $beerName;?></span>
+		<div id=beer-name-container>
+			<span>Fermenting: </span><a href='#' id="beer-name"><?php echo $beerName;?></a>
+			<span class="data-logging-state"></span>
+		</div>
 	</div>
-    <!-- Login HACK : display login button instead of admin buttons when not logged in -->
-    <?php
-   if(!$fgmembersite->CheckLogin())
-   {
-     echo '<button id="login">Log in</button>';
-   }
-   else {
-	 echo '<button class="script-status ui-state-error"></button>';
-	 echo '<button id="maintenance">Maintenance panel</button>';
-   }
-   ?>
+	<!-- Login HACK : only display login button instead of admin buttons when not logged in -->
+	<?php
+	if(!$fgmembersite->CheckLogin())
+	{
+		echo '<button id="login">Log in</button>';
+	}
+	else {
+		echo '<button class="script-status ui-state-error"></button>';
+		echo '<button id="maintenance" class="ui-state-default">Maintenance panel</button>';
+	}
+	?>
 </div>
 <div class="chart-container">
     <div id="curr-beer-chart-label" class="beer-chart-label"></div>
     <div id="curr-beer-chart" class="beer-chart" style="width:900px; height:390px"></div>
-	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="visibility: hidden">
-		<button id="refresh-curr-beer-chart"></button>
+	<div id="curr-beer-chart-controls" class="beer-chart-controls" style="display: none">
+		<button class="refresh-curr-beer-chart"></button>
 		<button class="chart-help"></button>
 		<button class="toggle beerTemp" title="Beer temperature" onClick="toggleLine(this)"></button>
 		<button class="toggle beerSet" title="Beer setting" onClick="toggleLine(this)"></button>
@@ -60,7 +63,7 @@ require_once("./include/membersite_config.php");
 		<button class="toggleAnnotations" title="Annotations" onClick="toggleAnnotations(this)">A</button>
 	</div>
 </div>
-<div id="chart-help-popup" title="Beer graph help" style="visibility: hidden">
+<div id="chart-help-popup" title="Beer graph help" style="display: none">
 	<p>This chart displays all temperatures and state information logged by BrewPi.
 		Not all temperatures are shown by default, but you can toggle them with the colored dots.</p>
 	<p>Click and drag left or right to zoom horizontally, click and drag up or down to zoom vertically. Double click to zoom out.

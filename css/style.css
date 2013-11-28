@@ -1,7 +1,7 @@
 @import url('dygraph.css');
 
 @font-face {
-    font-family: 'CPMono_v07_Plain' monospace;
+    font-family: 'CPMono_v07_Plain', monospace;
     src: url('../font/CPMono_v07_Plain.otf') format('opentype');
 }
 
@@ -16,16 +16,26 @@ body {
 #top-bar button.script-status{
 	margin:10px;
 }
+
 button.script-status{
 	width: 200px;
-	float: right;
+    float: right;
 	clear: right;
+    min-height: 25px;
 }
 
 button#maintenance{
 	width: 200px;
-	float: right;
+    float: right;
 	clear:right;
+    min-height: 25px;
+	margin: 10px 10px 10px 10px;
+}
+
+button#login{
+	width: 200px;
+	float: right;
+	clear: right;
 	margin: 10px 10px 10px 10px;
 }
 
@@ -50,24 +60,11 @@ button#login{
 }
 
 #controls button{
-	width: 140px;
+	width: 96px;
 	display: block;
 	text-align: left;
 }
 
-
-#profileTableDiv{
-	/*width: 375px;
-	height: 280px; must be inline*/
-	display: block;
-	overflow: auto;
-}
-
-#profileChartDiv{
-	/*width: 400px;
-	height: 280px; replaced by inline*/
-	display: block;
-}
 
 #status-message{
 	width: 400px;
@@ -81,7 +78,7 @@ button#login{
 
 
 #control-bar-text{
-	margin: 0px 2px;
+	margin: 0 2px;
 	width: 100%;
 	height: 18px;
 	display: block;
@@ -100,6 +97,7 @@ button#login{
 
 #beer-panel{
 	width: 980px;
+    height: 555px;
 	margin-bottom: 10px;
     float:left;
 }
@@ -112,7 +110,7 @@ button#login{
 
 #control-panel{
 	width: 976px;
-    min-height: 360px;
+    min-height: 390px;
     float: left;
 }
 
@@ -204,7 +202,7 @@ button#login{
 	font-size: 16px;
 	font-weight: normal;
 	font-style: normal;
-	font-family: '5x8LCDHD44780UA02Regular';
+	font-family: '5x8LCDHD44780UA02Regular', monospace;
 	color: #FFFF00;
 	white-space: pre;
 }
@@ -234,12 +232,9 @@ button#login{
 }
 
 .console-box{
-    width: inherit;
     background: black;
     color:#bbbbbb;
-    border-color:#ADD6FF;
-    border-style:ridge;
-    border-width:5px;
+    border: ridge 5px #ADD6FF;
     padding: 10px 10px;
     overflow: auto;
     font-family: "Courrier New", monospace;
@@ -248,7 +243,7 @@ button#login{
 }
 
 #maintenance-panel ui-widget-content .ui-corner-all{
-    padding: 5px 0px;
+    padding: 5px 0;
     float:left;
     width: 98%;
 }
@@ -269,7 +264,7 @@ button#login{
 }
 
 #reprogram-arduino p{
-    padding: 0px 10px;
+    padding: 0 10px;
 }
 
 #program-container{
@@ -282,7 +277,7 @@ button#login{
 }
 
 #reprogram-arduino .program-option{
-    margin: 20px 0px;
+    margin: 20px 0;
 }
 
 #reprogram-arduino .program-option label{
@@ -319,7 +314,7 @@ button#login{
     overflow: auto;
 }
 #maintenance-panel .ui-widget-content .ui-widget-header{
-    margin: 5px 0px;
+    margin: 5px 0;
 }
 #maintenance-panel .device-list-container .header button{
     float: right;
@@ -416,16 +411,14 @@ button#login{
 }
 
 #advanced-settings{
+    height: auto;
 }
 
-#control-settings-container{
-    height: 250px;
-    overflow:auto;
-}
-
+#control-settings-container,
 #control-constants-container{
     height: 250px;
     overflow:auto;
+    padding: 5px;
 }
 
 
@@ -440,7 +433,6 @@ button#login{
 #maintenance-panel .setting-container{
     float: left;
     clear: both;
-	padding:10px;
 	margin: 20px 15px;
     width: 90%;
 
@@ -457,6 +449,7 @@ button#login{
 #maintenance-panel .section-explanation{
 	float: left;
 	clear: both;
+    margin: 20px 15px;
 	width: 710px;
 }
 
@@ -479,14 +472,6 @@ button#login{
     position: relative;
 	float: left;
     left: 100px;
-}
-
-
-#control-constants-container,
-#control-settings-container{
-	padding-bottom: 15px;
-	margin-bottom: 15px;
-	overflow: auto;
 }
 
 #maintenance-panel .container-title{
@@ -543,9 +528,8 @@ button#login{
 #control-algorithm .val{
 	float: left;
 	clear: left;
-	border: solid 1px;
+	border: solid 1px #aaaaaa;
 	border-top: 0;
-	border-color: #aaaaaa;
 	text-align: center;
 	font-size: 2em;
 	min-height: 1.2em;
@@ -615,8 +599,7 @@ button#login{
 #control-algorithm .help-panel{
 	width: 230px;
 	float: right;
-	border: solid 1px;
-	border-color: #aaaaaa;
+	border: solid 1px #aaaaaa;
 	margin-right: 15px;
 	margin-top: 15px;
 }
@@ -635,7 +618,7 @@ button#login{
 	text-align: center;
 }
 
-#logo-container span#beername{
+#logo-container div#beer-name-container{
 	float: left;
 	display: block;
 	line-height: 0.5em;
@@ -652,3 +635,162 @@ button#login{
 	margin-bottom: 20px;
 	width: inherit;
 }
+
+.beer-name-dialog{
+    text-align: center;
+}
+
+.dialog-intro{
+    display: block;
+    margin: 15px;
+}
+
+span.data-logging-state{
+    color: #cc0a0a;
+    font-size: 0.8em;
+}
+
+.beer-name-dialog button.back{
+    height: 26px;
+    width: 26px;
+    float: left;
+    margin: 15px;
+}
+.beer-name-dialog input{
+    display:block;
+    margin: 10px auto 0 auto;
+}
+.beer-name-buttons{
+    display: inline-block; /* scale to content */
+    margin-top: 10px;
+}
+
+.beer-name-buttons button{
+    display: block;
+    clear: both;
+    margin: 10px 0;
+    width: 100%; /* scale to biggest button */
+}
+
+span.dialog-result-success{
+    color: green;
+    display: block;
+    margin: 20px auto;
+}
+
+span.dialog-result-error{
+    color: red;
+    display: block;
+    margin: 20px auto;
+}
+
+span.dialog-result-message{
+    display: block;
+    margin: 20px auto;
+}
+
+div.beer-chart,
+div.chart-container{
+    float: left;
+}
+
+div.chart-error{
+    text-align: center;
+}
+
+span.chart-error-text{
+    margin: 100px 50px;
+    display: block;
+}
+
+button.chart-error-refresh{
+    display: block;
+    margin: 0 auto;
+}
+
+
+#profileSelectDiv { display:none; }
+#profileEditDiv { display:none; }
+#profileHelpDiv { display:none; }
+#profileSaveError { color:red; display:none; }
+
+.help-h1 { font-weight: bold; }
+
+#profileEditChartDiv{ width: 450px; height: 280px; float: left; margin: 20px 0; }
+#profileEditControls{ width: 450px; float: right; margin: 20px 0; }
+
+.profileEditFieldSet { height:54px; }
+.profileTableLabel { float:left; clear: left; height:22px; }
+.profileTableLabel.edit { padding:4px 0 0 0; }
+.profileTableLabel.error { color:red; font-weight: bold; }
+.profileTableField { float:right; clear: right; width:65%; }
+
+.fullwidth-button { display:block; width:100%; margin:5px 0 5px 0; }
+.halfwidth-button { display:block; float:left; width:48%; margin:5px 1% 5px 1%}
+
+.profileTableEdit { margin:0; border:1px solid #ccc; border-right: 0; border-bottom: 0; width:100%; border-collapse:separate; border-spacing: 0; }
+.profileTableEdit tbody TR.odd { background:#f7f7f7; }
+.profileTableEdit tbody TR.even { background:#fff; }
+.profileTableEdit tbody TR:hover { background: #ddeeff; }
+.profileTableEdit tbody TR.selected { background: #bbddff; }
+.profileTableEdit tbody TR.error { background: #fef1ec; border:1px solid #cd0a0a; color: #cd0a0a; }
+.profileTableEdit TD, .profileTableEdit TH { padding: 3px; height: 1em;}
+.profileTableEdit TD { text-align:center; }
+.profileTableEdit TD { border-bottom: solid 1px #ccc; border-right: solid 1px #ccc; }
+.profileTableEdit TH { border-right: solid 1px #fff; }
+.profileTableEdit TH:last-child { border-right: 0 }
+
+
+
+.profileTableMenu {
+    position: absolute;
+    display: none;
+    border: #ccc solid 1px;
+    background: #fff;
+}
+.profileTableMenu UL { list-style-type: none; margin: 0; padding: 0; }
+.profileTableMenu UL LI { margin: 0; padding: 5px; border: 1px solid #fff; border-bottom: 1px solid #ccc; cursor:pointer; cursor:hand; }
+.profileTableMenu UL LI:last-child { border-bottom: 1px solid #fff; }
+.profileTableMenu UL LI:hover { color:#fff; border: 1px solid #4297d7; background: #5c9ccc; }
+
+#profileSelect .ui-selecting { background: #FECA40; }
+#profileSelect .ui-selected { background: #F39814; color: white; }
+#profileSelect { list-style-type: none; margin: 20px 0; padding: 0; float: right; width: 450px;}
+#profileSelect li { margin: 3px; padding: 0.4em; height: 18px; }
+#profileSelectChartDiv{ width: 450px; height: 280px; float: left; margin: 20px 0;}
+
+#profileNameDate { width: 375px; float:right; }
+#profileNameDate div { float:left; clear: left; width:100%;}
+#profileNameDate .profileTableLabel { display: block; float: left; font-weight: bold; margin-left: 5px}
+#profileNameDate .profileTableValue { display: block; float: right; margin-right:5px; }
+
+#profileChartDiv { width: 430px; height: 280px; float: left; }
+
+#profileTableDiv { width: 375px; height: 280px; float: right; overflow: auto; }
+#profileTableDiv table {
+    border-collapse:separate; border-spacing: 0;
+}
+#profileTableDiv th,
+#profileTableDiv td {
+    padding: 3px;
+    text-align: center;
+}
+
+
+/* make sure buttons (Save/Cancel) are on the bottom of all panes, even with floats in the pane */
+.ui-dialog .ui-dialog-buttonpane { clear: both; }
+
+/* css for timepicker */
+
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; }
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+
+.chart-placeholder{ display: block; margin-top:100px; width: 100%; text-align: center;}

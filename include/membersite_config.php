@@ -24,3 +24,4 @@ $fgmembersite->InitDB(/*hostname*/'localhost',
 $fgmembersite->SetRandomKey('7Z3SQqt9bGd276BFPaht0');
 
 ?>
+

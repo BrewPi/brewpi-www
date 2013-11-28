@@ -222,6 +222,17 @@ function paintBackgroundImpl(canvas, area, g) {
 /* Give name of the beer to display and div to draw the graph in */
 function drawBeerChart(beerToDraw, div){
     "use strict";
+    var $chartDiv = $("#"+div);
+    $chartDiv.empty();
+    if(beerToDraw === "None"){
+       var $errorMessage = $("<span class='chart-error-text'>" +
+                             "BrewPi is currently not logging data. Start a new brew to resume logging.<br>" +
+                             "You can find your previous beers under Maintenance Panel -> Previous Beers</span>");
+       $chartDiv.addClass("chart-error");
+       $chartDiv.append($errorMessage);
+        return;
+    }
+
 	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer) {
 		var combinedJson = {};
 		var first = true;
@@ -230,7 +241,17 @@ function drawBeerChart(beerToDraw, div){
             files = $.parseJSON(answer);
         }
         catch (e){
-            $("#"+div).html("<span style=\"padding:100px;\">Could not receive files for beer, did you just start it?</span>");
+            var $errorMessage = $("<span class='chart-error-text'>Could not receive any files for this brew.<br>" +
+                "If you just started this brew, click the refresh button after a few minutes.<br> " +
+                "A chart will appear after the first data point is logged.</span>");
+            var $refreshButton = $("<button class='chart-error-refresh'>Refresh</button>");
+            $refreshButton.button({icons: {primary: "ui-icon-refresh" }}).click(function(){
+                drawBeerChart(beerToDraw, div);
+            });
+            $chartDiv.addClass("chart-error");
+            $chartDiv.append($errorMessage);
+            $chartDiv.append($refreshButton);
+
             return;
         }
 
@@ -317,8 +338,8 @@ function drawBeerChart(beerToDraw, div){
 
         var beerChart = chart.date_graph;
         beerChart.setVisibility(beerChart.indexFromSetName('State')-1, 0);  // turn off state line
-        var $chartContainer = $('#'+ div).parent();
-        $chartContainer.find('.beer-chart-controls').css('visibility','visible');
+        var $chartContainer = $chartDiv.parent();
+        $chartContainer.find('.beer-chart-controls').show();
 
         if(div.localeCompare('curr-beer-chart') === 0){
             currBeerChart = beerChart;
@@ -358,7 +379,6 @@ function isDataEmpty(chart, column, rowStart, rowEnd){
             return false;
         }
     }
-    console.log(column);
     return true;
 }
 
@@ -414,7 +434,7 @@ function applyStateColors(){
 
 $(document).ready(function(){
     "use strict";
-    $("button#refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" } }).click(function(){
+    $("button.refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" }, text: false }).click(function(){
         drawBeerChart(window.beerName, 'curr-beer-chart');
     });
 
@@ -425,11 +445,7 @@ $(document).ready(function(){
             width: 960
         });
 
-    // unhide after loading
-    $("#chart-help-popup").css("visibility", "visible");
-
-
-    $("button.chart-help").button({	icons: {primary: "ui-icon-help" } }).click(function(){
+    $("button.chart-help").button({	icons: {primary: "ui-icon-help" }, text: false }).click(function(){
         $("#chart-help-popup").dialog("open");
     });
     applyStateColors();

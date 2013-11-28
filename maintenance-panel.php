@@ -67,7 +67,7 @@
 
 		<h3 id="program-stderr-header">Script stderr output will auto-refresh while programming if you keep this tab open</h3>
 		<div class="stderr console-box"></div>
-		<iframe id="upload-target" name="upload-target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>
+		<iframe id="upload-target" name="upload-target" src="#"style="width:0;height:0;border:0px solid #fff;"></iframe>
 	</div>
 </div>
 <div id="settings">
@@ -86,14 +86,17 @@
 			<button id="apply-interval" class="apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Start new beer:</span>
-			<input id="beer-name" value="Enter new or existing name.." size=30 type="text">
-			<button class="apply-beer-name apply-button">Apply</button>
+			<span class="setting-name">Profile name:</span>
+			<input id="profile-name" value="<?php echo $profileName ?>" size=30 type="text">
+			<button class="apply-profile-name apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Google Docs key for profile:</span>
-			<input id="profile-key" value="<?php echo $profileKey ?>" size=30 type="text">
-			<button class="apply-profile-key apply-button">Apply</button>
+			<span class="setting-name">Date format:</span>
+			<select id="datetime-format-display">
+				<option <?php if ($dateTimeFormatDisplay == "mm/dd/yy") echo "selected=\"selected\""; ?>>mm/dd/yy</option>
+				<option <?php if ($dateTimeFormatDisplay == "dd/mm/yy") echo "selected=\"selected\""; ?>>dd/mm/yy</option>
+			</select>
+			<button class="apply-datetime-format-display apply-button">Apply</button>
 		</div>
 	</div>
 </div>
@@ -145,7 +148,7 @@
 		</div>
 	</div>
 	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<span class='container-title'>Peak detection for predictive ON/OFF control</span>
+		<span class='container-title'>Predictive ON/OFF and peak detection</span>
 		<button class="cs update-from-arduino">Update control settings</button>
 		<button class="cv update-from-arduino">Update control variables</button>
 		<button class="cc update-from-arduino">Update control constants</button>
@@ -235,13 +238,15 @@
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Temperature setting minimum</span><input type="text" name="tempSetMin" class="cc tempSetMin">
+			<span class="setting-name">Temperature setting minimum</span>
 			<span class="explanation">The fridge and beer temperatures cannot go below this value.</span>
+			<input type="text" name="tempSetMin" class="cc tempSetMin">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Temperature setting maximum</span><input type="text" name="tempSetMax" class="cc tempSetMax">
+			<span class="setting-name">Temperature setting maximum</span>
 			<span class="explanation">The fridge and beer temperatures cannot go above this value.</span>
+			<input type="text" name="tempSetMax" class="cc tempSetMax">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<span class="section-explanation">The fridge temperature is controlled with PID. The fridge setting = beer setting + PID.
@@ -250,104 +255,130 @@
 			The derivative part is in the opposite direction to the proportional part. This prevents overshoot: it lowers the PID value when there's 'momentum' in the right direction.
 		</span>
 		<div class="setting-container">
-			<span class="setting-name">PID: Kp</span><input type="text" name="Kp" class="cc Kp">
+			<span class="setting-name">PID: Kp</span>
 			<span class="explanation">The beer temperature error is multiplied by Kp to give the proportional part of the PID value.</span>
+			<input type="text" name="Kp" class="cc Kp">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: Ki</span><input type="text" name="Ki" class="cc Ki">
+			<span class="setting-name">PID: Ki</span>
 			<span class="explanation">When the integral is active, the error is added to the integral every 30 seconds. The result is multiplied by Ki to give the integral part.</span>
+			<input type="text" name="Ki" class="cc Ki">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: Kd</span><input type="text" name="Kd" class="cc Kd">
+			<span class="setting-name">PID: Kd</span>
 			<span class="explanation">The derivative of the beer temperature is multiplied by Kd to give the derivative part of the PID value.</span>
+			<input type="text" name="Kd" class="cc Kd">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Integrator: maximum temp error &deg;<?php echo $tempFormat ?></span><input type="text" name="iMaxErr" class="cc iMaxErr">
+			<span class="setting-name">PID: maximum</span>
+			<span class="explanation">You can define the maximum difference between the beer temp setting and fridge temp setting here. The fridge setting will be clipped to this range.</span>
+			<input type="text" name="pidMax" class="cc pidMax">
+			<button class="send-button">Send to Arduino</button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Integrator: maximum temp error &deg;<?php echo $tempFormat ?></span>
 			<span class="explanation">The integral is only active when the temperature is close to the target temperature. This is the maximum error for which the integral is active..</span>
+			<input type="text" name="iMaxErr" class="cc iMaxErr">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Temperature idle range top</span><input type="text" name="idleRangeH" class="cc idleRangeH">
+			<span class="setting-name">Temperature idle range top</span>
 			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
+			<input type="text" name="idleRangeH" class="cc idleRangeH">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Temperature idle range bottom</span><input type="text" name="idleRangeL" class="cc idleRangeL">
+			<span class="setting-name">Temperature idle range bottom</span>
 			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
+			<input type="text" name="idleRangeL" class="cc idleRangeL">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Heating target upper bound</span><input type="text" name="heatTargetH" class="cc heatingTargetH">
+			<span class="setting-name">Heating target upper bound</span>
 			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
+			<input type="text" name="heatTargetH" class="cc heatingTargetH">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Heating target lower bound</span><input type="text" name="heatTargetL" class="cc heatingTargetL">
+			<span class="setting-name">Heating target lower bound</span>
 			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
+			<input type="text" name="heatTargetL" class="cc heatingTargetL">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooling target upper bound</span><input type="text" name="coolTargetH" class="cc coolingTargetH">
+			<span class="setting-name">Cooling target upper bound</span>
 			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
+			<input type="text" name="coolTargetH" class="cc coolingTargetH">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooling target lower bound</span><input type="text" name="coolTargetL" class="cc coolingTargetL">
+			<span class="setting-name">Cooling target lower bound</span>
 			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
+			<input type="text" name="coolTargetL" class="cc coolingTargetL">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Maximum time in seconds for heating overshoot estimator</span><input type="text" name="maxHeatTimeForEst" class="cc maxHeatTimeForEst">
+			<span class="setting-name">Maximum time in seconds for heating overshoot estimator</span>
 			<span class="explanation">The time the fridge has been heating is used to estimate overshoot. This is the maximum time that is taken into account.</span>
+			<input type="text" name="maxHeatTimeForEst" class="cc maxHeatTimeForEst">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Maximum time in seconds for cooling overshoot estimator</span><input type="text" name="maxCoolTimeForEst" class="cc maxCoolTimeForEst">
+			<span class="setting-name">Maximum time in seconds for cooling overshoot estimator</span>
 			<span class="explanation">The time the fridge has been cooling is used to estimate overshoot. This is the maximum time that is taken into account.</span>
+			<input type="text" name="maxCoolTimeForEst" class="cc maxCoolTimeForEst">
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer fast filter delay time</span> <?php echoFilterSelect("beerFastFilt") ?>
+			<span class="setting-name">Beer fast filter delay time</span>
 			<span class="explanation">The beer fast filter is used for display and data logging. More filtering give a smoother line, but also more delay.</span>
+			<?php echoFilterSelect("beerFastFilt") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer slow filter delay time</span> <?php echoFilterSelect("beerSlowFilt") ?>
+			<span class="setting-name">Beer slow filter delay time</span>
 			<span class="explanation">The beer slow filter is used for the control algorithm. The fridge temperature setting is calculated from this filter.
 				Because a small difference in beer temperature causes a large adjustment in the fridge temperature, more smoothing is needed.</span>
+			<?php echoFilterSelect("beerSlowFilt") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer slope filter delay time</span> <?php echoSlopeFilterSelect("beerSlopeFilt") ?>
+			<span class="setting-name">Beer slope filter delay time</span>
 			<span class="explanation">The slope is calculated every 30 seconds and fed to this filter. More filtering means a smoother fridge setting.</span>
+			<?php echoSlopeFilterSelect("beerSlopeFilt") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge fast filter delay time</span> <?php echoFilterSelect("fridgeFastFilt") ?>
+			<span class="setting-name">Fridge fast filter delay time</span>
 			<span class="explanation">The fridge fast filter is used for on-off control, display and logging. It needs to have a small delay.</span>
+			<?php echoFilterSelect("fridgeFastFilt") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge slow filter delay time</span> <?php echoFilterSelect("fridgeSlowFilt") ?>
+			<span class="setting-name">Fridge slow filter delay time</span>
 			<span class="explanation">The fridge slow filter is used for peak detection to adjust the overshoot estimators. More smoothing is needed to prevent small fluctiations to be recognized as peaks.</span>
+			<?php echoFilterSelect("fridgeSlowFilt") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge slope filter delay time</span> <?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
+			<span class="setting-name">Fridge slope filter delay time</span>
 			<span class="explanation">The fridge slope filter is not used in the current version.</span>
+			<?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Use light as heater</span><?php echoYesNoSelect("lah") ?>
+			<span class="setting-name">Use light as heater</span>
 			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater..</span>
+			<?php echoYesNoSelect("lah") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Trigger rotary encoder at every ...</span> <?php echoRotarySelect("hs") ?>
+			<span class="setting-name">Trigger rotary encoder at every ...</span>
 			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step.</span>
+			<?php echoRotarySelect("hs") ?>
 			<button class="send-button">Send to Arduino</button>
 		</div>
 	</div>
@@ -365,7 +396,6 @@
 			</div>
 		</div>
 		<button class="refresh-device-list">Refresh device list</button>
-		<!--  <button class="get-device-list">Get device list</button>-->
 	</div>
 	<div class="device-list-container ui-widget-content ui-corner-all">
 		<div class ="spinner-position"></div>
@@ -399,16 +429,16 @@ function echoFilterSelect($filterName){
 	echo "</select>";
 }
 
-# slope filters are updated every 12 seconds, so have different delay time
+# slope filters are updated every 3 seconds, so have different delay time
 function echoSlopeFilterSelect($filterName){
 	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
-	echo "<option value=0>   1.8 minutes</option>"; // a=4,		b=0,	delay time = 3
-	echo "<option value=1>   3.6 minutes</option>"; // a=6,		b=1,	delay time = 6
-	echo "<option value=2>   7.8 minutes</option>"; // a=8,		b=2,	delay time = 13
-	echo "<option value=3>  15.6 minutes</option>"; // a=10,	b=3,	delay time = 26
-	echo "<option value=4>  31.8 minutes</option>"; // a=12,	b=4,	delay time = 53
-	echo "<option value=5>  63.6 minutes</option>"; // a=14,	b=5,	delay time = 106
-	echo "<option value=6> 127.8 minutes</option>"; // a=16,	b=6,	delay time = 213
+	echo "<option value=0>  27 seconds</option>"; // a=4,	b=0,	delay time = 3
+	echo "<option value=1>  54 seconds</option>"; // a=6,	b=1,	delay time = 6
+	echo "<option value=2>   2 minutes</option>"; // a=8,	b=2,	delay time = 13
+	echo "<option value=3>   4 minutes</option>"; // a=10,	b=3,	delay time = 26
+	echo "<option value=4>   8 minutes</option>"; // a=12,	b=4,	delay time = 53
+	echo "<option value=5>  16 minutes</option>"; // a=14,	b=5,	delay time = 106
+	echo "<option value=6>  32 minutes</option>"; // a=16,	b=6,	delay time = 213
 	echo "</select>";
 }
 

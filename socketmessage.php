@@ -50,6 +50,11 @@ $sock = open_socket();
 if($sock !== false){
 	if(isset($data) && $data != ""){
 		switch($messageType){
+			case "setActiveProfile":
+			case "startNewBrew":
+				socket_write($sock, $messageType . "=" . $data, 4096);
+				echo socket_read($sock, 4096);
+				break;
 			default:
 				socket_write($sock, $messageType . "=" . $data, 4096);
 				break;
@@ -58,34 +63,34 @@ if($sock !== false){
 	else{
 		// message without a data argument
 		switch($messageType){
-			case "checkScript":
-				socket_write($sock, "ack", 4096);
-				$answer = socket_read($sock, 4096);
-				if($answer == "ack"){
-					echo 1;
-				}
-				else{
-					echo 0;
-				}
-				break;
-			case "lcd":
-				socket_write($sock, "lcd", 4096);
-				$lcdText = socket_read($sock, 4096);
-				if($lcdText !== false){
-					echo str_replace(chr(0xB0), "&deg;", $lcdText); // replace degree sign with &Deg
-				}
-				else{
-					echo false;
-				}
-				break;
-			default:
-				// just pass the command to the socket and read the answer if needed
-				socket_write($sock, $messageType, 4096);
-
-				if(startsWith($messageType, "get") || $messageType == "uploadProfile"){
-					// return data expected, read from socket
-					echo socket_read($sock, 4096);
-				}
+		case "checkScript":
+			socket_write($sock, "ack", 4096);
+			$answer = socket_read($sock, 4096);
+			if($answer == "ack"){
+				echo 1;
+			}
+			else{
+				echo 0;
+			}
+			break;
+		case "lcd":
+			socket_write($sock, "lcd", 4096);
+			$lcdText = socket_read($sock, 4096);
+			if($lcdText !== false){
+				echo str_replace(chr(0xB0), "&deg;", $lcdText); // replace degree sign with &Deg
+			}
+			else{
+				echo false;
+			}
+			break;
+		default:
+			// just pass the command to the socket and read the answer if needed
+			socket_write($sock, $messageType, 4096);
+			if(startsWith($messageType, "get") or $messageType == "stopLogging" or
+				$messageType == "pauseLogging" or $messageType == "resumeLogging"){
+				// return data expected, read from socket
+				echo socket_read($sock, 4096);
+			}
 		}
 	}
 	socket_close($sock);

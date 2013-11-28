@@ -17,20 +17,37 @@
  */
 ?>
 
-
 <?php
-
-$settings = file_get_contents('wwwSettings.json');
-if($settings == false) {
-	die("Cannot open settings file");
+// load default settings from file
+$defaultSettings = file_get_contents('defaultSettings.json');
+if($defaultSettings == false){
+	die("Cannot open default settings file: defaultSettings.json");
 }
-$settingsArray = json_decode(prepareJSON($settings), true);
+$settingsArray = json_decode(prepareJSON($defaultSettings), true);
 if(is_null($settingsArray)){
-	die("Cannot decode webSettings.json");
+	die("Cannot decode defaultSettings.json");
 }
+// overwrite default settings with user settings
+if(file_exists('userSettings.json')){
+	$userSettings = file_get_contents('userSettings.json');
+	if($userSettings == false){
+		die("Error opening settings file userSettings.json");
+	}
+	$userSettingsArray = json_decode(prepareJSON($userSettings), true);
+	if(is_null($settingsArray)){
+		die("Cannot decode userSettings.json");
+	}
+	foreach ($userSettingsArray as $key => $value) {
+		$settingsArray[$key] = $userSettingsArray[$key];
+	}
+}
+
+
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
-$profileKey = $settingsArray["profileKey"];
+$profileName = $settingsArray["profileName"];
+$dateTimeFormat = $settingsArray["dateTimeFormat"];
+$dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 require_once("./include/membersite_config.php");
 ?>
 
@@ -48,12 +65,12 @@ require_once("./include/membersite_config.php");
 				include 'beer-panel.php';
 			?>
 		</div>
-		<div id="control-panel" style="visibility:hidden"> <!--// hide while loading -->
+		<div id="control-panel" style="display:none"> <!--// hide while loading -->
 			<?php
 				include 'control-panel.php';
 			?>
 		</div>
-		<div id="maintenance-panel" style="visibility:hidden"> <!--// hide while loading -->
+		<div id="maintenance-panel" style="display:none"> <!--// hide while loading -->
 			<?php
 				include 'maintenance-panel.php';
 			?>
@@ -63,24 +80,27 @@ require_once("./include/membersite_config.php");
 				include 'login-panel.php';
 			?>
 		</div>
-
 		<!-- Load scripts after the body, so they don't block rendering of the page -->
 		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
-		<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>
+		<script type="text/javascript" src="js/dygraph-combined.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;
-			window.googleDocsKey = <?php echo "\"$profileKey\""?>;
 			window.beerName = <?php echo "\"$beerName\""?>;
+			window.profileName = <?php echo "\"$profileName\""?>;
+			window.dateTimeFormat = <?php echo "\"$dateTimeFormat\""?>;
+			window.dateTimeFormatDisplay = <?php echo "\"$dateTimeFormatDisplay\""?>;
 		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/device-config.js"></script>
 		<script type="text/javascript" src="js/control-panel.js"></script>
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
+		<script type="text/javascript" src="js/profile-table.js"></script>
 		<script type="text/javascript" src="js/login-panel.js"></script>
 	</body>
 </html>
