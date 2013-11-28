@@ -170,3 +170,8 @@ userSettings.json
 do_not_run_brewpi
 config_user.php
 .idea/*
+
+#############
+## database
+#############
+phpmyadmin

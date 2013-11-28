@@ -101,6 +101,7 @@ require_once("./include/membersite_config.php");
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
 		<script type="text/javascript" src="js/profile-table.js"></script>
+		<script type="text/javascript" src="js/login-panel.js"></script>
 	</body>
 </html>
 

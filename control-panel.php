@@ -27,8 +27,8 @@
 	<li><a href="#fridge-constant-control"><span>Fridge constant</span></a></li>
 	<li><a href="#temp-control-off"><span>Off</span></a></li>
 	<?php
-	if($fgmembersite->CheckLogin() {
-		echo '<button id="apply-settings">Apply</button';
+	if($fgmembersite->CheckLogin()) {
+		echo '<button id="apply-settings">Apply</button>';
 	}
 	?>
 	<div id="status-message" class="ui-state-error ui-corner-all">
