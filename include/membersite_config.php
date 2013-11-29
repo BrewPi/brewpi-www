@@ -15,13 +15,13 @@ $fgmembersite->SetAdminEmail('julien@gueydan.eu');
 //by itself on submitting register.php for the first time
 $fgmembersite->InitDB(/*hostname*/'localhost',
                       /*username*/'brewpi',
-                      /*password*/'brewpi',
+                      /*password*/'3sUurPWsLyS8Wpse',
                       /*database name*/'brewpi',
                       /*table name*/'fgusers');
 
 //For better security. Get a random string from this link: http://tinyurl.com/randstr
 // and put it here
-$fgmembersite->SetRandomKey('7Z3SQqt9bGd276BFPaht0');
+$fgmembersite->SetRandomKey('7Z3Sqt9Gd276TA6FPaht0');
 
 ?>
 

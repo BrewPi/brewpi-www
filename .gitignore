@@ -175,3 +175,5 @@ config_user.php
 ## database
 #############
 phpmyadmin
+include/membersite_config.php
+
