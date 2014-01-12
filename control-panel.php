@@ -120,7 +120,7 @@
 	<div id="beer-temp" class="temp-display">
 		<div class="temp-container"></div>
 		<button id="beer-temp-up" class="temp-up"></button>
-		<input class='temperature' /><span class='degree'>&deg;<?php echo $tempFormat ?></span>
+		<input id="beer_temperature" class='temperature' /><span class='degree'>&deg;<?php echo $tempFormat ?></span>
 		<button id="beer-temp-down" class="temp-down"></button>
 	</div>
 </div>
@@ -128,7 +128,7 @@
 	<div id="fridge-temp" class="temp-display">
 		<div class="temp-container"></div>
 		<button id="fridge-temp-up" class="temp-up"></button>
-		<input class='temperature' /><span class='degree'>&deg;<?php echo $tempFormat ?></span>
+		<input id="fridge_temperature" class='temperature' /><span class='degree'>&deg;<?php echo $tempFormat ?></span>
 		<button id="fridge-temp-down" class="temp-down"></button>
 	</div>
 </div>
