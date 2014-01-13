@@ -38,6 +38,7 @@ var lineNames = {
     fridgeTemp: 'Fridge temperature',
     fridgeSet: 'Fridge setting',
     roomTemp: 'Room temp.'};
+var legendStorageKeyPrefix = "legendLine_";
 
 var TIME_COLUMN = 0;        // time is the first column of data
 var STATE_COLUMN = 6;       // state is currently the 6th column of data.
@@ -409,6 +410,9 @@ function drawBeerChart(beerToDraw, div){
                     if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
                         $row.hide();
                     }
+                    if ( localStorage.getItem( legendStorageKeyPrefix + key ) === "false" ) {
+                        $row.find('.toggle').addClass("inactive");
+                    }
                     updateVisibility(key, $row.find('.toggle'));
                 }
                 if($(div + " .toggleAnnotations ").hasClass("inactive")){
@@ -449,10 +453,10 @@ function toggleLine(el) {
     var classList = classString.split(/\s+/);
     for (var i in classList){
         if(classList.hasOwnProperty(i)){
-        if (classList[i] in lineNames){
-            break;
+            if (classList[i] in lineNames){
+                break;
+            }
         }
-    }
     }
     updateVisibility(classList[i], $el);
 }
@@ -474,9 +478,10 @@ function updateVisibility(lineName, $button){
     }
     if($button.hasClass("inactive")){
         chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, false);
-    }
-    else{
+        localStorage.setItem( legendStorageKeyPrefix + lineName, "false" );
+    } else {
         chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, true);
+        localStorage.setItem( legendStorageKeyPrefix + lineName, "true" );
     }
 }
 
