@@ -238,7 +238,11 @@ function showChartLegend(e, x, pts, row, g) {
     $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 4)) );
     $('#curr-beer-chart-legend .beer-chart-legend-row.roomTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 5)) );
     var state = currentDataSet.getValue(row, STATE_COLUMN);
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state').text(STATES[state].text);
+    if ( parseInt(state) ) {
+        $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text(STATES[state].text);
+        $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-value').text("");
+        $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css({'background': STATES[state].color, 'border-color' : STATES[state].color});
+    }
 }
 function hideChartLegend() {
     "use strict";
@@ -246,7 +250,9 @@ function hideChartLegend() {
         $(this).find('.beer-chart-legend-value').text('--');
     });
     $('#curr-beer-chart-legend .beer-chart-legend-time').text('Date/Time');
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state').text('--');
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text('');
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-value').text('--');
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css({'background': "", 'border-color' : ""});
 }
 function findLineByName(name) {
     "use strict";

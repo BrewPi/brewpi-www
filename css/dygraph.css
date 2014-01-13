@@ -107,12 +107,22 @@ BR.crystal { clear:both; }
     border: 1px solid lightgrey;
     color: lightgrey;
 }
+.state-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius:5px;
+    float:left;
+    margin:2px 0 0 0;
+    background: #fff;
+    border: solid 1px #e7e7e7;
+}
 
 
 div.state-info{
     display: block;
     margin-top: 10px;
 }
+
 
 span.state-color{
     width: 20px;
