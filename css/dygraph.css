@@ -58,6 +58,7 @@ BR.crystal { clear:both; }
     color:rgba(170, 170, 170, 1);
 }
 .beer-chart-legend-row.annotation .beer-chart-legend-label { padding:2px 5px 0 5px; }
+.beer-chart-legend-row.state .beer-chart-legend-label { width:120px; }
 .beer-chart-legend-time { margin:0; padding:0; }
 .beer-chart-legend-label { width:75px; margin:0; padding:0 5px 0 5px; float:left; cursor:pointer; }
 .beer-chart-legend-value { float:right; width: 44px; margin:0; padding:0; text-align: right; }
@@ -110,11 +111,9 @@ BR.crystal { clear:both; }
 .state-indicator {
     width: 8px;
     height: 8px;
-    border-radius:5px;
     float:left;
     margin:2px 0 0 0;
     background: #fff;
-    border: solid 1px #e7e7e7;
 }
 
 
