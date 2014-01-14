@@ -238,11 +238,10 @@ function showChartLegend(e, x, pts, row, g) {
     $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 3)) );
     $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 4)) );
     $('#curr-beer-chart-legend .beer-chart-legend-row.roomTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 5)) );
-    var state = currentDataSet.getValue(row, STATE_COLUMN);
-    if ( parseInt(state) ) {
+    var state = parseInt(currentDataSet.getValue(row, STATE_COLUMN));
+    if ( !isNaN(state) ) {
         $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text(STATES[state].text);
-        $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-value').text("");
-        $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css({'background': STATES[state].color, 'border-color' : STATES[state].color});
+        $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css( 'background-color', STATES[state].color );
     }
 }
 function hideChartLegend() {
@@ -251,9 +250,8 @@ function hideChartLegend() {
         $(this).find('.beer-chart-legend-value').text('--');
     });
     $('#curr-beer-chart-legend .beer-chart-legend-time').text('Date/Time');
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text('');
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-value').text('--');
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css({'background': "", 'border-color' : ""});
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text('State');
+    $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css( 'background-color', '' );
 }
 function findLineByName(name) {
     "use strict";

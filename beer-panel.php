@@ -87,7 +87,6 @@
 	    	<div class="beer-chart-legend-row state">
 				<div class="state-indicator"></div>
 	    		<div class="beer-chart-legend-label"></div>
-	    		<div class="beer-chart-legend-value">--</div>
 	    		<br class="crystal" />
 	    	</div>
 	    	<div class="beer-chart-legend-row annotation last">
