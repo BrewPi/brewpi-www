@@ -233,15 +233,12 @@ function drawBeerChart(beerToDraw, div){
         return;
     }
 
-	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer) {
+    $.post("get_beer_data.php", {"beername": beerToDraw}, function(answer) {
 		var combinedJson = {};
-		var first = true;
-        var files = [];
 		try{
-            files = $.parseJSON(answer);
-        }
-        catch (e){
-            var $errorMessage = $("<span class='chart-error-text'>Could not receive any files for this brew.<br>" +
+            combinedJson = $.parseJSON(answer);
+        } catch (e) {
+            var $errorMessage = $("<span class='chart-error-text'>Could not parse data for this brew.<br>" +
                 "If you just started this brew, click the refresh button after a few minutes.<br> " +
                 "A chart will appear after the first data point is logged.</span>");
             var $refreshButton = $("<button class='chart-error-refresh'>Refresh</button>");
@@ -255,36 +252,6 @@ function drawBeerChart(beerToDraw, div){
             return;
         }
 
-        if(typeof files === 'undefined' || files === []){
-            return;
-        }
-		for(var i=0;i<files.length;i++){
-			var fileLocation = files[i];
-			var jsonData = $.ajax({
-					url: fileLocation,
-					dataType:"json",
-					async: false
-					}).responseText;
-			if(jsonData === ''){
-				// skip empty responses
-				continue;
-			}
-            var parsedJsonData;
-            try{
-                parsedJsonData = $.parseJSON(jsonData);
-            }
-            catch (e){
-                alert("error in JSON of file '" + fileLocation + "'. Skipping file.");
-                continue;
-            }
-			if(first){
-				combinedJson = parsedJsonData;
-				first = false;
-			}
-			else{
-				combinedJson.rows  = combinedJson.rows.concat(parsedJsonData.rows);
-			}
-		}
 		var beerData = new google.visualization.DataTable(combinedJson);
 
         var tempFormat = function(y) {
