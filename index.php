@@ -48,6 +48,7 @@ $tempFormat = $settingsArray["tempFormat"];
 $profileName = $settingsArray["profileName"];
 $dateTimeFormat = $settingsArray["dateTimeFormat"];
 $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
+require_once("./include/membersite_config.php");
 ?>
 
 <!DOCTYPE html >
@@ -74,6 +75,11 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 				include 'maintenance-panel.php';
 			?>
 		</div>
+		<div id="login-panel" style="visibility:hidden"> <!--// hide while loading -->
+			<?php
+				include 'login-panel.php';
+			?>
+		</div>
 		<!-- Load scripts after the body, so they don't block rendering of the page -->
 		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -95,6 +101,7 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 		<script type="text/javascript" src="js/maintenance-panel.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
 		<script type="text/javascript" src="js/profile-table.js"></script>
+		<script type="text/javascript" src="js/login-panel.js"></script>
 	</body>
 </html>
 
