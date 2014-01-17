@@ -31,7 +31,9 @@
 				foreach(glob('data/*', GLOB_ONLYDIR) as $dir)
 				{
 					$dir = basename($dir);
-					echo '<option value="', $dir, '">', $dir, '</option>';
+					if($dir !== "profiles"){
+					    echo '<option value="', $dir, '">', $dir, '</option>';
+					}
 				}
 			?>
 		</select>
