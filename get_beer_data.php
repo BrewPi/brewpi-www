@@ -1,8 +1,4 @@
 <?php
-
-error_reporting(E_ERROR);
-ini_set('display_errors', '1');
-
 /* Copyright 2012 BrewPi/Elco Jacobs.
  * This file is part of BrewPi.
 
@@ -22,7 +18,7 @@ ini_set('display_errors', '1');
 ?>
 
 <?php
-	$beerName = $_GET["beername"];
+	$beerName = $_POST["beername"];
 	$fileNames = array();
   	$currentBeerDir = 'data/' . $beerName;
 	if(!file_exists($currentBeerDir)){
@@ -54,31 +50,38 @@ ini_set('display_errors', '1');
 		sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
 		array_walk($fileNames, function(&$value) { $value .= '.json'; }); // add .json again
 
+		echo "{ \"cols\" : ";
 		// aggregate all json data for the beer
+		$rendered = false;
+		$renderedRow = false;
 		foreach ( $fileNames as $fileName ) {
 			$contents = file_get_contents(dirname(__FILE__) . '/' . $fileName);
 			if ( strlen($contents) != 0 ) {
 				$json = json_decode($contents, false);
+				if ( $renderedRow ) {
+					echo " , "; // comma between each file's rows array
+				}
 				foreach( $json as $k => $v ) {
-					// echo "_json key: " . $k . ", value: " . $v . "<br/>";
-					if ( $k == 'cols' && empty($jsonCols) ) {
-						foreach( $v as $id => $nm ) {
-							// echo "col key: " . $id . "<br/>";
-							array_push( $jsonCols, $nm );
+					if ( $k == 'cols' ) {
+						if ( empty($jsonCols) && !$rendered ) {
+							echo json_encode( $v );
+							echo ", \"rows\" : [";
+							$rendered = true;
 						}
 					} elseif ( $k == 'rows' ) {
-						foreach( $v as $id1 => $nm1 ) {
-							// echo "row key: " . $id1 . "<br/>";
-							if ( $id1 == 'c' ) {
-								foreach( $nm1 as $id2 => $nm2 ) {
-									array_push( $jsonRows, $nm1 );
-								}
+						$idx = 0;
+						foreach( $v as $k1 => $v1) {
+							if ( $idx != 0 ) {
+								echo " , ";
 							}
+							echo json_encode( $v1 );
+							$idx += 1;
 						}
+						$renderedRow = true;
 					}
 				}
 			}
 		}
-		echo json_encode( array( "cols" => $jsonCols, "rows" => $jsonRows ) );
+		echo "]}";
 	}
 ?>
