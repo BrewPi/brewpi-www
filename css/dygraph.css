@@ -1,3 +1,5 @@
+BR.crystal { clear:both; }
+
 #curr-beer-chart {
     float: left;
 }
@@ -10,118 +12,116 @@
     margin: 10px 0;
 }
 
-.dygraph-legend {
-    /* dygraph sets styles directly inline on the element. That's a bit nasty.*/
-
-    width: 100% !important;
-    background-color: transparent !important;
-    left:auto !important;
-    position:inherit !important;
-    text-align:right !important;
-}
-
+/* leave beer-chart-label there and invisible as we are puposefully hiding dygraphs shitty impl of legends */
 .beer-chart-label {
-    font-weight: normal;
-    text-align: center;
-    padding: 5px 0;
-    display: block;
-    clear: both;
+    display: none;
 }
 
 .beer-chart-controls {
     display: block;
     float: right;
-    margin-right: 15px;
+    margin: 0 5px 0 0;
+    padding: 0;
+    width: 155px;
 }
-
-.beer-chart-controls button{
+.beer-chart-buttons button {
     height:26px;
     width: 26px;
-    text-align: center;
-    margin-top: 10px;
-    margin-right: auto;
-    margin-left: auto;
-    display:block;
-    clear:right;
+    margin: 0;
+    float:left;
 }
 
-button.toggle{
-    width: 20px;
-    height: 20px;
-    -moz-border-radius:24px;
-    -webkit-border-radius:24px;
-    border-radius:24px;
-    display:block;
+.beer-chart-legend, .beer-chart-buttons {
+    clear: both;
+    font-size:11px;
+    margin:10px 0 0 0;
+    border:solid 1px #777;
+    border-radius: 5px;
 }
+.beer-chart-legend-row { clear:both; padding:8px 5px 8px 5px; }
+.beer-chart-legend-row.alt { background-color: #f7f7f7; }
+.beer-chart-legend-row.time { background-color: #ddeeff; border-top-right-radius: 5px; border-top-left-radius: 5px; }
+.beer-chart-legend-row.last { border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
+.beer-chart-legend-row.beerTemp{
+    color:rgba(41, 170, 41, 1);
+}
+.beer-chart-legend-row.beerSet{
+    color:rgba(240, 100, 100, 1);
+}
+.beer-chart-legend-row.fridgeTemp{
+    color:rgba(89, 184, 255, 1);
+}
+.beer-chart-legend-row.fridgeSet{
+    color:rgba(255, 161, 76, 1);
+}
+.beer-chart-legend-row.roomTemp{
+    color:rgba(170, 170, 170, 1);
+}
+.beer-chart-legend-row.annotation .beer-chart-legend-label { padding:2px 5px 0 5px; }
+.beer-chart-legend-row.state .beer-chart-legend-label { width:120px; }
+.beer-chart-legend-time { margin:0; padding:0; }
+.beer-chart-legend-label { width:75px; margin:0; padding:0 5px 0 5px; float:left; cursor:pointer; }
+.beer-chart-legend-value { float:right; width: 44px; margin:0; padding:0; text-align: right; }
+.beer-chart-buttons .beer-chart-legend-label { width:80px; padding:5px; cursor:default; }
+.beer-chart-buttons .beer-chart-legend-row.last { padding-top:0; }
 
-button.toggle.beerTemp{
+.beer-chart-legend-row .toggle {
+    width: 8px;
+    height: 8px;
+    border-radius:5px;
+    float:left;
+    margin:2px 0 0 0;
+    cursor:pointer;
+}
+.beer-chart-legend-row .toggle.beerTemp{
     background-color:rgba(41, 170, 41, 0.5);
     border:1px solid rgba(41, 170, 41, 1);
-    margin-top: 30px;
 }
-button.toggle.beerTemp:hover{
-    border:2px solid rgba(41, 170, 41, 1);
-}
-
-
-button.toggle.beerSet{
+.beer-chart-legend-row .toggle.beerSet{
     background-color:rgba(240, 100, 100, 0.5);
     border:1px solid rgba(240, 100, 100, 1);
 }
-button.toggle.beerSet:hover{
-    border:2px solid rgba(240, 100, 100, 1);
-}
-
-button.toggle.fridgeTemp{
+.beer-chart-legend-row .toggle.fridgeTemp{
     background-color:rgba(89, 184, 255, 0.5);
     border:1px solid rgba(89, 184, 255, 1);
 }
-button.toggle.fridgeTemp:hover{
-    border:2px solid rgba(89, 184, 255, 1);
-}
-
-
-button.toggle.fridgeSet{
+.beer-chart-legend-row .toggle.fridgeSet{
     background-color:rgba(255, 161, 76, 0.5);
     border:1px solid rgba(255, 161, 76, 1);
 }
-button.toggle.fridgeSet:hover{
-    border:2px solid rgba(255, 161, 76, 1);
-}
-
-button.toggle.roomTemp{
+.beer-chart-legend-row .toggle.roomTemp{
     background-color:rgba(170, 170, 170, 0.5);
     border:1px solid rgba(170, 170, 170, 1);
 }
-button.toggle.roomTemp:hover{
-    border:2px solid rgba(170, 170, 170, 1);
-}
-
-button.toggleAnnotations{
-    border: 1px solid red;
-    background-color: white;
-    color:red;
-    width: 18px;
-    height: 18px;
-    -moz-border-radius:0px;
-    -webkit-border-radius:0px;
-    border-radius:0px;
-    font-size: 10px;
-}
-
-button.toggle.inactive{
+.beer-chart-legend-row .toggle.inactive{
     background-color:white;
 }
-button.toggleAnnotations.inactive{
-    background-color:white;
+
+.toggleAnnotations{
+    border: 1px solid rgb(240,100,100);
+    color:rgb(240,100,100);
+    width: 16px;
+    height: 16px;
+    float:left;
+}
+.toggleAnnotations.inactive{
     border: 1px solid lightgrey;
     color: lightgrey;
 }
+.state-indicator {
+    width: 8px;
+    height: 8px;
+    float:left;
+    margin:3px 1px 1px 1px;
+    background: #fff;
+}
+
 
 div.state-info{
     display: block;
     margin-top: 10px;
 }
+
 
 span.state-color{
     width: 20px;

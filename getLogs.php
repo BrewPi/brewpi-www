@@ -43,18 +43,16 @@ echo json_encode($response);
 function getEndOfFile($filename){
 	$output = "";
 	$fp = fopen($filename,'rb');
-	$size = filesize($filename);
-	if($fp === -1){
+	if($fp === false){
 		$output = "Cannot open log file $filename";
 	}
 	else{
-		if(filesize($filename)>16384){
+		$stat = fstat($fp);
+		$size = $stat['size'];
+		if($size > 16384){
 			fseek($fp, -16384, SEEK_END);
-			$output = fread($fp, 16384);
 		}
-		else{
-			$output = fread($fp, $size);
-		}
+		$output = fread($fp, 16384);
 	}
 	return str_replace(array("\r\n", "\n", "\r"), '<br />', $output);
 }

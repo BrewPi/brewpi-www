@@ -16,6 +16,7 @@ body {
 #top-bar button.script-status{
 	margin:10px;
 }
+
 button.script-status{
 	width: 200px;
     float: right;
@@ -82,7 +83,7 @@ button#maintenance{
 
 #beer-panel{
 	width: 980px;
-    height: 555px;
+    height: 525px;
 	margin-bottom: 10px;
     float:left;
 }
@@ -674,10 +675,23 @@ span.dialog-result-message{
     margin: 20px auto;
 }
 
-span.chart-error{
+div.beer-chart,
+div.chart-container{
+    float: left;
+}
+
+div.chart-error{
     text-align: center;
+}
+
+span.chart-error-text{
+    margin: 100px 50px;
     display: block;
-    margin-top: 100px;
+}
+
+button.chart-error-refresh{
+    display: block;
+    margin: 0 auto;
 }
 
 

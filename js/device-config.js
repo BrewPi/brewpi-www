@@ -253,7 +253,7 @@ function addDeviceToDeviceList(device, pinList, addManual){
         $settings.append(generateDeviceSettingContainer(
             "Function",
             "function",
-            generateSelect(getLimitedFunctionList(pinSpec.type), device.f)));
+            generateSelect(getLimitedFunctionList(pinSpec.type, device.h), device.f)));
     }
 
     if((typeof device.n !== "undefined") ){
@@ -293,18 +293,23 @@ function findPinInList(pinList, pinNr){
     return -1;
 }
 
-function pinTypeToFunctionList(pinType){
+function pinTypeToFunctionList(pinType, hwType){
     "use strict";
     var functionList=[];
+    var actFunctions = [2, 3, 4, 7];
+
     switch(pinType){
         case 'act':
-            functionList = [2, 3, 4, 7]; // all actuator functions
+            functionList = actFunctions; // all actuator functions
             break;
         case 'free':
             functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
             break;
         case 'onewire':
-            functionList = [5, 6, 9];
+            if (hwType!==3)
+                functionList = [5, 6, 9];
+            else
+                functionList = actFunctions;    // ds2413 actuator
             break;
         case 'door':
             functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
@@ -365,10 +370,10 @@ function getDeviceFunctionList(){
     ];
 }
 
-function getLimitedFunctionList(pinType){
+function getLimitedFunctionList(pinType, hwType){
     "use strict";
     var fullFunctionList = getDeviceFunctionList();
-    var limitedFunctionList = pinTypeToFunctionList(pinType);
+    var limitedFunctionList = pinTypeToFunctionList(pinType, hwType);
     var list = [fullFunctionList[0]]; // always add 'None'
     for (var i=0; i<fullFunctionList.length; i++) {
         if(-1 !== $.inArray(fullFunctionList[i].val, limitedFunctionList)){
@@ -522,7 +527,8 @@ function getDeviceConfigString(deviceNr){
     }
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
-    configString = addToConfigString(configString,"h", $deviceContainer.find(".ds2431-pin select").val());
+    configString = addToConfigString(configString,"n", $deviceContainer.find(".ds2413-pin select").val());
+
     //configString = addToConfigString(configString,"d", 0); // hardwire deactivate for now
     //configString = addToConfigString(configString,"j", 0); // hardwire calibration for now
 

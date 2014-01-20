@@ -251,7 +251,7 @@ BeerProfileTable.prototype = {
                 var v1 = parseFloat($(a).find('td.profileDays').text());
                 var v2 = parseFloat($(b).find('td.profileDays').text());
                 if ( isNaN(v1) || isNaN(v2) || (v1 === v2) ) {
-                    return (parseInt($(a).data.rowIndex, 10) - parseInt($(b).data.rowIndex, 10));
+                    return (parseInt($(a).data('rowIndex'), 10) - parseInt($(b).data('rowIndex'), 10));
                 } else {
                     return v1 - v2;
                 }
