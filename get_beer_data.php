@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
-?>
 
-<?php
 	$beerName = $_POST["beername"];
 	$fileNames = array();
   	$currentBeerDir = 'data/' . $beerName;
@@ -42,7 +40,7 @@
 	}
 	closedir($handle);
 
-	$jsonCols = array();
+	$cols = "";
 
 	if ( !empty($fileNames) ) {
 
@@ -51,37 +49,31 @@
 
 		// aggregate all json data for the beer
 		$renderedRow = false;
-		echo "{ \"rows\" : [";
+		echo "{\"rows\":[";
 		foreach ( $fileNames as $fileName ) {
 			$contents = file_get_contents(dirname(__FILE__) . '/' . $fileName);
 			if ( strlen($contents) != 0 ) {
-				$json = json_decode($contents, false);
 				if ( $renderedRow ) {
-					echo " , "; // comma between each file's rows array
+					echo ","; // comma between each file's rows array
 				}
-				foreach( $json as $k => $v ) {
-					if ( $k == 'cols' ) {
-						if ( empty($jsonCols)) {
-						    // remember cols to echo after parsing all files
-							$jsonCols = json_encode( $v );
-						}
-					}
-					elseif ( $k == 'rows' ) {
-						$idx = 0;
-						foreach( $v as $k1 => $v1) {
-							if ( $idx != 0 ) {
-								echo " , ";
-							}
-							echo json_encode( $v1 );
-							$idx += 1;
-						}
-						$renderedRow = true;
-					}
+				echo get_list_between($contents, '"rows":' , ']}]');
+				$renderedRow = true;
+
+				$colsThisFile = get_list_between($contents, '"cols":' , ']');
+				if(strlen($colsThisFile) > strlen($cols)){
+				    // use largest column list
+				    $cols = $colsThisFile;
 				}
 			}
 		}
-        echo "], \"cols\" : ";
-        echo $jsonCols;
-		echo "}";
+        echo '],"cols":[' . $cols . ']}';
 	}
+
+    function get_list_between($string, $start, $end){
+        $begin = strpos($string,$start);
+        if ($begin == 0) return "[]"; // return empty list when not found
+        $begin = strpos($string,"[", $begin) + 1; // start after list opening bracket
+        $len = strpos($string,$end,$begin) - $begin + strlen($end) - 1;
+        return substr($string,$begin,$len);
+    }
 ?>
