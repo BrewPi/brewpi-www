@@ -43,17 +43,15 @@
 	closedir($handle);
 
 	$jsonCols = array();
-	$jsonRows = array();
 
 	if ( !empty($fileNames) ) {
 
 		sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
 		array_walk($fileNames, function(&$value) { $value .= '.json'; }); // add .json again
 
-		echo "{ \"cols\" : ";
 		// aggregate all json data for the beer
-		$rendered = false;
 		$renderedRow = false;
+		echo "{ \"rows\" : [";
 		foreach ( $fileNames as $fileName ) {
 			$contents = file_get_contents(dirname(__FILE__) . '/' . $fileName);
 			if ( strlen($contents) != 0 ) {
@@ -63,12 +61,12 @@
 				}
 				foreach( $json as $k => $v ) {
 					if ( $k == 'cols' ) {
-						if ( empty($jsonCols) && !$rendered ) {
-							echo json_encode( $v );
-							echo ", \"rows\" : [";
-							$rendered = true;
+						if ( empty($jsonCols)) {
+						    // remember cols to echo after parsing all files
+							$jsonCols = json_encode( $v );
 						}
-					} elseif ( $k == 'rows' ) {
+					}
+					elseif ( $k == 'rows' ) {
 						$idx = 0;
 						foreach( $v as $k1 => $v1) {
 							if ( $idx != 0 ) {
@@ -82,6 +80,8 @@
 				}
 			}
 		}
-		echo "]}";
+        echo "], \"cols\" : ";
+        echo $jsonCols;
+		echo "}";
 	}
 ?>
