@@ -73,9 +73,9 @@ function loadControlPanel(){
             default:
                 statusMessage("error","Invalid mode ("+window.controlSettings.mode+") received");
         }
-        window.beerTemp = window.controlSettings.beerSet;
-        window.fridgeTemp = window.controlSettings.fridgeSet;
-		// beer and fridge temp can be null/undefined when not active (off mode)
+        window.beerTemp = parseFloat(window.controlSettings.beerSet);
+        window.fridgeTemp = parseFloat(window.controlSettings.fridgeSet);
+		// beer and fridge temp can be null/undefined when not active (off mode), which makes parseFloat return NaN
 		if(isNaN(window.beerTemp)){
 			window.beerTemp = defaultTemp();
 		}
