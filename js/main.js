@@ -377,8 +377,6 @@ function beerNameDialogResult($body, $backButton, result){
     $body.append($("<span  class='dialog-result-message'>" + result.statusMessage + "</span>"));
 }
 
-google.load('visualization', '1', {packages: ['table']});
-
 $(document).ready(function(){
 	"use strict";
 	$(".script-status").button({	icons: {primary: "ui-icon-alert" } });

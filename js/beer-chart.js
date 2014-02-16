@@ -99,6 +99,36 @@ function getState(g, row) {
     "use strict";
     return (row>= g.numRows()) ? 0 : g.getValue(row, STATE_COLUMN);
 }
+
+/**
+ * Converts json data to Dychart array format
+ * @param jsonData  the data in json format
+ * @returns {"values": array, "labels": array}   The same data, but in Dygraph array format
+ */
+function toDygraphArray(jsonData) {
+    "use strict";
+    var i, j, cols = jsonData.cols, rows = jsonData.rows, dataArray=[], labelsArray = [], row;
+
+    for (i = 0; i < cols.length; i++){
+        labelsArray.push(cols[i].label);
+    }
+    for (i = 0; i < rows.length; i++){
+        row = [];
+        var date = eval("new " + rows[i].c[0].v); // this is nasty and should be replaced!
+        row.push(date); // push date
+        for (j = 1; j < rows[i].c.length; j++) {
+            if (rows[i].c[j]) {
+                row.push(rows[i].c[j].v); // push other values
+            }
+            else{
+                row.push(null);
+            }
+        }
+        dataArray.push(row)
+    }
+    return {"values": dataArray, "labels": labelsArray};
+}
+
 function getTime(g, row) {
     "use strict";
     if (row>= g.numRows()){
@@ -279,7 +309,7 @@ function drawBeerChart(beerToDraw, div){
     }
 
     $.post("get_beer_data.php", {"beername": beerToDraw}, function(answer) {
-		var combinedJson = {};
+        var combinedJson = {};
 		try{
             combinedJson = $.parseJSON(answer);
         } catch (e) {
@@ -296,8 +326,7 @@ function drawBeerChart(beerToDraw, div){
 
             return;
         }
-
-		var beerData = new google.visualization.DataTable(combinedJson);
+        var beerData = toDygraphArray(combinedJson);
 
         var tempFormat = function(y) {
             return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
@@ -305,7 +334,8 @@ function drawBeerChart(beerToDraw, div){
 
         var chart = new Dygraph.GVizChart(document.getElementById(div));
         chart.draw(
-                beerData, {
+                beerData.values, {
+                labels: beerData.labels,
                 colors: chartColors,
                 axisLabelFontSize:12,
                 animatedZooms: true,
@@ -316,22 +346,6 @@ function drawBeerChart(beerToDraw, div){
                 displayAnnotationsFilter:true,
                 //showRangeSelector: true,
                 strokeWidth: 1,
-
-                "Beer setting" : {
-//                        strokePattern: [ 5, 5 ],
-//                  strokeWidth: 1
-                },
-                "Fridge setting" : {
-//                        strokePattern: [ 5, 5 ],
-//                  strokeWidth: 1
-                },
-                "Beer temperature" : {
-//                        strokePattern: [ 5, 5 ],
-//                  strokeWidth: 2
-                },
-                "Room temp" : {
-//                  strokeWidth: 1
-                },
                 axes: {
                     y : { valueFormatter: tempFormat }
                 },

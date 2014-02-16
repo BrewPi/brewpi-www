@@ -78,7 +78,6 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
-		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
 		<script type="text/javascript" src="js/dygraph-combined.js"></script>
 		<script type="text/javascript">
