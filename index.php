@@ -75,7 +75,8 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 			?>
 		</div>
 		<!-- Load scripts after the body, so they don't block rendering of the page -->
-		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+		//<script type="text/javascript" src="js/jquery-1.11.0.js"></script> // use non minified version for debugging
+		<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
