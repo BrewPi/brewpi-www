@@ -25,7 +25,7 @@ var controlVariables = {};
 
 function receiveControlConstants(){
 	"use strict";
-	$.getJSON('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
+	$.post('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
 		window.controlConstants = controlConstantsJSON;
 		for (var i in window.controlConstants){
 			if(window.controlConstants.hasOwnProperty(i)){
@@ -37,13 +37,13 @@ function receiveControlConstants(){
 				}
 				$('.cc.'+i+' .val').text(window.controlConstants[i]);
 			}
-		}
-	});
+        }
+    }, "json");
 }
 
 function receiveControlSettings(callback){
 	"use strict";
-	$.getJSON('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
+	$.post('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
 		window.controlSettings = controlSettingsJSON;
         for (var i in controlSettings) {
 			if(controlSettings.hasOwnProperty(i)){
@@ -74,12 +74,12 @@ function receiveControlSettings(callback){
 		if (callback && typeof(callback) === "function") {
 			callback();
 		}
-	});
+	}, "json");
 }
 
 function receiveControlVariables(){
 	"use strict";
-	$.getJSON('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
+	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
 		window.controlVariables = controlVariablesJSON;
 		for (var i in window.controlVariables) {
 			if(window.controlVariables.hasOwnProperty(i)){
@@ -87,7 +87,7 @@ function receiveControlVariables(){
 			}
 		}
 		$('.cv.pid-result .val').text(Math.round(1000*(window.controlVariables.p+window.controlVariables.i+window.controlVariables.d))/1000);
-	});
+	}, "json");
 }
 
 function loadDefaultControlSettings(){
@@ -136,14 +136,14 @@ function startScript(){
 
 function refreshLcd(){
 	"use strict";
-	$.getJSON('socketmessage.php', {messageType: "lcd", message: ""},
+	$.post('socketmessage.php', {messageType: "lcd", message: ""},
         function(lcdText){
             var $lcdText = $('#lcd .lcd-text');
             for (var i = lcdText.length - 1; i >= 0; i--) {
                 $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
                 window.setTimeout(checkScriptStatus,5000);
             }
-        })
+        }, "json")
         .fail(function() {
             var $lcdText = $('#lcd .lcd-text');
 			$lcdText.find('#lcd-line-0').html("Cannot receive");
