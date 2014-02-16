@@ -141,8 +141,8 @@ function refreshLcd(){
             var $lcdText = $('#lcd .lcd-text');
             for (var i = lcdText.length - 1; i >= 0; i--) {
                 $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
-                window.setTimeout(checkScriptStatus,5000);
             }
+            window.setTimeout(checkScriptStatus,5000);
         }, "json")
         .fail(function() {
             var $lcdText = $('#lcd .lcd-text');
