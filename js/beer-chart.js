@@ -107,32 +107,53 @@ function getState(g, row) {
  */
 function toDygraphArray(jsonData) {
     "use strict";
-    var i, j, cols = jsonData.cols, rows = jsonData.rows, dataArray=[], labelsArray = [], row;
+    var i, j, cols = jsonData.cols, rows = jsonData.rows, dataArray = [], labelsArray = [], annotationsArray = [], row,
+        date, handlers = [],
+        numberHandler = function (index, val) {
+            if (val) { row.push(val.v); } else { row.push(null); }
+        },
+        datetimeHandler = function (index, val) { date = (eval("new " + val.v)); row.push(date); },
+        annotationHandler = function (index, val) {
+            if (!val) {
+                return;
+            }
+            var annotation = {};
+
+            annotationsArray.push({
+                series: labelsArray[index * 2 / 3],
+                x: date.getTime(),
+                shortText: String.fromCharCode(65 + annotationsArray.length % 26),
+                text: val.v,
+                attachAtBottom: true
+            });
+        };
 
     for (i = 0; i < cols.length; i++){
-        labelsArray.push(cols[i].label);
+        if (cols[i].type === "number") {
+            handlers.push(numberHandler);
+            labelsArray.push(cols[i].label);
+        } else if (cols[i].type === 'datetime') {
+            handlers.push(datetimeHandler);
+            labelsArray.push(cols[i].label);
+        } else if (cols[i].type === 'string') {
+            handlers.push(annotationHandler);
+        }
     }
+
     for (i = 0; i < rows.length; i++){
         row = [];
-        var date = eval("new " + rows[i].c[0].v); // this is nasty and should be replaced!
-        row.push(date); // push date
-        for (j = 1; j < rows[i].c.length; j++) {
-            if (rows[i].c[j]) {
-                row.push(rows[i].c[j].v); // push other values
-            }
-            else{
-                row.push(null);
-            }
+        for (j = 0; j < rows[i].c.length; j++) {
+            handlers[j](j, rows[i].c[j]);
         }
-        dataArray.push(row)
+        dataArray.push(row);
     }
-    return {"values": dataArray, "labels": labelsArray};
+    return {"values": dataArray, "labels": labelsArray, "annotations": annotationsArray};
 }
 
 function getTime(g, row) {
     "use strict";
-    if (row>= g.numRows()){
-        row = g.numRows()-1;
+    if (row >= g.numRows()) {
+        row = g.numRows() - 1;
     }
     return g.getValue(row, TIME_COLUMN);
 }
@@ -331,9 +352,7 @@ function drawBeerChart(beerToDraw, div){
         var tempFormat = function(y) {
             return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
         };
-
-        var chart = new Dygraph.GVizChart(document.getElementById(div));
-        chart.draw(
+        var beerChart = new Dygraph(document.getElementById(div),
                 beerData.values, {
                 labels: beerData.labels,
                 colors: chartColors,
@@ -356,16 +375,21 @@ function drawBeerChart(beerToDraw, div){
                     highlightCircleSize: 5
                 },
                 highlightCallback: function(e, x, pts, row) {
-                    showChartLegend(e, x, pts, row, chart);
+                    showChartLegend(e, x, pts, row, beerChart);
                 },
                 unhighlightCallback: function(e) {
                     hideChartLegend();
                 },
-                underlayCallback: paintBackground
+                underlayCallback: paintBackground,
+                drawCallback: function(beerChart, is_initial) {
+                    if (is_initial) {
+                        if (beerData.annotations.length > 0) {
+                            beerChart.setAnnotations(beerData.annotations);
+                        }
+                    }
+                }
             }
         );
-
-        var beerChart = chart.date_graph;
         beerChart.setVisibility(beerChart.indexFromSetName('State')-1, 0);  // turn off state line
         var $chartContainer = $chartDiv.parent();
         $chartContainer.find('.beer-chart-controls').show();
