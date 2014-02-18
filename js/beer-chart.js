@@ -128,10 +128,12 @@ function toDygraphArray(jsonData) {
             });
         };
 
+    // set up handlers for each variable based on cols, use id as Dygraph label
     for (i = 0; i < cols.length; i++){
         if (cols[i].type === "number") {
             handlers.push(numberHandler);
-            labelsArray.push(cols[i].label);
+            // use id as label, but with lowercase first letter
+            labelsArray.push(cols[i].id.substr(0, 1).toLowerCase() + cols[i].id.substr(1));
         } else if (cols[i].type === 'datetime') {
             handlers.push(datetimeHandler);
             labelsArray.push(cols[i].label);
@@ -309,8 +311,8 @@ function findLineByName(name) {
     for (var key in lineNames) {
         if(lineNames.hasOwnProperty(key)){
             if ( lineNames[key] === name ){
-            return key;
-    }
+                return key;
+            }
         }
     }
     return null;
@@ -390,7 +392,7 @@ function drawBeerChart(beerToDraw, div){
                 }
             }
         );
-        beerChart.setVisibility(beerChart.indexFromSetName('State')-1, 0);  // turn off state line
+        beerChart.setVisibility(beerChart.indexFromSetName('state')-1, 0);  // turn off state line
         var $chartContainer = $chartDiv.parent();
         $chartContainer.find('.beer-chart-controls').show();
 
@@ -405,13 +407,16 @@ function drawBeerChart(beerToDraw, div){
         for (var key in lineNames){
             if(lineNames.hasOwnProperty(key)){
                 var $row = $chartContainer.find('.beer-chart-legend-row.' + key);
-                var series = beerChart.getPropertiesForSeries(lineNames[key]);
+                var series = beerChart.getPropertiesForSeries(key);
                 if(series === null){
                     $row.hide();
                 } else {
                     var numRows = beerChart.numRows();
                     if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
                         $row.hide();
+                    }
+                    else{
+                        $row.show();
                     }
                     if ( localStorage.getItem( legendStorageKeyPrefix + key ) === "false" ) {
                         $row.find('.toggle').addClass("inactive");
@@ -480,10 +485,10 @@ function updateVisibility(lineName, $button){
         return;
     }
     if($button.hasClass("inactive")){
-        chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, false);
+        chart.setVisibility(chart.getPropertiesForSeries(lineName).column-1, false);
         localStorage.setItem( legendStorageKeyPrefix + lineName, "false" );
     } else {
-        chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, true);
+        chart.setVisibility(chart.getPropertiesForSeries(lineName).column-1, true);
         localStorage.setItem( legendStorageKeyPrefix + lineName, "true" );
     }
 }
