@@ -101,6 +101,16 @@ function getState(g, row) {
 }
 
 /**
+ * Converts string from json "Date(2013,10,2,20,36,25)" files to Date object
+ * @param datestring  the data in json format
+ * @returns timestamp
+ */
+function stringToDate(dateString){
+    var arguments = dateString.substring(5,dateString.length-1).split(",");
+    return new Date(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+}
+
+/**
  * Converts json data to Dychart array format
  * @param jsonData  the data in json format
  * @returns {"values": array, "labels": array}   The same data, but in Dygraph array format
@@ -112,13 +122,11 @@ function toDygraphArray(jsonData) {
         numberHandler = function (index, val) {
             if (val) { row.push(val.v); } else { row.push(null); }
         },
-        datetimeHandler = function (index, val) { date = (eval("new " + val.v)); row.push(date); },
+        datetimeHandler = function (index, val) { date = stringToDate(val.v); row.push(date); },
         annotationHandler = function (index, val) {
             if (!val) {
                 return;
             }
-            var annotation = {};
-
             annotationsArray.push({
                 series: labelsArray[index * 2 / 3],
                 x: date.getTime(),
