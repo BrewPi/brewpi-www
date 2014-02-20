@@ -16,7 +16,6 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 ?>
-
 <div id="top-bar" class="ui-widget ui-widget-header ui-corner-all">
 	<div id="lcd" class="lcddisplay"><span class="lcd-text">
 		<span class="lcd-line" id="lcd-line-0">Live LCD waiting</span>

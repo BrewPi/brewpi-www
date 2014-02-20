@@ -16,7 +16,6 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 ?>
-
 <ul>
 	<div id="control-bar-text">
 		<div id="set-mode-text">Set temperature mode:</div>

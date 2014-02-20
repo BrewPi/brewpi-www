@@ -56,4 +56,3 @@ function getEndOfFile($filename){
 	}
 	return str_replace(array("\r\n", "\n", "\r"), '<br />', $output);
 }
-// no closing tag to prevent newlines in echoed output

@@ -16,7 +16,6 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 ?>
-
 <!DOCTYPE html >
 <html>
 	<head>

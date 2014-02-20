@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
-?>
 
-<?php
 // load default settings from file
 $defaultSettings = file_get_contents('defaultSettings.json');
 if($defaultSettings == false){
@@ -42,14 +40,25 @@ if(file_exists('userSettings.json')){
 	}
 }
 
-
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
 $profileName = $settingsArray["profileName"];
 $dateTimeFormat = $settingsArray["dateTimeFormat"];
 $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
-?>
 
+function prepareJSON($input) {
+    //This will convert ASCII/ISO-8859-1 to UTF-8.
+    //Be careful with the third parameter (encoding detect list), because
+    //if set wrong, some input encodings will get garbled (including UTF-8!)
+    $input = mb_convert_encoding($input, 'UTF-8', 'ASCII,UTF-8,ISO-8859-1');
+
+    //Remove UTF-8 BOM if present, json_decode() does not like it.
+    if(substr($input, 0, 3) == pack("CCC", 0xEF, 0xBB, 0xBF)) $input = substr($input, 3);
+
+    return $input;
+}
+
+?>
 <!DOCTYPE html >
 <html>
 	<head>
@@ -97,17 +106,3 @@ $dateTimeFormatDisplay = $settingsArray["dateTimeFormatDisplay"];
 		<script type="text/javascript" src="js/profile-table.js"></script>
 	</body>
 </html>
-
-<?php
-function prepareJSON($input) {
-    //This will convert ASCII/ISO-8859-1 to UTF-8.
-    //Be careful with the third parameter (encoding detect list), because
-    //if set wrong, some input encodings will get garbled (including UTF-8!)
-    $input = mb_convert_encoding($input, 'UTF-8', 'ASCII,UTF-8,ISO-8859-1');
-
-    //Remove UTF-8 BOM if present, json_decode() does not like it.
-    if(substr($input, 0, 3) == pack("CCC", 0xEF, 0xBB, 0xBF)) $input = substr($input, 3);
-
-    return $input;
-}
-?>
