@@ -33,6 +33,27 @@ function startsWith($haystack, $needle)
 	return !strncmp($haystack, $needle, strlen($needle));
 }
 
+function readFromSocket($sock){
+	$msg = socket_read($sock, 4096);
+    if($msg == false){
+        $errorcode = socket_last_error();
+        $errormsg = socket_strerror($errorcode);
+        die("Couldn't read from socket: [$errorcode] $errormsg" . "\nIs the script running?");
+    }
+    else{
+    	return $msg;
+    }
+}
+
+function writeToSocket($sock, $msg){
+    $bytesWritten = socket_write($sock, $msg, 4096);
+    if($bytesWritten == false){
+        $errorcode = socket_last_error();
+        $errormsg = socket_strerror($errorcode);
+        die("Couldn't write to socket: [$errorcode] $errormsg" . "\nIs the script running?");
+    }
+}
+
 error_reporting(E_ALL ^ E_WARNING);
 if(isset($_POST['messageType'])){
 	$messageType = $_POST['messageType'];
@@ -52,11 +73,11 @@ if($sock !== false){
 		switch($messageType){
 			case "setActiveProfile":
 			case "startNewBrew":
-				socket_write($sock, $messageType . "=" . $data, 4096);
-				echo socket_read($sock, 4096);
+				writeToSocket($sock, $messageType . "=" . $data);
+				echo readFromSocket($sock);
 				break;
 			default:
-				socket_write($sock, $messageType . "=" . $data, 4096);
+				writeToSocket($sock, $messageType . "=" . $data);
 				break;
 		}
 	}
@@ -64,8 +85,8 @@ if($sock !== false){
 		// message without a data argument
 		switch($messageType){
 		case "checkScript":
-			socket_write($sock, "ack", 4096);
-			$answer = socket_read($sock, 4096);
+			writeToSocket($sock, "ack");
+			$answer = readFromSocket($sock);
 			if($answer == "ack"){
 				echo 1;
 			}
@@ -74,24 +95,22 @@ if($sock !== false){
 			}
 			break;
 		case "lcd":
-			socket_write($sock, "lcd", 4096);
-			$lcdText = socket_read($sock, 4096);
-			if($lcdText !== false){
-				echo str_replace(chr(0xB0), "&deg;", $lcdText); // replace degree sign with &Deg
-			}
-			else{
-				echo false;
-			}
+			writeToSocket($sock, "lcd");
+			$lcdText = readFromSocket($sock);
+			echo str_replace(chr(0xB0), "&deg;", $lcdText); // replace degree sign with &Deg
 			break;
 		default:
 			// just pass the command to the socket and read the answer if needed
-			socket_write($sock, $messageType, 4096);
+			writeToSocket($sock, $messageType);
 			if(startsWith($messageType, "get") or $messageType == "stopLogging" or
 				$messageType == "pauseLogging" or $messageType == "resumeLogging"){
 				// return data expected, read from socket
-				echo socket_read($sock, 4096);
+				echo readFromSocket($sock);
 			}
 		}
 	}
 	socket_close($sock);
+}
+else{
+    die("Cannot open socket to script");
 }

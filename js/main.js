@@ -142,7 +142,7 @@ function refreshLcd(){
             for (var i = lcdText.length - 1; i >= 0; i--) {
                 $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
             }
-            window.setTimeout(checkScriptStatus,5000);
+            updateScriptStatus(true);
         }, "json")
         .fail(function() {
             var $lcdText = $('#lcd .lcd-text');
@@ -150,63 +150,63 @@ function refreshLcd(){
 			$lcdText.find('#lcd-line-1').html("LCD text from");
 			$lcdText.find('#lcd-line-2').html("Python script");
 			$lcdText.find('#lcd-line-3').html(" ");
-	});
+            updateScriptStatus(false);
+	    }).always(function() {
+            window.setTimeout(refreshLcd,5000);
+        }
+    );
 }
 
-function checkScriptStatus(){
+function updateScriptStatus(running){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "checkScript", message: ""}, function(answer){
-		answer = answer.replace(/\s/g, ''); //strip all whitespace, including newline.
-		if(answer !== prevScriptStatus){
-			var $scriptStatus = $(".script-status");
-			var $scriptStatusIcon = $scriptStatus.find("span.ui-icon");
-			var $scriptStatusButtonText = $scriptStatus.find("span.ui-button-text");
-			if(answer==='1'){
-				$scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-check");
-				$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-				$scriptStatusButtonText.text("Script running");
-				$scriptStatus.unbind();
-				$scriptStatus.bind({
-						click: function(){
-							stopScript();
-						},
-						mouseenter: function(){
-							$scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-stop");
-							$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-							$scriptStatusButtonText.text("Stop script");
-						},
-						mouseleave: function(){
-							$scriptStatusIcon.removeClass("ui-icon-stop").addClass("ui-icon-check");
-							$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-							$scriptStatusButtonText.text("Script running");
-						}
-				});
-			}
-			else{
-				$scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-alert");
-				$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-				$scriptStatusButtonText.text("Script not running!");
-				$scriptStatus.unbind();
-				$scriptStatus.bind({
-				click: function(){
-					startScript();
-				},
-				mouseenter: function(){
-					$scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-play");
-					$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-					$scriptStatusButtonText.text("Start script");
-				},
-				mouseleave: function(){
-					$scriptStatusIcon.removeClass("ui-icon-play").addClass("ui-icon-alert");
-					$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-					$scriptStatusButtonText.text("Script not running!");
-				}
-				});
-			}
-		}
-		prevScriptStatus = answer;
-		window.setTimeout(refreshLcd, 5000); //alternate refreshing script and lcd
-	});
+    if(window.scriptStatus == running){
+        return;
+    }
+    window.scriptStatus = running;
+    var $scriptStatus = $(".script-status");
+    var $scriptStatusIcon = $scriptStatus.find("span.ui-icon");
+    var $scriptStatusButtonText = $scriptStatus.find("span.ui-button-text");
+    if(running){
+        $scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-check");
+        $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+        $scriptStatusButtonText.text("Script running");
+        $scriptStatus.unbind();
+        $scriptStatus.bind({
+            click: function(){
+                stopScript();
+            },
+            mouseenter: function(){
+                $scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-stop");
+                $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+                $scriptStatusButtonText.text("Stop script");
+            },
+            mouseleave: function(){
+                $scriptStatusIcon.removeClass("ui-icon-stop").addClass("ui-icon-check");
+                $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+                $scriptStatusButtonText.text("Script running");
+            }
+        });
+    } else {
+        $scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-alert");
+        $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+        $scriptStatusButtonText.text("Script not running!");
+        $scriptStatus.unbind();
+        $scriptStatus.bind({
+            click: function(){
+                startScript();
+            },
+            mouseenter: function(){
+                $scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-play");
+                $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+                $scriptStatusButtonText.text("Start script");
+            },
+            mouseleave: function(){
+                $scriptStatusIcon.removeClass("ui-icon-play").addClass("ui-icon-alert");
+                $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+                $scriptStatusButtonText.text("Script not running!");
+            }
+        });
+    }
 }
 
 function beerNameDialogInit(){
@@ -376,6 +376,6 @@ $(document).ready(function(){
 	receiveControlConstants();
 	receiveControlSettings();
 	receiveControlVariables();
-	checkScriptStatus(); //will call refreshLcd and alternate between the two
+	refreshLcd(); //will call refreshLcd and alternate between the two
 });
 
