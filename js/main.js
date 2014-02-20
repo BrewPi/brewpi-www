@@ -26,10 +26,7 @@ var controlVariables = {};
 function receiveControlConstants(){
 	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
-		if(controlConstantsJSON === ''){
-			return;
-		}
-		window.controlConstants = jQuery.parseJSON(controlConstantsJSON);
+		window.controlConstants = controlConstantsJSON;
 		for (var i in window.controlConstants){
 			if(window.controlConstants.hasOwnProperty(i)){
 				if($('select[name="'+i+'"]').length){
@@ -40,18 +37,15 @@ function receiveControlConstants(){
 				}
 				$('.cc.'+i+' .val').text(window.controlConstants[i]);
 			}
-		}
-	});
+        }
+    }, "json");
 }
 
 function receiveControlSettings(callback){
 	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
-		if(controlSettingsJSON === ''){
-			return;
-		}
-		window.controlSettings = jQuery.parseJSON(controlSettingsJSON);
-		for (var i in controlSettings) {
+		window.controlSettings = controlSettingsJSON;
+        for (var i in controlSettings) {
 			if(controlSettings.hasOwnProperty(i)){
 				if($('select[name="'+i+'"]').length){
 					$('select[name="'+i+'"]').val(window.controlSettings[i]);
@@ -80,23 +74,20 @@ function receiveControlSettings(callback){
 		if (callback && typeof(callback) === "function") {
 			callback();
 		}
-	});
+	}, "json");
 }
 
 function receiveControlVariables(){
 	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
-		if(controlVariablesJSON === ''){
-			return;
-		}
-		window.controlVariables = jQuery.parseJSON(controlVariablesJSON);
+		window.controlVariables = controlVariablesJSON;
 		for (var i in window.controlVariables) {
 			if(window.controlVariables.hasOwnProperty(i)){
 				$('.cv.'+i+' .val').text(window.controlVariables[i]);
 			}
 		}
 		$('.cv.pid-result .val').text(Math.round(1000*(window.controlVariables.p+window.controlVariables.i+window.controlVariables.d))/1000);
-	});
+	}, "json");
 }
 
 function loadDefaultControlSettings(){
@@ -145,23 +136,20 @@ function startScript(){
 
 function refreshLcd(){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
-		var $lcdText = $('#lcd .lcd-text');
-		try
-		{
-			lcdText = JSON.parse(lcdText);
-			for (var i = lcdText.length - 1; i >= 0; i--) {
-				$lcdText.find('#lcd-line-' + i).html(lcdText[i]);
-			}
-		}
-		catch(e)
-		{
+	$.post('socketmessage.php', {messageType: "lcd", message: ""},
+        function(lcdText){
+            var $lcdText = $('#lcd .lcd-text');
+            for (var i = lcdText.length - 1; i >= 0; i--) {
+                $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
+            }
+            window.setTimeout(checkScriptStatus,5000);
+        }, "json")
+        .fail(function() {
+            var $lcdText = $('#lcd .lcd-text');
 			$lcdText.find('#lcd-line-0').html("Cannot receive");
 			$lcdText.find('#lcd-line-1').html("LCD text from");
 			$lcdText.find('#lcd-line-2').html("Python script");
 			$lcdText.find('#lcd-line-3').html(" ");
-		}
-		window.setTimeout(checkScriptStatus,5000);
 	});
 }
 
@@ -361,7 +349,6 @@ function beerNameDialogResume($body, $backButton){
 function beerNameDialogResult($body, $backButton, result){
     "use strict";
     $body.empty();
-    console.log(result);
     if(result === ""){
         result = { status: 2, statusMessage: "Could not receive reply from script" };
     }
@@ -376,8 +363,6 @@ function beerNameDialogResult($body, $backButton, result){
     }
     $body.append($("<span  class='dialog-result-message'>" + result.statusMessage + "</span>"));
 }
-
-google.load('visualization', '1', {packages: ['table']});
 
 $(document).ready(function(){
 	"use strict";

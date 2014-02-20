@@ -66,8 +66,8 @@
 		</form>
 
 		<h3 id="program-stderr-header">Script stderr output will auto-refresh while programming if you keep this tab open</h3>
-		<div class="stderr console-box" "></div>
-		<iframe id="upload-target" name="upload-target" src="#"style="width:0;height:0;border:0px solid #fff;"></iframe>
+		<div class="stderr console-box"></div>
+		<iframe id="upload-target" name="upload-target" src="about:blank" style="width:0;height:0;border:0px solid #fff;"></iframe>
 	</div>
 </div>
 <div id="settings">
