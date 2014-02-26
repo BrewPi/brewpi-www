@@ -20,4 +20,4 @@
 $instanceRoot = getcwd();
 
 # remove do not run file. Cron will start the script within one minute
-unlink("$instanceRoot/do_not_run_brewpi")
+unlink("$instanceRoot/do_not_run_brewpi");
