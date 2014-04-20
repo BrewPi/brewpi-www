@@ -286,9 +286,9 @@ function beerNameDialogNew($body, $backButton){
     $body.append($("<input id='new-beer-name' type='text' size='30' placeholder='Enter new beer name..'> </input>"));
     var $buttons = $("<div class='beer-name-buttons'></div>");
     $buttons.append($("<button>Start new brew</button>").button({	icons: {primary: "ui-icon-check" } }).click(function(){
-        $.post('socketmessage.php', {messageType: "startNewBrew", message: $("input#new-beer-name").val()}, function(reply){
+        $.post('socketmessage.php', {messageType: "startNewBrew", message: encodeURIComponent($("input#new-beer-name").val())}, function(reply){
             $backButton.show().unbind().bind({click: function(){beerNameDialogNew($body, $backButton);}});
-            beerNameDialogResult($body, $backButton, reply);
+            beerNameDialogResult($body, $backButton, decodeURIComponent(reply));
         });
     }));
     $body.append($buttons);
