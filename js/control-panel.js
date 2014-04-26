@@ -44,11 +44,11 @@ function statusMessage(messageType, messageText){
 }
 
 function loadControlPanel(){
-	"use strict";
+    "use strict";
     if ( window.profileName !== '' ) {
         loadProfile(window.profileName, renderProfile);
     }
-	receiveControlSettings(function(){
+    receiveControlSettings(function(){
         if(window.controlSettings === {}){
             return;
         }
@@ -56,7 +56,7 @@ function loadControlPanel(){
         switch(window.controlSettings.mode){
             case 'p':
                 $controlPanel.tabs( "option", "active", 0);
-                statusMessage("normal","Running beer profile: " + window.controlSettings.profile);
+                statusMessage("normal","Running beer profile: " + decodeURIComponent(window.controlSettings.profile));
                 break;
             case 'b':
                 $controlPanel.tabs( "option", "active", 1);
@@ -159,7 +159,7 @@ function renderProfile(beerProfile) {
     "use strict";
     window.profileName = beerProfile.name;
     profileTable.render(beerProfile);
-    $("#profileTableName").text(window.profileName);
+    $("#profileTableName").text(decodeURIComponent(window.profileName));
     $("button#edit-controls").show();
     $("button#saveas-controls").show();
     drawProfileChart("profileChartDiv", profileTable );
@@ -341,7 +341,7 @@ function showProfileSelectDialog() {
         stop: function(event, ui) {
             $(".ui-selected:first", this).each(function() {
                 $(this).siblings().removeClass("ui-selected");
-                selectedProfile = $(this).text();
+                selectedProfile = $(this).data('profileName');
                 drawSelectPreviewChart(selectedProfile);
             });
         }
@@ -350,7 +350,10 @@ function showProfileSelectDialog() {
         try {
             $('#profileSelect').empty();
             for( var i=0; i<beerProfiles.profiles.length; i++) {
-                var $li = $("<li></li>").addClass("ui-widget-content").text(beerProfiles.profiles[i]);
+                var $li = $("<li></li>")
+                    .addClass("ui-widget-content")
+                    .data('profileName', beerProfiles.profiles[i])
+                    .text(decodeURIComponent(beerProfiles.profiles[i]));
                 $('#profileSelect').append($li);
             }
         } catch (e) {
@@ -379,9 +382,9 @@ function showProfileSelectDialog() {
 }
 function promptToApplyProfile(profName) {
     "use strict";
-    $("<div>You are editing the current profile: " + profName + ".  Would you like to apply it now?</div>").dialog( {
+    $("<div>You are editing the current profile: " + decodeURIComponent(profName) + ".  Would you like to apply it now?</div>").dialog( {
         modal: true,
-        title: "Apply Profile: " + profName + "?",
+        title: "Apply Profile: " + decodeURIComponent(profName) + "?",
         buttons: [
             {
                 text: "Apply",
@@ -421,7 +424,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                         promptToApplyProfile(profName);
                     }
                 } else {
-                    console.log("profile save error: " + response.message);
+                    console.log("profile save error: " + decodeURIComponent(response.message));
                     $('#profileSaveError').show();
                 }
             },
@@ -465,13 +468,13 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                         profileEdit.resetInvalidCells();
                     }
 
-                    var profName = $('#profileEditName').val();
+                    var profName = encodeURIComponent($('#profileEditName').val());
                     if ( typeof( profName ) !== "undefined" && profName !== '' ) {
 
                         $('#profileEditNameLabel').removeClass('error');
                         var jqDialog = $( this );
                         if ( editableName && isNameTaken(profName) ) {
-                            $("<div>Are you sure you want to overwrite the profile: " + profName + "?</div>").dialog({
+                            $("<div>Are you sure you want to overwrite the profile: " + decodeURIComponent(profName) + "?</div>").dialog({
                                 resizable: false,
                                 height: 140,
                                 modal: true,
@@ -569,13 +572,13 @@ $(document).ready(function(){
     });
 
     $("button#edit-controls").button({  icons: {primary: "ui-icon-wrench" } }).click(function() {
-        $("#profileEditName").val(profileTable.profileName);
+        $("#profileEditName").val(decodeURIComponent(profileTable.profileName));
         profileEdit.render( profileTable.toJSON() );
         showProfileEditDialog(false, "Edit Temperature Profile");
     }).hide();
 
     $("button#saveas-controls").button({  icons: {primary: "ui-icon-copy" } }).click(function() {
-        $("#profileEditName").val("copy of " + profileTable.profileName);
+        $("#profileEditName").val("copy of " + decodeURIComponent(profileTable.profileName));
         profileEdit.render( profileTable.toJSON() );
         showProfileEditDialog(true, "Save Temperature Profile As", true);
     }).hide();

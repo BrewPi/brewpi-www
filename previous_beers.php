@@ -31,7 +31,7 @@
 				{
 					$dir = basename($dir);
 					if($dir !== "profiles"){
-					    echo '<option value="', $dir, '">', $dir, '</option>';
+					    echo '<option value="', $dir, '">', urldecode($dir), '</option>';
 					}
 				}
 			?>

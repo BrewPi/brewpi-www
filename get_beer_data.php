@@ -19,10 +19,10 @@
 $beerName = $_POST["beername"];
 $fileNames = array();
 	$currentBeerDir = 'data/' . $beerName;
-if(!file_exists($currentBeerDir)){
-	echo json_encode( array( "error" => "directory: $beerName, does not exist" ) );
-	return;
-}
+    if(!file_exists($currentBeerDir)){
+        echo json_encode( array( "error" => "directory: $beerName, does not exist" ) );
+        return;
+    }
 	$handle = opendir($currentBeerDir);
 	if($handle == false){
 	echo json_encode( array( "error" => "Cannot retrieve beer files directory: " . $currentBeerDir ) );
