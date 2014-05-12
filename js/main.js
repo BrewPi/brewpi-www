@@ -288,7 +288,7 @@ function beerNameDialogNew($body, $backButton){
     $buttons.append($("<button>Start new brew</button>").button({	icons: {primary: "ui-icon-check" } }).click(function(){
         $.post('socketmessage.php', {messageType: "startNewBrew", message: encodeURIComponent($("input#new-beer-name").val())}, function(reply){
             $backButton.show().unbind().bind({click: function(){beerNameDialogNew($body, $backButton);}});
-            beerNameDialogResult($body, $backButton, decodeURIComponent(reply));
+            beerNameDialogResult($body, $backButton, reply);
         });
     }));
     $body.append($buttons);
