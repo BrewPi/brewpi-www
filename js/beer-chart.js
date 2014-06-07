@@ -120,7 +120,7 @@ function toDygraphArray(jsonData) {
     var i, j, cols = jsonData.cols, rows = jsonData.rows, dataArray = [], labelsArray = [], annotationsArray = [], row,
         date, handlers = [],
         numberHandler = function (index, val) {
-            if (val) { row.push(val.v); } else { row.push(null); }
+            if (val) { row.push(parseFloat(val.v)); } else { row.push(null); }
         },
         datetimeHandler = function (index, val) { date = stringToDate(val.v); row.push(date); },
         annotationHandler = function (index, val) {
