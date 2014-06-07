@@ -26,10 +26,7 @@ var controlVariables = {};
 function receiveControlConstants(){
 	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
-		if(controlConstantsJSON === ''){
-			return;
-		}
-		window.controlConstants = jQuery.parseJSON(controlConstantsJSON);
+		window.controlConstants = controlConstantsJSON;
 		for (var i in window.controlConstants){
 			if(window.controlConstants.hasOwnProperty(i)){
 				if($('select[name="'+i+'"]').length){
@@ -40,18 +37,15 @@ function receiveControlConstants(){
 				}
 				$('.cc.'+i+' .val').text(window.controlConstants[i]);
 			}
-		}
-	});
+        }
+    }, "json");
 }
 
 function receiveControlSettings(callback){
 	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
-		if(controlSettingsJSON === ''){
-			return;
-		}
-		window.controlSettings = jQuery.parseJSON(controlSettingsJSON);
-		for (var i in controlSettings) {
+		window.controlSettings = controlSettingsJSON;
+        for (var i in controlSettings) {
 			if(controlSettings.hasOwnProperty(i)){
 				if($('select[name="'+i+'"]').length){
 					$('select[name="'+i+'"]').val(window.controlSettings[i]);
@@ -80,23 +74,20 @@ function receiveControlSettings(callback){
 		if (callback && typeof(callback) === "function") {
 			callback();
 		}
-	});
+	}, "json");
 }
 
 function receiveControlVariables(){
 	"use strict";
 	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
-		if(controlVariablesJSON === ''){
-			return;
-		}
-		window.controlVariables = jQuery.parseJSON(controlVariablesJSON);
+		window.controlVariables = controlVariablesJSON;
 		for (var i in window.controlVariables) {
 			if(window.controlVariables.hasOwnProperty(i)){
 				$('.cv.'+i+' .val').text(window.controlVariables[i]);
 			}
 		}
 		$('.cv.pid-result .val').text(Math.round(1000*(window.controlVariables.p+window.controlVariables.i+window.controlVariables.d))/1000);
-	});
+	}, "json");
 }
 
 function loadDefaultControlSettings(){
@@ -145,80 +136,77 @@ function startScript(){
 
 function refreshLcd(){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "lcd", message: ""}, function(lcdText){
-		var $lcdText = $('#lcd .lcd-text');
-		try
-		{
-			lcdText = JSON.parse(lcdText);
-			for (var i = lcdText.length - 1; i >= 0; i--) {
-				$lcdText.find('#lcd-line-' + i).html(lcdText[i]);
-			}
-		}
-		catch(e)
-		{
+	$.post('socketmessage.php', {messageType: "lcd", message: ""},
+        function(lcdText){
+            var $lcdText = $('#lcd .lcd-text');
+            for (var i = lcdText.length - 1; i >= 0; i--) {
+                $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
+            }
+            updateScriptStatus(true);
+        }, "json")
+        .fail(function() {
+            var $lcdText = $('#lcd .lcd-text');
 			$lcdText.find('#lcd-line-0').html("Cannot receive");
 			$lcdText.find('#lcd-line-1').html("LCD text from");
 			$lcdText.find('#lcd-line-2').html("Python script");
 			$lcdText.find('#lcd-line-3').html(" ");
-		}
-		window.setTimeout(checkScriptStatus,5000);
-	});
+            updateScriptStatus(false);
+	    }).always(function() {
+            window.setTimeout(refreshLcd,5000);
+        }
+    );
 }
 
-function checkScriptStatus(){
+function updateScriptStatus(running){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "checkScript", message: ""}, function(answer){
-		answer = answer.replace(/\s/g, ''); //strip all whitespace, including newline.
-		if(answer !== prevScriptStatus){
-			var $scriptStatus = $(".script-status");
-			var $scriptStatusIcon = $scriptStatus.find("span.ui-icon");
-			var $scriptStatusButtonText = $scriptStatus.find("span.ui-button-text");
-			if(answer==='1'){
-				$scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-check");
-				$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-				$scriptStatusButtonText.text("Script running");
-				$scriptStatus.unbind();
-				$scriptStatus.bind({
-						click: function(){
-							stopScript();
-						},
-						mouseenter: function(){
-							$scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-stop");
-							$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-							$scriptStatusButtonText.text("Stop script");
-						},
-						mouseleave: function(){
-							$scriptStatusIcon.removeClass("ui-icon-stop").addClass("ui-icon-check");
-							$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-							$scriptStatusButtonText.text("Script running");
-						}
-				});
-			}
-			else{
-				$scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-alert");
-				$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-				$scriptStatusButtonText.text("Script not running!");
-				$scriptStatus.unbind();
-				$scriptStatus.bind({
-				click: function(){
-					startScript();
-				},
-				mouseenter: function(){
-					$scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-play");
-					$scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-					$scriptStatusButtonText.text("Start script");
-				},
-				mouseleave: function(){
-					$scriptStatusIcon.removeClass("ui-icon-play").addClass("ui-icon-alert");
-					$scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-					$scriptStatusButtonText.text("Script not running!");
-				}
-				});
-			}
-		}
-		prevScriptStatus = answer;
-		window.setTimeout(refreshLcd, 5000); //alternate refreshing script and lcd
-	});
+    if(window.scriptStatus == running){
+        return;
+    }
+    window.scriptStatus = running;
+    var $scriptStatus = $(".script-status");
+    var $scriptStatusIcon = $scriptStatus.find("span.ui-icon");
+    var $scriptStatusButtonText = $scriptStatus.find("span.ui-button-text");
+    if(running){
+        $scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-check");
+        $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+        $scriptStatusButtonText.text("Script running");
+        $scriptStatus.unbind();
+        $scriptStatus.bind({
+            click: function(){
+                stopScript();
+            },
+            mouseenter: function(){
+                $scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-stop");
+                $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+                $scriptStatusButtonText.text("Stop script");
+            },
+            mouseleave: function(){
+                $scriptStatusIcon.removeClass("ui-icon-stop").addClass("ui-icon-check");
+                $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+                $scriptStatusButtonText.text("Script running");
+            }
+        });
+    } else {
+        $scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-alert");
+        $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+        $scriptStatusButtonText.text("Script not running!");
+        $scriptStatus.unbind();
+        $scriptStatus.bind({
+            click: function(){
+                startScript();
+            },
+            mouseenter: function(){
+                $scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-play");
+                $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
+                $scriptStatusButtonText.text("Start script");
+            },
+            mouseleave: function(){
+                $scriptStatusIcon.removeClass("ui-icon-play").addClass("ui-icon-alert");
+                $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
+                $scriptStatusButtonText.text("Script not running!");
+            }
+        });
+    }
 }
 
 function beerNameDialogInit(){
@@ -298,7 +286,7 @@ function beerNameDialogNew($body, $backButton){
     $body.append($("<input id='new-beer-name' type='text' size='30' placeholder='Enter new beer name..'> </input>"));
     var $buttons = $("<div class='beer-name-buttons'></div>");
     $buttons.append($("<button>Start new brew</button>").button({	icons: {primary: "ui-icon-check" } }).click(function(){
-        $.post('socketmessage.php', {messageType: "startNewBrew", message: $("input#new-beer-name").val()}, function(reply){
+        $.post('socketmessage.php', {messageType: "startNewBrew", message: encodeURIComponent($("input#new-beer-name").val())}, function(reply){
             $backButton.show().unbind().bind({click: function(){beerNameDialogNew($body, $backButton);}});
             beerNameDialogResult($body, $backButton, reply);
         });
@@ -361,7 +349,6 @@ function beerNameDialogResume($body, $backButton){
 function beerNameDialogResult($body, $backButton, result){
     "use strict";
     $body.empty();
-    console.log(result);
     if(result === ""){
         result = { status: 2, statusMessage: "Could not receive reply from script" };
     }
@@ -377,8 +364,6 @@ function beerNameDialogResult($body, $backButton, result){
     $body.append($("<span  class='dialog-result-message'>" + result.statusMessage + "</span>"));
 }
 
-google.load('visualization', '1', {packages: ['table']});
-
 $(document).ready(function(){
 	"use strict";
 	$(".script-status").button({	icons: {primary: "ui-icon-alert" } });
@@ -391,6 +376,6 @@ $(document).ready(function(){
 	receiveControlConstants();
 	receiveControlSettings();
 	receiveControlVariables();
-	checkScriptStatus(); //will call refreshLcd and alternate between the two
+	refreshLcd(); //will call refreshLcd and alternate between the two
 });
 

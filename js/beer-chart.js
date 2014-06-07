@@ -99,10 +99,71 @@ function getState(g, row) {
     "use strict";
     return (row>= g.numRows()) ? 0 : g.getValue(row, STATE_COLUMN);
 }
+
+/**
+ * Converts string from json "Date(2013,10,2,20,36,25)" files to Date object
+ * @param datestring  the data in json format
+ * @returns timestamp
+ */
+function stringToDate(dateString){
+    var arguments = dateString.substring(5,dateString.length-1).split(",");
+    return new Date(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+}
+
+/**
+ * Converts json data to Dychart array format
+ * @param jsonData  the data in json format
+ * @returns {"values": array, "labels": array}   The same data, but in Dygraph array format
+ */
+function toDygraphArray(jsonData) {
+    "use strict";
+    var i, j, cols = jsonData.cols, rows = jsonData.rows, dataArray = [], labelsArray = [], annotationsArray = [], row,
+        date, handlers = [],
+        numberHandler = function (index, val) {
+            if (val) { row.push(parseFloat(val.v)); } else { row.push(null); }
+        },
+        datetimeHandler = function (index, val) { date = stringToDate(val.v); row.push(date); },
+        annotationHandler = function (index, val) {
+            if (!val) {
+                return;
+            }
+            annotationsArray.push({
+                series: labelsArray[index * 2 / 3],
+                x: date.getTime(),
+                shortText: String.fromCharCode(65 + annotationsArray.length % 26),
+                text: val.v,
+                attachAtBottom: true
+            });
+        };
+
+    // set up handlers for each variable based on cols, use id as Dygraph label
+    for (i = 0; i < cols.length; i++){
+        if (cols[i].type === "number") {
+            handlers.push(numberHandler);
+            // use id as label, but with lowercase first letter
+            labelsArray.push(cols[i].id.substr(0, 1).toLowerCase() + cols[i].id.substr(1));
+        } else if (cols[i].type === 'datetime') {
+            handlers.push(datetimeHandler);
+            labelsArray.push(cols[i].label);
+        } else if (cols[i].type === 'string') {
+            handlers.push(annotationHandler);
+        }
+    }
+
+    for (i = 0; i < rows.length; i++){
+        row = [];
+        for (j = 0; j < rows[i].c.length; j++) {
+            handlers[j](j, rows[i].c[j]);
+        }
+        dataArray.push(row);
+    }
+    return {"values": dataArray, "labels": labelsArray, "annotations": annotationsArray};
+}
+
 function getTime(g, row) {
     "use strict";
-    if (row>= g.numRows()){
-        row = g.numRows()-1;
+    if (row >= g.numRows()) {
+        row = g.numRows() - 1;
     }
     return g.getValue(row, TIME_COLUMN);
 }
@@ -258,8 +319,8 @@ function findLineByName(name) {
     for (var key in lineNames) {
         if(lineNames.hasOwnProperty(key)){
             if ( lineNames[key] === name ){
-            return key;
-    }
+                return key;
+            }
         }
     }
     return null;
@@ -278,15 +339,12 @@ function drawBeerChart(beerToDraw, div){
         return;
     }
 
-	$.post("get_beer_files.php", {"beername": beerToDraw}, function(answer) {
-		var combinedJson = {};
-		var first = true;
-        var files = [];
+    $.post("get_beer_data.php", {"beername": beerToDraw}, function(answer) {
+        var combinedJson = {};
 		try{
-            files = $.parseJSON(answer);
-        }
-        catch (e){
-            var $errorMessage = $("<span class='chart-error-text'>Could not receive any files for this brew.<br>" +
+            combinedJson = $.parseJSON(answer);
+        } catch (e) {
+            var $errorMessage = $("<span class='chart-error-text'>Could not parse data for this brew.<br>" +
                 "If you just started this brew, click the refresh button after a few minutes.<br> " +
                 "A chart will appear after the first data point is logged.</span>");
             var $refreshButton = $("<button class='chart-error-refresh'>Refresh</button>");
@@ -299,46 +357,14 @@ function drawBeerChart(beerToDraw, div){
 
             return;
         }
-
-        if(typeof files === 'undefined' || files === []){
-            return;
-        }
-		for(var i=0;i<files.length;i++){
-			var fileLocation = files[i];
-			var jsonData = $.ajax({
-					url: fileLocation,
-					dataType:"json",
-					async: false
-					}).responseText;
-			if(jsonData === ''){
-				// skip empty responses
-				continue;
-			}
-            var parsedJsonData;
-            try{
-                parsedJsonData = $.parseJSON(jsonData);
-            }
-            catch (e){
-                alert("error in JSON of file '" + fileLocation + "'. Skipping file.");
-                continue;
-            }
-			if(first){
-				combinedJson = parsedJsonData;
-				first = false;
-			}
-			else{
-				combinedJson.rows  = combinedJson.rows.concat(parsedJsonData.rows);
-			}
-		}
-		var beerData = new google.visualization.DataTable(combinedJson);
+        var beerData = toDygraphArray(combinedJson);
 
         var tempFormat = function(y) {
             return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
         };
-
-        var chart = new Dygraph.GVizChart(document.getElementById(div));
-        chart.draw(
-                beerData, {
+        var beerChart = new Dygraph(document.getElementById(div),
+                beerData.values, {
+                labels: beerData.labels,
                 colors: chartColors,
                 axisLabelFontSize:12,
                 animatedZooms: true,
@@ -349,22 +375,6 @@ function drawBeerChart(beerToDraw, div){
                 displayAnnotationsFilter:true,
                 //showRangeSelector: true,
                 strokeWidth: 1,
-
-                "Beer setting" : {
-//                        strokePattern: [ 5, 5 ],
-//                  strokeWidth: 1
-                },
-                "Fridge setting" : {
-//                        strokePattern: [ 5, 5 ],
-//                  strokeWidth: 1
-                },
-                "Beer temperature" : {
-//                        strokePattern: [ 5, 5 ],
-//                  strokeWidth: 2
-                },
-                "Room temp" : {
-//                  strokeWidth: 1
-                },
                 axes: {
                     y : { valueFormatter: tempFormat }
                 },
@@ -375,17 +385,22 @@ function drawBeerChart(beerToDraw, div){
                     highlightCircleSize: 5
                 },
                 highlightCallback: function(e, x, pts, row) {
-                    showChartLegend(e, x, pts, row, chart);
+                    showChartLegend(e, x, pts, row, beerChart);
                 },
                 unhighlightCallback: function(e) {
                     hideChartLegend();
                 },
-                underlayCallback: paintBackground
+                underlayCallback: paintBackground,
+                drawCallback: function(beerChart, is_initial) {
+                    if (is_initial) {
+                        if (beerData.annotations.length > 0) {
+                            beerChart.setAnnotations(beerData.annotations);
+                        }
+                    }
+                }
             }
         );
-
-        var beerChart = chart.date_graph;
-        beerChart.setVisibility(beerChart.indexFromSetName('State')-1, 0);  // turn off state line
+        beerChart.setVisibility(beerChart.indexFromSetName('state')-1, 0);  // turn off state line
         var $chartContainer = $chartDiv.parent();
         $chartContainer.find('.beer-chart-controls').show();
 
@@ -400,13 +415,16 @@ function drawBeerChart(beerToDraw, div){
         for (var key in lineNames){
             if(lineNames.hasOwnProperty(key)){
                 var $row = $chartContainer.find('.beer-chart-legend-row.' + key);
-                var series = beerChart.getPropertiesForSeries(lineNames[key]);
+                var series = beerChart.getPropertiesForSeries(key);
                 if(series === null){
                     $row.hide();
                 } else {
                     var numRows = beerChart.numRows();
                     if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
                         $row.hide();
+                    }
+                    else{
+                        $row.show();
                     }
                     if ( localStorage.getItem( legendStorageKeyPrefix + key ) === "false" ) {
                         $row.find('.toggle').addClass("inactive");
@@ -475,10 +493,10 @@ function updateVisibility(lineName, $button){
         return;
     }
     if($button.hasClass("inactive")){
-        chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, false);
+        chart.setVisibility(chart.getPropertiesForSeries(lineName).column-1, false);
         localStorage.setItem( legendStorageKeyPrefix + lineName, "false" );
     } else {
-        chart.setVisibility(chart.getPropertiesForSeries(lineNames[lineName]).column-1, true);
+        chart.setVisibility(chart.getPropertiesForSeries(lineName).column-1, true);
         localStorage.setItem( legendStorageKeyPrefix + lineName, "true" );
     }
 }

@@ -15,37 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
-?>
 
-<?php
-	$beerName = $_POST["beername"];
-	$fileNames = array();
-  	$currentBeerDir = 'data/' . $beerName;
-	if(!file_exists($currentBeerDir)){
-		echo "directory does not exist";
-		return;
-	}
-  	$handle = opendir($currentBeerDir);
-  	if($handle == false){
-	    die("Cannot retrieve beer files directory: " . $currentBeerDir);
-  	}
-  	$first = true;
-  	$i=0;
-  	while (false !== ($file = readdir($handle))){  // iterate over all json files in directory
-		  $extension = strtolower(substr(strrchr($file, '.'), 1));
-		  if($extension == 'json' ){
-		  	$jsonFile =  $currentBeerDir . '/' . $file;
-				$fileNames[$i] = str_replace(".json", "", $jsonFile); // strip extension for sorting
-				$i=$i+1;
-			}
-		}
-		closedir($handle);
-		if(empty($fileNames)){
-			echo "";
-		}
-		else{
-			sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
-			array_walk($fileNames, function(&$value) { $value .= '.json'; }); // add .json again
-			echo json_encode($fileNames);
-		}
-?>
+$beerName = $_POST["beername"];
+$fileNames = array();
+$currentBeerDir = 'data/' . $beerName;
+if(!file_exists($currentBeerDir)){
+    echo "directory does not exist";
+    return;
+}
+$handle = opendir($currentBeerDir);
+if($handle == false){
+    die("Cannot retrieve beer files directory: " . $currentBeerDir);
+}
+$first = true;
+$i=0;
+while (false !== ($file = readdir($handle))){  // iterate over all json files in directory
+  $extension = strtolower(substr(strrchr($file, '.'), 1));
+  if($extension == 'json' ){
+    $jsonFile =  $currentBeerDir . '/' . $file;
+        $fileNames[$i] = str_replace(".json", "", $jsonFile); // strip extension for sorting
+        $i=$i+1;
+    }
+}
+closedir($handle);
+if(empty($fileNames)){
+    echo "";
+}
+else{
+    sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
+    array_walk($fileNames, function(&$value) { $value .= '.json'; }); // add .json again
+    echo json_encode($fileNames);
+}

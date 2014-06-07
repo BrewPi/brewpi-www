@@ -15,8 +15,46 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
-?>
 
+function echoFilterSelect($filterName){
+	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
+	// These values assume a sample frequency of 1 hz and 3 cascaded filters. Delay time below is in nr of samples for a single section
+	echo "<option value=0>   9 seconds</option>"; // a=4,	b=0,	delay time = 3
+	echo "<option value=1>  18 seconds</option>"; // a=6,	b=1,	delay time = 6
+	echo "<option value=2>  39 seconds</option>"; // a=8,	b=2,	delay time = 13
+	echo "<option value=3>  78 seconds</option>"; // a=10,	b=3,	delay time = 26
+	echo "<option value=4> 159 seconds</option>"; // a=12,	b=4,	delay time = 53
+	echo "<option value=5> 318 seconds</option>"; // a=14,	b=5,	delay time = 106
+	echo "<option value=6> 639 seconds</option>"; // a=16,	b=6,	delay time = 213
+	echo "</select>";
+}
+
+# slope filters are updated every 3 seconds, so have different delay time
+function echoSlopeFilterSelect($filterName){
+	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
+	echo "<option value=0>  27 seconds</option>"; // a=4,	b=0,	delay time = 3
+	echo "<option value=1>  54 seconds</option>"; // a=6,	b=1,	delay time = 6
+	echo "<option value=2>   2 minutes</option>"; // a=8,	b=2,	delay time = 13
+	echo "<option value=3>   4 minutes</option>"; // a=10,	b=3,	delay time = 26
+	echo "<option value=4>   8 minutes</option>"; // a=12,	b=4,	delay time = 53
+	echo "<option value=5>  16 minutes</option>"; // a=14,	b=5,	delay time = 106
+	echo "<option value=6>  32 minutes</option>"; // a=16,	b=6,	delay time = 213
+	echo "</select>";
+}
+
+function echoYesNoSelect($optionName){
+	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
+	echo "<option value=1> Yes</option>";
+	echo "<option value=0>  No</option>";
+	echo "</select>";
+}
+function echoRotarySelect($optionName){
+	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
+	echo "<option value=0> Full step</option>";
+	echo "<option value=1> Half step</option>";
+	echo "</select>";
+}
+?>
 <ul>
 	<button class="script-status"></button>
 	<li><a href="#settings"><span class="setting-name">Settings</span></a></li>
@@ -66,8 +104,8 @@
 		</form>
 
 		<h3 id="program-stderr-header">Script stderr output will auto-refresh while programming if you keep this tab open</h3>
-		<div class="stderr console-box" "></div>
-		<iframe id="upload-target" name="upload-target" src="#"style="width:0;height:0;border:0px solid #fff;"></iframe>
+		<div class="stderr console-box"></div>
+		<iframe id="upload-target" name="upload-target" src="about:blank" style="width:0;height:0;border:0px solid #fff;"></iframe>
 	</div>
 </div>
 <div id="settings">
@@ -87,7 +125,7 @@
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Profile name:</span>
-			<input id="profile-name" value="<?php echo $profileName ?>" size=30 type="text">
+			<input id="profile-name" value="<?php echo urldecode($profileName) ?>" size=30 type="text">
 			<button class="apply-profile-name apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
@@ -410,48 +448,7 @@
 		<button id="refresh-logs">Refresh</button>
 	</div>
 	<h3>stderr:</h3>
-	<div class="stderr console-box" "></div>
+	<div class="stderr console-box"></div>
 	<h3>stdout:</h3>
 	<div class="stdout console-box"></div>
 </div>
-
-<?php
-function echoFilterSelect($filterName){
-	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
-	// These values assume a sample frequency of 1 hz and 3 cascaded filters. Delay time below is in nr of samples for a single section
-	echo "<option value=0>   9 seconds</option>"; // a=4,	b=0,	delay time = 3
-	echo "<option value=1>  18 seconds</option>"; // a=6,	b=1,	delay time = 6
-	echo "<option value=2>  39 seconds</option>"; // a=8,	b=2,	delay time = 13
-	echo "<option value=3>  78 seconds</option>"; // a=10,	b=3,	delay time = 26
-	echo "<option value=4> 159 seconds</option>"; // a=12,	b=4,	delay time = 53
-	echo "<option value=5> 318 seconds</option>"; // a=14,	b=5,	delay time = 106
-	echo "<option value=6> 639 seconds</option>"; // a=16,	b=6,	delay time = 213
-	echo "</select>";
-}
-
-# slope filters are updated every 3 seconds, so have different delay time
-function echoSlopeFilterSelect($filterName){
-	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
-	echo "<option value=0>  27 seconds</option>"; // a=4,	b=0,	delay time = 3
-	echo "<option value=1>  54 seconds</option>"; // a=6,	b=1,	delay time = 6
-	echo "<option value=2>   2 minutes</option>"; // a=8,	b=2,	delay time = 13
-	echo "<option value=3>   4 minutes</option>"; // a=10,	b=3,	delay time = 26
-	echo "<option value=4>   8 minutes</option>"; // a=12,	b=4,	delay time = 53
-	echo "<option value=5>  16 minutes</option>"; // a=14,	b=5,	delay time = 106
-	echo "<option value=6>  32 minutes</option>"; // a=16,	b=6,	delay time = 213
-	echo "</select>";
-}
-
-function echoYesNoSelect($optionName){
-	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
-	echo "<option value=1> Yes</option>";
-	echo "<option value=0>  No</option>";
-	echo "</select>";
-}
-function echoRotarySelect($optionName){
-	echo "<select name=" . $optionName . " class=\"cc " . $optionName . "\">";
-	echo "<option value=0> Full step</option>";
-	echo "<option value=1> Half step</option>";
-	echo "</select>";
-}
-?>

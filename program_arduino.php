@@ -19,10 +19,8 @@
 // This file is loaded into a hidden iFrame. the javascript functions are defined in maintenance-panel.js
 require_once('socket_open.php');
 
-
 // Set instance root
 $instanceRoot = str_replace("\\", "/", getcwd());
-
 
 // Read config settings
 if(file_exists('config.php')) {
@@ -35,7 +33,9 @@ else {
 	<?php
 	die($error);
 }
+
 error_reporting(E_ALL);
+
 if(isset($_POST['boardType'])){
 	$boardType = $_POST['boardType'];
 }
@@ -46,6 +46,7 @@ else{
 	<?php
 	die($error);
 }
+
 if(isset($_POST['restoreSettings'])){
 	$restoreSettings = $_POST['restoreSettings'];
 }
@@ -56,6 +57,7 @@ else{
 	<?php
 	die($error);
 }
+
 if(isset($_POST['restoreDevices'])){
 	$restoreDevices = $_POST['restoreDevices'];
 }
@@ -74,6 +76,7 @@ if ($_FILES["file"]["error"] > 0){
 	<?php
 	die($error);
 }
+
 $fileName = $_FILES["file"]["name"];
 $tempFileName = $_FILES["file"]["tmp_name"];
 if(move_uploaded_file($tempFileName, "$instanceRoot/uploads/" . $fileName)){
@@ -86,8 +89,7 @@ else{
 	<?php
 	die($error);
 }
-?>
-<?php
+
 $sock = open_socket();
 if($sock !== false){
     $cmd = "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"restoreSettings\":$restoreSettings, \"restoreDevices\":$restoreDevices}";

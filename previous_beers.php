@@ -16,7 +16,6 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,7 +31,7 @@
 				{
 					$dir = basename($dir);
 					if($dir !== "profiles"){
-					    echo '<option value="', $dir, '">', $dir, '</option>';
+					    echo '<option value="', $dir, '">', urldecode($dir), '</option>';
 					}
 				}
 			?>
