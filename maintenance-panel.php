@@ -229,6 +229,7 @@ function echoRotarySelect($optionName){
 				<option value="p">Beer Profile</option>
 				<option value="f">Fridge Constant</option>
 				<option value="o">Off</option>
+				<option value="t">Test mode</option>
 			</select>
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
