@@ -19,11 +19,13 @@
 /* global reloadControlConstantsFromArduino, reloadControlSettingsFromArduino, reloadControlVariablesFromArduino,
           reloadControlSettings, reloadControlConstants, reloadControlVariables,
           receiveControlConstants, receiveControlSettings, receiveControlVariables,
-          loadDefaultControlConstants, loadDefaultControlSettings */
+          loadDefaultControlConstants, loadDefaultControlSettings, controllerVersion */
+
+var controllerVersion;
 
 $(document).ready(function(){
     "use strict";
-
+    updateControllerVersion();
     //Maintenance Panel
 	$('#maintenance-panel')
 	.dialog({
@@ -122,7 +124,34 @@ $(document).ready(function(){
         startRefreshLogs(2000, 0, 1, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
         $("#program-stderr-header").text("Programming... keep an eye on the output below to see the progress.");
     });
+
+
 });
+
+boardNames = { "spark-core": "Spark Core", "photon": "Photon" };
+programFileType = { "spark-core": "BIN"};
+
+function setBoard(board) {
+    $("#reprogram-arduino .boardType").val(board);
+    if (board in boardNames)
+        $(".boardMoniker").text(boardNames[board]);
+    if (board in programFileType)
+        $(".programFileType").text(programFileType[board]);
+}
+
+function setControllerVersion(controllerVersion, undefined) {
+    window.controllerVersion = controllerVersion;
+    if ('board' in controllerVersion && controllerVersion.board!==undefined) {
+        setBoard(controllerVersion.board);
+    }
+}
+
+function updateControllerVersion() {
+	$.post('socketmessage.php', {messageType: "getVersion", message: ""}, function(controllerVersionJSON){
+        setControllerVersion(controllerVersionJSON);
+    }, "json");
+
+}
 
 function refreshLogs(refreshStdOut, refreshStdErr){
     "use strict";
