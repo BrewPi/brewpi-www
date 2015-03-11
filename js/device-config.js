@@ -66,7 +66,7 @@ function getDeviceList(){
                                 .click(addNewDevice);
                     }
 
-                    $deviceConsole.append("Device list updated for Arduino " +
+                    $deviceConsole.append("Device list updated for " +
                         deviceAndPinList.board + " with a " +
                         deviceAndPinList.shield + " shield<br>");
                 }
@@ -111,7 +111,7 @@ function refreshDeviceList(){
 
     $.post('socketmessage.php', {messageType: "refreshDeviceList", message: parameters});
 
-    // try max 10 times, 5000ms apart to see if it the Arduino has responded with an updated list
+    // try max 10 times, 5000ms apart to see if it the controller has responded with an updated list
     deviceListTimeoutCounter = deviceListMaxRequests;
     deviceListTimeout = setTimeout(getDeviceList, deviceListRequestTime);
 }
@@ -227,8 +227,8 @@ function addDeviceToDeviceList(device, pinList, addManual){
     if(addManual){
         pinSpec = {'val':-1, 'type':'free'};
         $settings.append( generateDeviceSettingContainer(
-            "Arduino Pin",
-            "arduino-pin",
+            "Controller Pin",
+            "controller-pin",
             generateSelect(getLimitedPinList(pinList, ['free']))));
     }
     else{
@@ -236,15 +236,15 @@ function addDeviceToDeviceList(device, pinList, addManual){
         pinSpec = findPinInList(pinList, device.p);
         if(pinSpec !== -1){ // if pin exists in pin list
             $settings.append( generateDeviceSettingContainer(
-                "Arduino Pin",
-                "arduino-pin",
-                spanFromListVal(pinList, device.p, 'arduino-pin')));
+                "Controller Pin",
+                "controller-pin",
+                spanFromListVal(pinList, device.p, 'controller-pin')));
             }
         }
         else{
             $settings.append( generateDeviceSettingContainer(
-                "Arduino Pin",
-                "arduino-pin",
+                "Controller Pin",
+                "controller-pin",
                 $("<span>Unknown pin" + device.p + "</span>")));
         }
     }
@@ -463,6 +463,7 @@ function generateSelect(list, selected){
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
     sel.val(selected);
+    sel.addClass("device-setting");
     return sel;
 }
 
@@ -517,8 +518,8 @@ function getDeviceConfigString(deviceNr){
     configString = addToConfigString(configString,"f", $deviceContainer.find(".function select").val());
     configString = addToConfigString(configString,"h", valFromListText(getDeviceHwTypeList(),$deviceContainer.find("span.hardware-type").text()));
 
-    var $pinSpan = $deviceContainer.find("span.arduino-pin"); // pre-defined devices have a span
-    var $pinSelect = $deviceContainer.find(".arduino-pin select"); // new devices have a select
+    var $pinSpan = $deviceContainer.find("span.controller-pin"); // pre-defined devices have a span
+    var $pinSelect = $deviceContainer.find(".controller-pin select"); // new devices have a select
     if($pinSpan.length){
         configString = addToConfigString(configString,"p", valFromListText(pinList,$pinSpan.text()));
     }

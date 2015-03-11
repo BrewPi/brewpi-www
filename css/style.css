@@ -333,7 +333,7 @@ button#maintenance{
     font-weight: bold;
 }
 
-#maintenance-panel .device-list span.device-setting{
+#maintenance-panel .device-list .device-setting{
     display: block;
     float: left;
     clear: left;
