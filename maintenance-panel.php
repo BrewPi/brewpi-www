@@ -63,11 +63,11 @@ function echoRotarySelect($optionName){
 	<li><a href="#control-algorithm"><span>Control Algorithm</span></a></li>
 	<li><a href="#device-config"><span>Device Configuration</span></a></li>
 	<li><a href="#advanced-settings"><span>Advanced Settings</span></a></li>
-	<li><a href="#reprogram-arduino"><span>Reprogram <span class="boardMoniker">Arduino</span></span></a></li>
+	<li><a href="#reprogram-arduino"><span>Reprogram <span class="boardMoniker">controller</span></span></a></li>
 	<!--kinda dirty to have buttons in the ul, but the ul is styled as a nice header by jQuery UI -->
 </ul>
 <div id="reprogram-arduino">
-	<p>Here you can upload a <span class="programFileType">HEX</span> file which will be uploaded to the <span class="boardMoniker">Arduino</span> by the Python script.
+	<p>Here you can upload a <span class="programFileType">firmware</span> file which will be uploaded to the <span class="boardMoniker">controller</span> by the Python script.
 		The script will automatically restart itself after programming.
 		Just hit the back button on your browser to continue running BrewPi.</p>
 	<div id = "program-container">
@@ -219,7 +219,7 @@ function echoRotarySelect($optionName){
 		<span class='container-title'>Control settings</span>
 		<button class="cs load-defaults">Reload defaults</button>
 		<button class="cs receive-from-script">Receive from script</button>
-		<button class="cs update-from-arduino">Update from <span class="boardMoniker">Arduino</span></button>
+		<button class="cs update-from-arduino">Update from <span class="boardMoniker">controller</span></button>
 	</div>
 	<div id="control-settings-container" class="ui-widget-content ui-corner-all">
 		<div class="setting-container">
@@ -232,40 +232,40 @@ function echoRotarySelect($optionName){
 				<option value="o">Off</option>
 				<option value="t">Test mode</option>
 			</select>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Beer Temperature Setting</span>
 			<span class="explanation">Beer temperature setting when in profile or beer constant mode. Use the control panel to adjust.</span>
 			<input type="text" name="beerSet" class="cs beerSet">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Fridge Temperature Setting</span>
 			<span class="explanation">Automatically adjust when in profile/beer constant mode. Use the control panel to adjust.</span>
 			<input type="text" name="fridgeSet" class="cs fridgeSet">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Cooling overshoot estimator</span>
 			<span class="explanation">This is a self learning estimator for the overshoot when turning the cooler off.
 			It is adjusted automatically, but you can set adjust it manually here. This does not stop further automatic adjustment.</span>
 			<input type="text" name="coolEst" class="cs coolEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Heating overshoot estimator</span>
 			<span class="explanation">This is a self learning estimator for the overshoot when turning the heater off.
 			It is adjusted automatically, but you can set adjust it manually here. This does not stop further automatic adjustment.</span>
 			<input type="text" name="heatEst" class="cs heatEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 	</div>
 	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 		<span class='container-title'>Control constants</span>
 		<button class="cc load-defaults">Reload defaults</button>
 		<button class="cc receive-from-script">Receive from script</button>
-		<button class="cc update-from-arduino">Update from <span class="boardMoniker">Arduino</span></button>
+		<button class="cc update-from-arduino">Update from <span class="boardMoniker">controller</span></button>
 	</div>
 	<div id="control-constants-container" class="ui-widget-content ui-corner-all">
 		<div class="setting-container">
@@ -276,19 +276,19 @@ function echoRotarySelect($optionName){
 				<option value="C">Celsius</option>
 				<option value="F">Fahrenheit</option>
 			</select>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Temperature setting minimum</span>
 			<span class="explanation">The fridge and beer temperatures cannot go below this value.</span>
 			<input type="text" name="tempSetMin" class="cc tempSetMin">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Temperature setting maximum</span>
 			<span class="explanation">The fridge and beer temperatures cannot go above this value.</span>
 			<input type="text" name="tempSetMax" class="cc tempSetMax">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<span class="section-explanation">The fridge temperature is controlled with PID. The fridge setting = beer setting + PID.
 			The proportional part is linear with the temperature error.
@@ -299,61 +299,61 @@ function echoRotarySelect($optionName){
 			<span class="setting-name">PID: Kp</span>
 			<span class="explanation">The beer temperature error is multiplied by Kp to give the proportional part of the PID value.</span>
 			<input type="text" name="Kp" class="cc Kp">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">PID: Ki</span>
 			<span class="explanation">When the integral is active, the error is added to the integral every 30 seconds. The result is multiplied by Ki to give the integral part.</span>
 			<input type="text" name="Ki" class="cc Ki">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">PID: Kd</span>
 			<span class="explanation">The derivative of the beer temperature is multiplied by Kd to give the derivative part of the PID value.</span>
 			<input type="text" name="Kd" class="cc Kd">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">PID: maximum</span>
 			<span class="explanation">You can define the maximum difference between the beer temp setting and fridge temp setting here. The fridge setting will be clipped to this range.</span>
 			<input type="text" name="pidMax" class="cc pidMax">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Integrator: maximum temp error &deg;<?php echo $tempFormat ?></span>
 			<span class="explanation">The integral is only active when the temperature is close to the target temperature. This is the maximum error for which the integral is active..</span>
 			<input type="text" name="iMaxErr" class="cc iMaxErr">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Temperature idle range top</span>
 			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
 			<input type="text" name="idleRangeH" class="cc idleRangeH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Temperature idle range bottom</span>
 			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
 			<input type="text" name="idleRangeL" class="cc idleRangeL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Heating target upper bound</span>
 			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
 			<input type="text" name="heatTargetH" class="cc heatingTargetH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Heating target lower bound</span>
 			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
 			<input type="text" name="heatTargetL" class="cc heatingTargetL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Cooling target upper bound</span>
 			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
 			<input type="text" name="coolTargetH" class="cc coolingTargetH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Cooling target lower bound</span>
@@ -361,66 +361,71 @@ function echoRotarySelect($optionName){
 			<input type="text" name="coolTargetL" class="cc coolingTargetL">
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
+            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		<div class="setting-container">
 			<span class="setting-name">Maximum time in seconds for heating overshoot estimator</span>
 			<span class="explanation">The time the fridge has been heating is used to estimate overshoot. This is the maximum time that is taken into account.</span>
 			<input type="text" name="maxHeatTimeForEst" class="cc maxHeatTimeForEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Maximum time in seconds for cooling overshoot estimator</span>
 			<span class="explanation">The time the fridge has been cooling is used to estimate overshoot. This is the maximum time that is taken into account.</span>
 			<input type="text" name="maxCoolTimeForEst" class="cc maxCoolTimeForEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Beer fast filter delay time</span>
 			<span class="explanation">The beer fast filter is used for display and data logging. More filtering give a smoother line, but also more delay.</span>
 			<?php echoFilterSelect("beerFastFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Beer slow filter delay time</span>
 			<span class="explanation">The beer slow filter is used for the control algorithm. The fridge temperature setting is calculated from this filter.
 				Because a small difference in beer temperature causes a large adjustment in the fridge temperature, more smoothing is needed.</span>
 			<?php echoFilterSelect("beerSlowFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Beer slope filter delay time</span>
 			<span class="explanation">The slope is calculated every 30 seconds and fed to this filter. More filtering means a smoother fridge setting.</span>
 			<?php echoSlopeFilterSelect("beerSlopeFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Fridge fast filter delay time</span>
 			<span class="explanation">The fridge fast filter is used for on-off control, display and logging. It needs to have a small delay.</span>
 			<?php echoFilterSelect("fridgeFastFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Fridge slow filter delay time</span>
-			<span class="explanation">The fridge slow filter is used for peak detection to adjust the overshoot estimators. More smoothing is needed to prevent small fluctiations to be recognized as peaks.</span>
+			<span class="explanation">The fridge slow filter is used for peak detection to adjust the overshoot estimators. More smoothing is needed to prevent small fluctuations to be recognized as peaks.</span>
 			<?php echoFilterSelect("fridgeSlowFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Fridge slope filter delay time</span>
 			<span class="explanation">The fridge slope filter is not used in the current version.</span>
 			<?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Use light as heater</span>
-			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater..</span>
+			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater.</span>
 			<?php echoYesNoSelect("lah") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Trigger rotary encoder at every ...</span>
 			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step.</span>
 			<?php echoRotarySelect("hs") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 	</div>
 </div>
