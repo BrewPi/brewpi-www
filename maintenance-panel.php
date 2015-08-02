@@ -245,20 +245,6 @@ function echoRotarySelect($optionName){
 			<input type="text" name="fridgeSet" class="cs fridgeSet">
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
-		<div class="setting-container">
-			<span class="setting-name">Cooling overshoot estimator</span>
-			<span class="explanation">This is a self learning estimator for the overshoot when turning the cooler off.
-			It is adjusted automatically, but you can set adjust it manually here. This does not stop further automatic adjustment.</span>
-			<input type="text" name="coolEst" class="cs coolEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Heating overshoot estimator</span>
-			<span class="explanation">This is a self learning estimator for the overshoot when turning the heater off.
-			It is adjusted automatically, but you can set adjust it manually here. This does not stop further automatic adjustment.</span>
-			<input type="text" name="heatEst" class="cs heatEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
 	</div>
 	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 		<span class='container-title'>Control constants</span>
@@ -324,54 +310,55 @@ function echoRotarySelect($optionName){
 			<input type="text" name="iMaxErr" class="cc iMaxErr">
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
-		<div class="setting-container">
-			<span class="setting-name">Temperature idle range top</span>
-			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
-			<input type="text" name="idleRangeH" class="cc idleRangeH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Temperature idle range bottom</span>
-			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
-			<input type="text" name="idleRangeL" class="cc idleRangeL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Heating target upper bound</span>
-			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="heatTargetH" class="cc heatingTargetH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Heating target lower bound</span>
-			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="heatTargetL" class="cc heatingTargetL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Cooling target upper bound</span>
-			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="coolTargetH" class="cc coolingTargetH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Cooling target lower bound</span>
-			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="coolTargetL" class="cc coolingTargetL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Maximum time in seconds for heating overshoot estimator</span>
-			<span class="explanation">The time the fridge has been heating is used to estimate overshoot. This is the maximum time that is taken into account.</span>
-			<input type="text" name="maxHeatTimeForEst" class="cc maxHeatTimeForEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Maximum time in seconds for cooling overshoot estimator</span>
-			<span class="explanation">The time the fridge has been cooling is used to estimate overshoot. This is the maximum time that is taken into account.</span>
-			<input type="text" name="maxCoolTimeForEst" class="cc maxCoolTimeForEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
+        <span class="section-explanation">
+            In this temporary, untested PWM actuators release, the Fridge actuators are controlled by a simple PI controller to generate a PWM value.
+            Each actuator has its own proportional gain (Kp) and integral gain (Ki). Adjust Kp so it does not overshoot too much and adjust Ki to adjust how fast it responds to steady state errors.
+		</span>
+        <div class="setting-container">
+            <span class="setting-name">Heating proportional gain (KpHeat)</span>
+            <span class="explanation">Heating output (0-255) = KpHeat * (fridge setting - fridge temp) + integral part.</span>
+            <input type="text" name="fPwmKpHeat" class="cc fPwmKpHeat">
+            <button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+        </div>
+        <div class="setting-container">
+            <span class="setting-name">Heating integral gain (KiHeat)</span>
+            <span class="explanation">Heating output (0-255) = proportional part + KiHeat * integral.</span>
+            <input type="text" name="fPwmKiHeat" class="cc fPwmKiHeat">
+            <button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+        </div>
+        <div class="setting-container">
+            <span class="setting-name">Cooling proportional gain (KpCool)</span>
+            <span class="explanation">Cooling output (0-255) = KpCool * (-1) * (fridge temp - fridge setting) + integral part.</span>
+            <input type="text" name="fPwmKpCool" class="cc fPwmKpCool">
+            <button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+        </div>
+        <div class="setting-container">
+            <span class="setting-name">Cooling integral gain (KiCool)</span>
+            <span class="explanation">Cooling output (0-255) = proportional part + (-1) * KiHeat * integral.</span>
+            <input type="text" name="fPwmKiCool" class="cc fPwmKiCool">
+            <button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+        </div>
+        <div class="setting-container">
+            <span class="setting-name">Heater PWM period (seconds)</span>
+            <span class="explanation">Each PWM cycle takes this many seconds for the heaters. A value lower than 4 seconds is not recommended.
+            Requires restart to apply change.</span>
+            <input type="text" name="heatPwmPeriod" class="cc heatPwmPeriod">
+            <button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+        </div>
+        <div class="setting-container">
+            <span class="setting-name">Cooler PWM period (seconds)</span>
+            <span class="explanation">Each PWM cycle takes this many seconds for the cooler.
+                Because most people will use a fridge or freezer, the cooler has a minimum ON time of 2 minutes and a minimum OFF time of 5 minutes.
+                This is needed to protect the compressor from overheating. The PWM driver will maintain the correct average despite of this by compensating in the next cycle.
+                Because of these hard coded mininum times, a period of less than 10 minutes (600 seconds) is not recommended.
+                Requires restart to apply change.
+            </span>
+            <input type="text" name="coolPwmPeriod" class="cc coolPwmPeriod">
+            <button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+        </div>
+        <span class="section-explanation">
+            Temperatures are filtered in BrewPi. You can adjust the amount of filtering here. But keep in mind that more filtering also causes a lag (delay) in the sensor readings.
+		</span>
 		<div class="setting-container">
 			<span class="setting-name">Beer fast filter delay time</span>
 			<span class="explanation">The beer fast filter is used for display and data logging. More filtering give a smoother line, but also more delay.</span>
@@ -399,7 +386,10 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Fridge slow filter delay time</span>
-			<span class="explanation">The fridge slow filter is used for peak detection to adjust the overshoot estimators. More smoothing is needed to prevent small fluctiations to be recognized as peaks.</span>
+			<span class="explanation">The fridge slow filter is used for peak detection to adjust the overshoot estimators.
+                More smoothing is needed to prevent small fluctuations to be recognized as peaks.
+                Does not apply to the PWM Actuators code.
+            </span>
 			<?php echoFilterSelect("fridgeSlowFilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
@@ -409,18 +399,19 @@ function echoRotarySelect($optionName){
 			<?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
-		<div class="setting-container">
+		<!--<div class="setting-container">
 			<span class="setting-name">Use light as heater</span>
-			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater..</span>
+			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater.. </span>
 			<?php echoYesNoSelect("lah") ?>
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Trigger rotary encoder at every ...</span>
-			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step.</span>
+			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step. This only applies to Arduino.</span>
 			<?php echoRotarySelect("hs") ?>
 			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
 		</div>
+		-->
 	</div>
 </div>
 
@@ -432,7 +423,7 @@ function echoRotarySelect($optionName){
 		<span class='container-title'>Device List</span>
 		<div class="refresh-options-container">
 			<div class="refresh-option">
-				<input type="checkbox" name="read-values" id="read-values"/><label for="read-values">Read values</label>
+				<input type="checkbox" name="read-values" id="read-values" /><label for="read-values">Read values</label>
 			</div>
 		</div>
 		<button class="refresh-device-list">Refresh device list</button>
