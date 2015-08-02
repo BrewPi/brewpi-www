@@ -114,6 +114,7 @@ function echoRotarySelect($optionName){
 		<div class="setting-container">
 			<span class="setting-name">Log data point every:</span>
 			<select id="interval">
+			  <option value="10">10 Seconds</option>
 			  <option value="30">30 Seconds</option>
 			  <option value="60">1 Minute</option>
 			  <option value="120">2 Minutes</option>
@@ -126,7 +127,7 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Profile name:</span>
-			<input id="profile-name" value="<?php echo urldecode($profileName) ?>" size=30 type="text">
+			<input id="profile-name" value="<?php echo urldecode($profileName) ?>" size=30 type="text" />
 			<button class="apply-profile-name apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
@@ -150,9 +151,9 @@ function echoRotarySelect($optionName){
 		<div class="help-panel">
 			<p>
 				The red values are control settings. The beer setting is set by the profile or constant. The fridge setting is set by PID or constant.
-				</br>
+				<br/>
 				The orange values are control variables. These are intermediate results of the fridge setting calculation.
-				</br>
+				<br/>
 				The blue values are constants, they never change automatically.
 			</p>
 		</div>
