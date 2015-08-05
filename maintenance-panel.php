@@ -305,44 +305,40 @@ function echoRotarySelect($optionName){
 			<input type="text" name="pidMax" class="cc pidMax">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
-		<div class="setting-container">
-			<span class="setting-name">Integrator: maximum temp error &deg;<?php echo $tempFormat ?></span>
-			<span class="explanation">The integral is only active when the temperature is close to the target temperature. This is the maximum error for which the integral is active..</span>
-			<input type="text" name="iMaxErr" class="cc iMaxErr">
-			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-		</div>
         <span class="section-explanation">
             In this temporary, untested PWM actuators release, the Fridge actuators are controlled by a simple PI controller to generate a PWM value.
             Each actuator has its own proportional gain (Kp) and integral gain (Ki). Adjust Kp so it does not overshoot too much and adjust Ki to adjust how fast it responds to steady state errors.
+            PWM output (0-255) = Kp * (fridge setting - fridge temp) + Ki * (cumulative sum of errors, per minute).
+            Overshoot can  result from both too high Kp or too high Ki.
 		</span>
         <div class="setting-container">
             <span class="setting-name">Heating proportional gain (KpHeat)</span>
-            <span class="explanation">Heating output (0-255) = KpHeat * (fridge setting - fridge temp) + integral part.</span>
+            <span class="explanation">Output is simply error * KpHeat</span>
             <input type="text" name="fPwmKpHeat" class="cc fPwmKpHeat">
             <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
         </div>
         <div class="setting-container">
             <span class="setting-name">Heating integral gain (KiHeat)</span>
-            <span class="explanation">Heating output (0-255) = proportional part + KiHeat * integral.</span>
+            <span class="explanation">Output is cumulative error * KiHeat.</span>
             <input type="text" name="fPwmKiHeat" class="cc fPwmKiHeat">
             <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
         </div>
         <div class="setting-container">
             <span class="setting-name">Cooling proportional gain (KpCool)</span>
-            <span class="explanation">Cooling output (0-255) = KpCool * (-1) * (fridge temp - fridge setting) + integral part.</span>
+            <span class="explanation">Output is simply error * KpCool</span>
             <input type="text" name="fPwmKpCool" class="cc fPwmKpCool">
             <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
         </div>
         <div class="setting-container">
             <span class="setting-name">Cooling integral gain (KiCool)</span>
-            <span class="explanation">Cooling output (0-255) = proportional part + (-1) * KiHeat * integral.</span>
+            <span class="explanation">Output is cumulative error * KiCool.</span>
             <input type="text" name="fPwmKiCool" class="cc fPwmKiCool">
             <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
         </div>
         <div class="setting-container">
             <span class="setting-name">Heater PWM period (seconds)</span>
             <span class="explanation">Each PWM cycle takes this many seconds for the heaters. A value lower than 4 seconds is not recommended.
-            Requires restart to apply change.</span>
+            Requires restart of controller (reset) to apply change.</span>
             <input type="text" name="heatPwmPeriod" class="cc heatPwmPeriod">
             <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
         </div>
@@ -352,9 +348,27 @@ function echoRotarySelect($optionName){
                 Because most people will use a fridge or freezer, the cooler has a minimum ON time of 2 minutes and a minimum OFF time of 5 minutes.
                 This is needed to protect the compressor from overheating. The PWM driver will maintain the correct average despite of this by compensating in the next cycle.
                 Because of these hard coded mininum times, a period of less than 10 minutes (600 seconds) is not recommended.
-                Requires restart to apply change.
+                Requires restart of controller (reset) to apply change.
             </span>
             <input type="text" name="coolPwmPeriod" class="cc coolPwmPeriod">
+            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+        </div>
+        <div class="setting-container">
+            <span class="setting-name">Cooler minimum ON time (seconds)</span>
+            <span class="explanation">
+                Once the compressor is turned ON, it will be ON for minimally this period, regardless of the PWM value. Requires restart of controller (reset) to apply change.
+            </span>
+            <input type="text" name="minCoolTime" class="cc minCoolTime">
+            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+        </div>
+        <div class="setting-container">
+            <span class="setting-name">Cooler minimum OFF time (seconds)</span>
+            <span class="explanation">
+                Once the compressor is turned OFF, it will be OFF for minimally this period, regardless of the PWM value.
+                The OFF time is needed to equalize the pressure. This is needed to protect the compressor from overheating.
+                Do not lower this below 180 (3 minutes). Requires restart of controller (reset) to apply change.
+            </span>
+            <input type="text" name="minCoolIdleTime" class="cc minCoolIdleTime">
             <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
         </div>
         <span class="section-explanation">
@@ -375,7 +389,7 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Beer slope filter delay time</span>
-			<span class="explanation">The slope is calculated every 30 seconds and fed to this filter. More filtering means a smoother fridge setting.</span>
+			<span class="explanation">The slope is calculated as slope per hour. More filtering means a smoother fridge setting.</span>
 			<?php echoSlopeFilterSelect("beerSlopeFilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
