@@ -21,6 +21,47 @@ function BeerProfileTable(id, config) {
     }
 }
 
+function parseDayString(input)
+{
+	/* Parse a string like "1d2h3m" to a day representation */
+	var day = 0;
+	var hours = 0;
+	var minutes = 0;
+	var tmp;
+	/* Step 1: Split the string */
+	if(input.search("d"))
+	{
+		// Day found, parse it
+		tmp = parseInt (input.substr(0,input.search("d")));
+		if (!isNaN(tmp))
+		{
+			day = tmp;
+			input = input.substr(input.search("d")+1,input.length);
+		}
+	}
+	if(input.search("h"))
+	{
+		// Day found, parse it
+		tmp = parseInt (input.substr(0,input.search("h")));
+		if (!isNaN(tmp))
+		{
+			hours = tmp;
+			input = input.substr(input.search("h")+1,input.length);
+		}
+	}
+	if(input.search("m"))
+	{
+		// Day found, parse it
+		tmp = parseInt (input.substr(0,input.search("m")));
+		if (!isNaN(tmp))
+		{
+			minute = tmp;
+		}
+	}
+	/* Step 2: Calculate a day worth value */
+	return day + hours/24 + minutes/24/60;
+}
+
 BeerProfileTable.prototype = {
     init: function(id, config) {
         "use strict";
