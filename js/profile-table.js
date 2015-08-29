@@ -28,6 +28,8 @@ function parseDayString(input)
 	var hours = 0;
 	var minutes = 0;
 	var tmp;
+	var foundit = false;
+	console.log ("Got " + input);
 	/* Step 1: Split the string */
 	if(input.search("d"))
 	{
@@ -36,6 +38,8 @@ function parseDayString(input)
 		if (!isNaN(tmp))
 		{
 			day = tmp;
+			foundit = true;
+			console.log ("Found days " + day);
 			input = input.substr(input.search("d")+1,input.length);
 		}
 	}
@@ -46,6 +50,8 @@ function parseDayString(input)
 		if (!isNaN(tmp))
 		{
 			hours = tmp;
+			foundit = true;
+			console.log ("Found hours " + hours);
 			input = input.substr(input.search("h")+1,input.length);
 		}
 	}
@@ -55,11 +61,19 @@ function parseDayString(input)
 		tmp = parseInt (input.substr(0,input.search("m")));
 		if (!isNaN(tmp))
 		{
-			minute = tmp;
+			console.log ("Found minutes " + minutes);
+			foundit = true;
+			minutes = tmp;
 		}
 	}
 	/* Step 2: Calculate a day worth value */
-	return day + hours/24 + minutes/24/60;
+	if (!foundit)
+	{
+		return input;
+	}
+	var returnme = day + hours/24 + minutes/24/60;
+	console.log ("Returning " + returnme);
+	return returnme;
 }
 
 BeerProfileTable.prototype = {
@@ -335,7 +349,7 @@ BeerProfileTable.prototype = {
     },
     formatNextDate: function(theDate, strDays) {
         "use strict";
-        var days = parseFloat(strDays);
+        var days = parseFloat(parseDayString(strDays));
         if(isNaN(days)){
             return { raw: '', display: "Invalid 'Days' value" };
         }
