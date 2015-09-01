@@ -79,8 +79,12 @@ if ($_FILES["file"]["error"] > 0){
 
 $fileName = $_FILES["file"]["name"];
 $tempFileName = $_FILES["file"]["tmp_name"];
-if(move_uploaded_file($tempFileName, "$instanceRoot/uploads/" . $fileName)){
+$newFileName = "$instanceRoot/uploads/" . $fileName;
+if(move_uploaded_file($tempFileName, $newFileName)){
 	// succes!
+	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+		chmod($newFileName, '0777'); // set permissions to allow reading by anyone, when apache is running as system service, file will not be readable by script
+	}	
 }
 else{
 	$error = "cannot move uploaded file";
