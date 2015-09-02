@@ -150,9 +150,9 @@ function echoRotarySelect($optionName){
 		<div class="help-panel">
 			<p>
 				The red values are control settings. The beer setting is set by the profile or constant. The fridge setting is set by PID or constant.
-				</br>
+				<br/>
 				The orange values are control variables. These are intermediate results of the fridge setting calculation.
-				</br>
+				<br/>
 				The blue values are constants, they never change automatically.
 			</p>
 		</div>
