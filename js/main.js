@@ -28,6 +28,7 @@ function receiveControlConstants(){
 	$.ajax({
         type: "POST",
         dataType:"json",
+        cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         data: {messageType: "getControlConstants", message: ""},
         url: 'socketmessage.php',
@@ -53,6 +54,7 @@ function receiveControlSettings(callback){
     $.ajax({
         type: "POST",
         dataType:"json",
+        cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getControlSettings", message: ""},
@@ -96,6 +98,7 @@ function receiveControlVariables(){
     $.ajax({
         type: "POST",
         dataType:"json",
+        cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getControlVariables", message: ""},
@@ -160,16 +163,17 @@ function refreshLcd(){
     $.ajax({
         type: "POST",
         dataType:"json",
+        cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
-        data: {messageType: "lcd", message: ""},
-        success: function(lcdText){
-                var $lcdText = $('#lcd .lcd-text');
-                for (var i = lcdText.length - 1; i >= 0; i--) {
-                    $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
-                }
-                updateScriptStatus(true);
+        data: {messageType: "lcd", message: ""}
+        })
+        .done( function(lcdText){
+            var $lcdText = $('#lcd .lcd-text');
+            for (var i = lcdText.length - 1; i >= 0; i--) {
+                $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
             }
+            updateScriptStatus(true);
         })
         .fail(function() {
             var $lcdText = $('#lcd .lcd-text');
@@ -178,7 +182,8 @@ function refreshLcd(){
             $lcdText.find('#lcd-line-2').html("Python script");
             $lcdText.find('#lcd-line-3').html(" ");
             updateScriptStatus(false);
-        }).always(function() {
+        })
+        .always(function() {
             window.setTimeout(refreshLcd,5000);
         }
     );
