@@ -180,7 +180,8 @@ BeerProfileTable.prototype = {
         "use strict";
         var me = this;
         if ( this.config.editable ) {
-            $theCell.attr('contenteditable', 'true').focus(function() {
+            $theCell.wrapInner('<span contenteditable="true"></span>');
+            $theCell.first().attr('contenteditable', 'true').focus(function() {
                 me.selectAll(this);
             }).blur(function() {
                 if ( !me.preventFocusEvents) {
