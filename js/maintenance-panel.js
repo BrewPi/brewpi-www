@@ -147,10 +147,16 @@ function setControllerVersion(controllerVersion, undefined) {
 }
 
 function updateControllerVersion() {
-	$.post('socketmessage.php', {messageType: "getVersion", message: ""}, function(controllerVersionJSON){
-        setControllerVersion(controllerVersionJSON);
-    }, "json");
-
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        contentType:"application/x-www-form-urlencoded; charset=utf-8",
+        url: 'socketmessage.php',
+        data: {messageType: "getVersion", message: ""},
+        success: function(controllerVersionJSON){
+            setControllerVersion(controllerVersionJSON);
+        }
+    });
 }
 
 function refreshLogs(refreshStdOut, refreshStdErr){
