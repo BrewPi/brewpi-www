@@ -436,6 +436,13 @@ function drawBeerChart(beerToDraw, div){
                 }
             }
         }
+		
+		$("button.save-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" }, text: false }).click(function(){
+			var img = document.getElementById('hiddenBeerChartImg');
+			Dygraph.Export.asPNG(beerChart, img);
+			window.location.href = img.src.replace('image/png','image/octet-stream');
+		});
+	
         var idx = 0;
         $('#curr-beer-chart-legend .beer-chart-legend-row').each(function() {
             if ( ! $(this).hasClass("time") && ! $(this).is(":hidden") ) {
@@ -518,6 +525,7 @@ $(document).ready(function(){
     $("button.refresh-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" }, text: false }).click(function(){
         drawBeerChart(window.beerName, 'curr-beer-chart');
     });
+	
 
     $('#chart-help-popup')
         .dialog({
