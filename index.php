@@ -95,6 +95,7 @@ function prepareJSON($input) {
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
 		<script type="text/javascript" src="js/dygraph-combined.js"></script>
+		<script type="text/javascript" src="js/dygraph-extra.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;

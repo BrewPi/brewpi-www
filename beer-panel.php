@@ -45,6 +45,12 @@
 	    		<div class="beer-chart-legend-label">Refresh Chart</div>
 	    		<br class="crystal" />
 	    	</div>
+			<div class="beer-chart-legend-row">
+				<button class="save-curr-beer-chart" title="Save"></button>
+	    		<div class="beer-chart-legend-label">Save Chart</div>
+	    		<br class="crystal" />
+				<img id="hiddenBeerChartImg" style="display: none;" />
+	    	</div>
 	    	<div class="beer-chart-legend-row last">
 				<button class="chart-help" title="Help"></button>
 	    		<div class="beer-chart-legend-label">Help</div>
