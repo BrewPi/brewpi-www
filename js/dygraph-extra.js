@@ -164,8 +164,8 @@ Dygraph.Export.drawPlot = function (canvas, dygraph, options) {
 
 
 	for (i = 0; i < dygraph.layout_.annotations.length; i++) {
-        Dygraph.Export.putLabelAnn(ctx, dygraph.layout_.annotations[i], options, 
-                options.labelFont, options.labelColor);
+        /*Dygraph.Export.putLabelAnn(ctx, dygraph.layout_.annotations[i], options, 
+                options.labelFont, options.labelColor);*/
     }
 	
 };
