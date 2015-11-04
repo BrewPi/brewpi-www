@@ -34,7 +34,7 @@ function startsWith($haystack, $needle)
 }
 
 function readFromSocket($sock){
-	$msg = socket_read($sock, 4096);
+	$msg = socket_read($sock, 65536);
     if($msg == false){
         $errorcode = socket_last_error();
         $errormsg = socket_strerror($errorcode);
@@ -46,7 +46,7 @@ function readFromSocket($sock){
 }
 
 function writeToSocket($sock, $msg){
-    $bytesWritten = socket_write($sock, $msg, 4096);
+    $bytesWritten = socket_write($sock, $msg, 65536);
     if($bytesWritten == false){
         $errorcode = socket_last_error();
         $errormsg = socket_strerror($errorcode);

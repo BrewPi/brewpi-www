@@ -77,17 +77,31 @@ function receiveControlSettings(callback){
 	}, "json");
 }
 
+function syntaxHighlight(json) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}
+
 function receiveControlVariables(){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(controlVariablesJSON){
-		window.controlVariables = controlVariablesJSON;
-		for (var i in window.controlVariables) {
-			if(window.controlVariables.hasOwnProperty(i)){
-				$('.cv.'+i+' .val').text(window.controlVariables[i]);
-			}
-		}
-		$('.cv.pid-result .val').text(Math.round(1000*(window.controlVariables.p+window.controlVariables.i+window.controlVariables.d))/1000);
-	}, "json");
+	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(jsonString){
+        var jsonPretty = JSON.stringify(JSON.parse(jsonString),null,2);
+        $('#algorithm-json').html(syntaxHighlight(jsonPretty));
+    }, "text");
 }
 
 function loadDefaultControlSettings(){

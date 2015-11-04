@@ -114,14 +114,14 @@ function echoRotarySelect($optionName){
 		<div class="setting-container">
 			<span class="setting-name">Log data point every:</span>
 			<select id="interval">
-			  <option value="10">10 Seconds</option>
-			  <option value="30">30 Seconds</option>
-			  <option value="60">1 Minute</option>
-			  <option value="120">2 Minutes</option>
-			  <option value="300">5 Minutes</option>
-			  <option value="600">10 Minutes</option>
-			  <option value="1800">30 Minutes</option>
-			  <option value="3600">1 hour</option>
+				<option value="10">10 Seconds</option>
+				<option value="30">30 Seconds</option>
+				<option value="60">1 Minute</option>
+				<option value="120">2 Minutes</option>
+				<option value="300">5 Minutes</option>
+				<option value="600">10 Minutes</option>
+				<option value="1800">30 Minutes</option>
+				<option value="3600">1 hour</option>
 			</select>
 			<button id="apply-interval" class="apply-button">Apply</button>
 		</div>
@@ -142,76 +142,11 @@ function echoRotarySelect($optionName){
 </div>
 <div id="control-algorithm">
 	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<span class='container-title'>PID algorithm for fridge setting</span>
-		<button class="cs update-from-arduino">Update control settings</button>
-		<button class="cv update-from-arduino">Update control variables</button>
-		<button class="cc update-from-arduino">Update control constants</button>
+		<span class='container-title'>Controller state as JSON</span>
+		<button class="cv update-from-arduino">Refresh</button>
 	</div>
 	<div class="algorithm-container ui-widget-content ui-corner-all">
-		<div class="help-panel">
-			<p>
-				The red values are control settings. The beer setting is set by the profile or constant. The fridge setting is set by PID or constant.
-				<br/>
-				The orange values are control variables. These are intermediate results of the fridge setting calculation.
-				<br/>
-				The blue values are constants, they never change automatically.
-			</p>
-		</div>
-		<div class="equation">
-			<div class="cv beerDiff"><span class="name">Beer temp. error</span><span class="val"></span></div>
-			<span class="operator multiply">*</span>
-			<div class="cc Kp"><span class="name">Kp</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cv p"><span class="name">P</span><span class="val"></span></div>
-		</div>
-		<div class="equation">
-			<div class="cv diffIntegral"><span class="name">Beer temp. error integral</span><span class="val"></span></div>
-			<span class="operator multiply">*</span>
-			<div class="cc Ki"><span class="name">Ki</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cv i"><span class="name">I</span><span class="val"></span></div>
-		</div>
-		<div class="equation">
-			<div class="cv beerSlope"><span class="name">Beer temp. derivative</span><span class="val"></span></div>
-			<span class="operator multiply">*</span>
-			<div class="cc Kd"><span class="name">Kd</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cv d"><span class="name">D</span><span class="val"></span></div>
-		</div>
-		<div class="sum-line"><div class="line"></div><span class="operator plus">+</span></div>
-		<div class="equation">
-			<div class="cs beerSet"><span class="name">Beer Setting</span><span class="val"></span></div>
-			<span class="operator plus">+</span>
-			<div class="cv pid-result"><span class="name">P + I + D</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cs fridgeSet"><span class="name">FridgeSetting</span><span class="val"></span></div>
-		</div>
-	</div>
-	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<span class='container-title'>Predictive ON/OFF and peak detection</span>
-		<button class="cs update-from-arduino">Update control settings</button>
-		<button class="cv update-from-arduino">Update control variables</button>
-		<button class="cc update-from-arduino">Update control constants</button>
-	</div>
-	<div class="algorithm-container ui-widget-content ui-corner-all">
-		<div class="help-panel">
-			<p>
-				The heater and cooler are controlled by a predictive on-off algorithm.
-				BrewPi estimates the overshoot that would happen when it would go to IDLE. When that lands on the target temperature, it goes to IDLE.
-				The overshoot is estimated as time active in hours * estimator.
-				BrewPi detects the actual peaks and compares them to the prediction to automatically adjusts the estimators.
-				You can change them manually in 'advanced settings' when they are far off.
-			</p>
-		</div>
-		<div class="on-off-parameters">
-			<div class="cv estPeak"><span class="name">Estimated peak</span><span class="val"></span></div>
-			<div class="cv negPeak"><span class="name">Last detected negative peak</span><span class="val"></span></div>
-			<div class="cv negPeakEst"><span class="name">Last target for negative peak</span><span class="val"></span></div>
-			<div class="cv posPeak"><span class="name">Last detected positive peak</span><span class="val"></span></div>
-			<div class="cv posPeakEst"><span class="name">Last target for positive peak</span><span class="val"></span></div>
-			<div class="cs coolEst"><span class="name">Cooling overshoot estimator</span><span class="val"></span></div>
-			<div class="cs heatEst"><span class="name">Heating overshoot estimator</span><span class="val"></span></div>
-		</div>
+		<pre class="json" id="algorithm-json">Click refresh to receive controller from device.</pre>
 	</div>
 </div>
 <div id="advanced-settings">
@@ -311,66 +246,66 @@ function echoRotarySelect($optionName){
             PWM output (0-255) = Kp * (fridge setting - fridge temp) + Ki * (cumulative sum of errors, per minute).
             Overshoot can  result from both too high Kp or too high Ki.
 		</span>
-        <div class="setting-container">
-            <span class="setting-name">Heating proportional gain (KpHeat)</span>
-            <span class="explanation">Output is simply error * KpHeat</span>
-            <input type="text" name="fPwmKpHeat" class="cc fPwmKpHeat">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
-        <div class="setting-container">
-            <span class="setting-name">Heating integral gain (KiHeat)</span>
-            <span class="explanation">Output is cumulative error * KiHeat.</span>
-            <input type="text" name="fPwmKiHeat" class="cc fPwmKiHeat">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
-        <div class="setting-container">
-            <span class="setting-name">Cooling proportional gain (KpCool)</span>
-            <span class="explanation">Output is simply error * KpCool</span>
-            <input type="text" name="fPwmKpCool" class="cc fPwmKpCool">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
-        <div class="setting-container">
-            <span class="setting-name">Cooling integral gain (KiCool)</span>
-            <span class="explanation">Output is cumulative error * KiCool.</span>
-            <input type="text" name="fPwmKiCool" class="cc fPwmKiCool">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
-        <div class="setting-container">
-            <span class="setting-name">Heater PWM period (seconds)</span>
+		<div class="setting-container">
+			<span class="setting-name">Heating proportional gain (KpHeat)</span>
+			<span class="explanation">Output is simply error * KpHeat</span>
+			<input type="text" name="fPwmKpHeat" class="cc fPwmKpHeat">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heating integral gain (KiHeat)</span>
+			<span class="explanation">Output is cumulative error * KiHeat.</span>
+			<input type="text" name="fPwmKiHeat" class="cc fPwmKiHeat">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Cooling proportional gain (KpCool)</span>
+			<span class="explanation">Output is simply error * KpCool</span>
+			<input type="text" name="fPwmKpCool" class="cc fPwmKpCool">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Cooling integral gain (KiCool)</span>
+			<span class="explanation">Output is cumulative error * KiCool.</span>
+			<input type="text" name="fPwmKiCool" class="cc fPwmKiCool">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heater PWM period (seconds)</span>
             <span class="explanation">Each PWM cycle takes this many seconds for the heaters. A value lower than 4 seconds is not recommended.
             Requires restart of controller (reset) to apply change.</span>
-            <input type="text" name="heatPwmPeriod" class="cc heatPwmPeriod">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
-        <div class="setting-container">
-            <span class="setting-name">Cooler PWM period (seconds)</span>
+			<input type="text" name="heatPwmPeriod" class="cc heatPwmPeriod">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Cooler PWM period (seconds)</span>
             <span class="explanation">Each PWM cycle takes this many seconds for the cooler.
                 Because most people will use a fridge or freezer, the cooler has a minimum ON time of 2 minutes and a minimum OFF time of 5 minutes.
                 This is needed to protect the compressor from overheating. The PWM driver will maintain the correct average despite of this by compensating in the next cycle.
                 Because of these hard coded mininum times, a period of less than 10 minutes (600 seconds) is not recommended.
                 Requires restart of controller (reset) to apply change.
             </span>
-            <input type="text" name="coolPwmPeriod" class="cc coolPwmPeriod">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
-        <div class="setting-container">
-            <span class="setting-name">Cooler minimum ON time (seconds)</span>
+			<input type="text" name="coolPwmPeriod" class="cc coolPwmPeriod">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Cooler minimum ON time (seconds)</span>
             <span class="explanation">
                 Once the compressor is turned ON, it will be ON for minimally this period, regardless of the PWM value. Requires restart of controller (reset) to apply change.
             </span>
-            <input type="text" name="minCoolTime" class="cc minCoolTime">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
-        <div class="setting-container">
-            <span class="setting-name">Cooler minimum OFF time (seconds)</span>
+			<input type="text" name="minCoolTime" class="cc minCoolTime">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Cooler minimum OFF time (seconds)</span>
             <span class="explanation">
                 Once the compressor is turned OFF, it will be OFF for minimally this period, regardless of the PWM value.
                 The OFF time is needed to equalize the pressure. This is needed to protect the compressor from overheating.
                 Do not lower this below 180 (3 minutes). Requires restart of controller (reset) to apply change.
             </span>
-            <input type="text" name="minCoolIdleTime" class="cc minCoolIdleTime">
-            <button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-        </div>
+			<input type="text" name="minCoolIdleTime" class="cc minCoolIdleTime">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
         <span class="section-explanation">
             Temperatures are filtered in BrewPi. You can adjust the amount of filtering here. But keep in mind that more filtering also causes a lag (delay) in the sensor readings.
 		</span>
