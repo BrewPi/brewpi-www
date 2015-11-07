@@ -199,169 +199,210 @@ function echoRotarySelect($optionName){
 			</select>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
-		<div class="setting-container">
-			<span class="setting-name">Temperature setting minimum</span>
-			<span class="explanation">The fridge and beer temperatures cannot go below this value.</span>
-			<input type="text" name="tempSetMin" class="cc tempSetMin">
-			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Temperature setting maximum</span>
-			<span class="explanation">The fridge and beer temperatures cannot go above this value.</span>
-			<input type="text" name="tempSetMax" class="cc tempSetMax">
-			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-		</div>
-		<span class="section-explanation">The fridge temperature is controlled with PID. The fridge setting = beer setting + PID.
-			The proportional part is linear with the temperature error.
-			The integral part slowly increases when an error stays present, this prevents steady state errors.
-			The derivative part is in the opposite direction to the proportional part. This prevents overshoot: it lowers the PID value when there's 'momentum' in the right direction.
+		<span class="section-explanation">
+			<p>
+				This release runs on 3 PIDs (heater 2 is not used right now).
+				The Heater 1 and Cooler PIDs take the fridge temperature as input and each drive a PWM actuator independently.
+				However, only one actuator can be active at any time, with a dead time of 30 minutes for switching.
+				Only the actuator with the highest value is activated, to prevent heating and cooling at the same time.
+			</p>
+			<p>
+				When running in beer constant or profile mode, the Beer-to-Fridge PID determines the fridge setpoint.
+				The PID output is added to the beer setting to give a fridge setting.
+			</p>
+			<p>
+				Actuators are driven with PWM.
+				For the cooler output, the compressor is guarded by minimum ON and OFF times.
+				For PWM values below the minimum ON time, the PWM actuator will start skipping cycles to achieve the correct average.
+			</p>
 		</span>
+
 		<div class="setting-container">
-			<span class="setting-name">PID: Kp</span>
-			<span class="explanation">The beer temperature error is multiplied by Kp to give the proportional part of the PID value.</span>
-			<input type="text" name="Kp" class="cc Kp">
+			<span class="setting-name">Beer-to-Fridge proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="beer2fridge_kp" class="cc beer2fridge_kp">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: Ki</span>
-			<span class="explanation">When the integral is active, the error is added to the integral every 30 seconds. The result is multiplied by Ki to give the integral part.</span>
-			<input type="text" name="Ki" class="cc Ki">
+			<span class="setting-name">Beer-to-Fridge integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
+			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
+			If you set it too high, it will create overshoot. Be conservative.
+			</span>
+			<input type="text" name="beer2fridge_ti" class="cc beer2fridge_ti">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: Kd</span>
-			<span class="explanation">The derivative of the beer temperature is multiplied by Kd to give the derivative part of the PID value.</span>
-			<input type="text" name="Kd" class="cc Kd">
+			<span class="setting-name">Beer-to-Fridge derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="beer2fridge_td" class="cc beer2fridge_td">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+
+		<div class="setting-container">
+			<span class="setting-name">Beer-to-Fridge Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("beer2fridge_infilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: maximum</span>
-			<span class="explanation">You can define the maximum difference between the beer temp setting and fridge temp setting here. The fridge setting will be clipped to this range.</span>
-			<input type="text" name="pidMax" class="cc pidMax">
+			<span class="setting-name">Beer-to-Fridge Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("beer2fridge_dfilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
-        <span class="section-explanation">
-            In this temporary, untested PWM actuators release, the Fridge actuators are controlled by a simple PI controller to generate a PWM value.
-            Each actuator has its own proportional gain (Kp) and integral gain (Ki). Adjust Kp so it does not overshoot too much and adjust Ki to adjust how fast it responds to steady state errors.
-            PWM output (0-255) = Kp * (fridge setting - fridge temp) + Ki * (cumulative sum of errors, per minute).
-            Overshoot can  result from both too high Kp or too high Ki.
-		</span>
+
 		<div class="setting-container">
-			<span class="setting-name">Heating proportional gain (KpHeat)</span>
-			<span class="explanation">Output is simply error * KpHeat</span>
-			<input type="text" name="fPwmKpHeat" class="cc fPwmKpHeat">
+			<span class="setting-name">Cooler proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="cooler_kp" class="cc cooler_kp">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Heating integral gain (KiHeat)</span>
-			<span class="explanation">Output is cumulative error * KiHeat.</span>
-			<input type="text" name="fPwmKiHeat" class="cc fPwmKiHeat">
+			<span class="setting-name">Cooler integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
+			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
+			If you set it too high, it will create overshoot. Be conservative.
+			</span>
+			<input type="text" name="cooler_ti" class="cc cooler_ti">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooling proportional gain (KpCool)</span>
-			<span class="explanation">Output is simply error * KpCool</span>
-			<input type="text" name="fPwmKpCool" class="cc fPwmKpCool">
-			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Cooling integral gain (KiCool)</span>
-			<span class="explanation">Output is cumulative error * KiCool.</span>
-			<input type="text" name="fPwmKiCool" class="cc fPwmKiCool">
-			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Heater PWM period (seconds)</span>
-            <span class="explanation">Each PWM cycle takes this many seconds for the heaters. A value lower than 4 seconds is not recommended.
-            Requires restart of controller (reset) to apply change.</span>
-			<input type="text" name="heatPwmPeriod" class="cc heatPwmPeriod">
+			<span class="setting-name">Cooler derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="cooler_td" class="cc cooler_td">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Cooler PWM period (seconds)</span>
-            <span class="explanation">Each PWM cycle takes this many seconds for the cooler.
-                Because most people will use a fridge or freezer, the cooler has a minimum ON time of 2 minutes and a minimum OFF time of 5 minutes.
-                This is needed to protect the compressor from overheating. The PWM driver will maintain the correct average despite of this by compensating in the next cycle.
-                Because of these hard coded mininum times, a period of less than 10 minutes (600 seconds) is not recommended.
-                Requires restart of controller (reset) to apply change.
-            </span>
-			<input type="text" name="coolPwmPeriod" class="cc coolPwmPeriod">
+			<span class="explanation">Each PWM cycle takes this many seconds. A value lower than 4 seconds is not recommended.</span>
+			<input type="text" name="coolerPwmPeriod" class="cc coolerPwmPeriod">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooler minimum ON time (seconds)</span>
-            <span class="explanation">
-                Once the compressor is turned ON, it will be ON for minimally this period, regardless of the PWM value. Requires restart of controller (reset) to apply change.
-            </span>
+			<span class="setting-name">Cooler minimum OFF time</span>
+			<span class="explanation">A fridge compressor needs to be OFF for a minimum time to protect it from building up pressure and overheating.</span>
+			<input type="text" name="minCoolIdleTime" class="cc minCoolIdleTime">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Cooler minimum ON time</span>
+			<span class="explanation">A minimum ON time is also recommended, because many short cycles limit the compressor lifespan.</span>
 			<input type="text" name="minCoolTime" class="cc minCoolTime">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooler minimum OFF time (seconds)</span>
-            <span class="explanation">
-                Once the compressor is turned OFF, it will be OFF for minimally this period, regardless of the PWM value.
-                The OFF time is needed to equalize the pressure. This is needed to protect the compressor from overheating.
-                Do not lower this below 180 (3 minutes). Requires restart of controller (reset) to apply change.
-            </span>
-			<input type="text" name="minCoolIdleTime" class="cc minCoolIdleTime">
-			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-		</div>
-        <span class="section-explanation">
-            Temperatures are filtered in BrewPi. You can adjust the amount of filtering here. But keep in mind that more filtering also causes a lag (delay) in the sensor readings.
-		</span>
-		<div class="setting-container">
-			<span class="setting-name">Beer fast filter delay time</span>
-			<span class="explanation">The beer fast filter is used for display and data logging. More filtering give a smoother line, but also more delay.</span>
-			<?php echoFilterSelect("beerFastFilt") ?>
+			<span class="setting-name">Cooler Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("cooler_infilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer slow filter delay time</span>
-			<span class="explanation">The beer slow filter is used for the control algorithm. The fridge temperature setting is calculated from this filter.
-				Because a small difference in beer temperature causes a large adjustment in the fridge temperature, more smoothing is needed.</span>
-			<?php echoFilterSelect("beerSlowFilt") ?>
+			<span class="setting-name">Cooler Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("cooler_dfilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+
+		<div class="setting-container">
+			<span class="setting-name">Heater 1 proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="heater1_kp" class="cc heater1_kp">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer slope filter delay time</span>
-			<span class="explanation">The slope is calculated as slope per hour. More filtering means a smoother fridge setting.</span>
-			<?php echoSlopeFilterSelect("beerSlopeFilt") ?>
+			<span class="setting-name">Heater 1 integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
+			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
+			If you set it too high, it will create overshoot. Be conservative.
+			</span>
+			<input type="text" name="heater1_ti" class="cc heater1_ti">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge fast filter delay time</span>
-			<span class="explanation">The fridge fast filter is used for on-off control, display and logging. It needs to have a small delay.</span>
-			<?php echoFilterSelect("fridgeFastFilt") ?>
+			<span class="setting-name">Heater 1 derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="heater1_td" class="cc heater1_td">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge slow filter delay time</span>
-			<span class="explanation">The fridge slow filter is used for peak detection to adjust the overshoot estimators.
-                More smoothing is needed to prevent small fluctuations to be recognized as peaks.
-                Does not apply to the PWM Actuators code.
-            </span>
-			<?php echoFilterSelect("fridgeSlowFilt") ?>
+			<span class="setting-name">Heater 1 PWM period (seconds)</span>
+            <span class="explanation">Each PWM cycle takes this many seconds. A value lower than 4 seconds is not recommended.</span>
+			<input type="text" name="heater1PwmPeriod" class="cc heater1PwmPeriod">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge slope filter delay time</span>
-			<span class="explanation">The fridge slope filter is not used in the current version.</span>
-			<?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
-		</div>
-		<!--<div class="setting-container">
-			<span class="setting-name">Use light as heater</span>
-			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater.. </span>
-			<?php echoYesNoSelect("lah") ?>
+			<span class="setting-name">Heater 1 Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater1_infilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Trigger rotary encoder at every ...</span>
-			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step. This only applies to Arduino.</span>
-			<?php echoRotarySelect("hs") ?>
+			<span class="setting-name">Heater 1 Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater1_dfilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
-		-->
+
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="heater2_kp" class="cc heater2_kp">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
+			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
+			If you set it too high, it will create overshoot. Be conservative.
+			</span>
+			<input type="text" name="heater2_ti" class="cc heater2_ti">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="heater2_td" class="cc heater2_td">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 PWM period (seconds)</span>
+			<span class="explanation">Each PWM cycle takes this many seconds. A value lower than 4 seconds is not recommended.</span>
+			<input type="text" name="heater2PwmPeriod" class="cc heater2PwmPeriod">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater2_infilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater2_dfilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
 	</div>
 </div>
 

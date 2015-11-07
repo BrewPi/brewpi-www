@@ -380,6 +380,10 @@ button#maintenance{
     color: #555;
 }
 
+#maintenance-panel .ui-widget-content {
+    font-family: Verdana, Arial, sans-serif;
+}
+
 #maintenance-panel .device-container .device-setting-container{
     width: 150px;
     padding: 5px;
