@@ -296,14 +296,14 @@ function findPinInList(pinList, pinNr){
 function pinTypeToFunctionList(pinType, hwType){
     "use strict";
     var functionList=[];
-    var actFunctions = [2, 3, 4, 7];
+    var actFunctions = [2, 3, 4, 7, 8];
 
     switch(pinType){
         case 'act':
             functionList = actFunctions; // all actuator functions
             break;
         case 'free':
-            functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
+            functionList = [1, 2, 3, 4, 7, 8]; // all actuator functions + door
             break;
         case 'onewire':
             if (hwType==2)
@@ -311,10 +311,10 @@ function pinTypeToFunctionList(pinType, hwType){
             else if (hwType == 3)
                 functionList = actFunctions;    // ds2413 actuator
             else if (hwType==4)
-                functionList = [8];
+                functionList = [8]; // ds2408 actuator
             break;
         case 'door':
-            functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
+            functionList = [1, 2, 3, 4, 7, 8]; // all actuator functions + door
             break;
     }
     return functionList;
@@ -326,6 +326,7 @@ function functionToPinTypes(functionType){
     var pinTypes;
     switch(functionType){
         case 0: // none
+        case 8: // Manual actuator
             pinTypes = ['free', 'act', 'onewire', 'door'];
             break;
         case 1: // door
@@ -339,10 +340,10 @@ function functionToPinTypes(functionType){
             break;
         case 5: // chamber temp
         case 6: // room temp
-        case 8: // DS2408 valve
         case 9: // beer temp
             pinTypes = ['onewire'];
             break;
+
         default: // unknown function
             pinTypes = [];
             break;
@@ -362,7 +363,7 @@ function getDeviceFunctionList(){
         {val : 5, text: 'Chamber Temp'},
         {val : 6, text: 'Room Temp'},
         {val : 7, text: 'Chamber Fan'},
-        {val : 8, text: 'Valve'},
+        {val : 8, text: 'Manual Actuator'},
         {val : 9, text: 'Beer Temp'}/*,
          {val : 10, text: 'Beer Temperature 2'},
          {val : 11, text: 'Beer Heater'},
@@ -407,7 +408,7 @@ function getDeviceTypeList() {
         {val: 2, text: 'Switch Sensor'},
         {val: 3, text: 'Switch Actuator'},
         {val: 4, text: 'PWM Actuator'},
-        {val: 5, text: 'Valve Actuator'}
+        {val: 5, text: 'Manual Actuator'}
     ];
 }
 
