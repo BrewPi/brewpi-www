@@ -258,9 +258,9 @@ function addDeviceToDeviceList(device, pinList, addManual){
 
     if((typeof device.n !== "undefined") ){
         $settings.append(generateDeviceSettingContainer(
-            "DS2413 pin",
-            "ds2413-pin",
-            generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.n)));
+            "Output",
+            "output-nr",
+            generateSelect([{ val: 0, text: 'Output A'}, {val: 1, text: 'Output B'}], device.n)));
     }
     if((typeof device.v !== "undefined") ){
         var value = device.v;
@@ -306,10 +306,12 @@ function pinTypeToFunctionList(pinType, hwType){
             functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
             break;
         case 'onewire':
-            if (hwType!==3)
+            if (hwType==2)
                 functionList = [5, 6, 9];
-            else
+            else if (hwType == 3)
                 functionList = actFunctions;    // ds2413 actuator
+            else if (hwType==4)
+                functionList = [8];
             break;
         case 'door':
             functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
@@ -337,6 +339,7 @@ function functionToPinTypes(functionType){
             break;
         case 5: // chamber temp
         case 6: // room temp
+        case 8: // DS2408 valve
         case 9: // beer temp
             pinTypes = ['onewire'];
             break;
@@ -359,7 +362,7 @@ function getDeviceFunctionList(){
         {val : 5, text: 'Chamber Temp'},
         {val : 6, text: 'Room Temp'},
         {val : 7, text: 'Chamber Fan'},
-        /*{val : 8, text: 'Chamber Reserved 1'},*/
+        {val : 8, text: 'Valve'},
         {val : 9, text: 'Beer Temp'}/*,
          {val : 10, text: 'Beer Temperature 2'},
          {val : 11, text: 'Beer Heater'},
@@ -390,18 +393,21 @@ function getDeviceHwTypeList(){
         {val : 0, text: 'None'},
         {val : 1, text: 'Digital Pin'},
         {val : 2, text: 'Temp Sensor'},
-        {val : 3, text: 'DS2413'}
+        {val : 3, text: 'DS2413'},
+        {val : 4, text: 'DS2408/Valve'},
     ];
 }
 
-function getDeviceTypeList(){
+function getDeviceTypeList() {
     "use strict";
     // currently unsupported/unused devices commented out
     return [
-        {val : 0, text: 'None'},
-        {val : 1, text: 'Temp Sensor'},
-        {val : 2, text: 'Switch Sensor'},
-        {val : 3, text: 'Switch Actuator'}
+        {val: 0, text: 'None'},
+        {val: 1, text: 'Temp Sensor'},
+        {val: 2, text: 'Switch Sensor'},
+        {val: 3, text: 'Switch Actuator'},
+        {val: 4, text: 'PWM Actuator'},
+        {val: 5, text: 'Valve Actuator'}
     ];
 }
 
@@ -528,7 +534,7 @@ function getDeviceConfigString(deviceNr){
     }
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
-    configString = addToConfigString(configString,"n", $deviceContainer.find(".ds2413-pin select").val());
+    configString = addToConfigString(configString,"n", $deviceContainer.find(".output-nr select").val());
 
     //configString = addToConfigString(configString,"d", 0); // hardwire deactivate for now
     //configString = addToConfigString(configString,"j", 0); // hardwire calibration for now

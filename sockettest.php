@@ -21,7 +21,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>BrewPi socket message test page</title>
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
 
 		<script type="text/javascript">
 		$(document).ready(function(){
