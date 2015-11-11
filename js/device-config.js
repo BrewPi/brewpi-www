@@ -168,6 +168,23 @@ function addDeviceToDeviceList(device, pinList, addManual){
         applyDeviceSettings(device.nr);
     });
 
+		// add Valve buttons
+		if(device.t == 5)
+		{
+			var $valveOpenButton = $("<button class='apply'>Open</button>");
+	    $valveOpenButton.appendTo($nameAndApply);
+	    $valveOpenButton.button({icons: {primary: "ui-icon-check" } });
+	    $valveOpenButton.click(function(){
+	       $.post('socketmessage.php', {messageType: String($("#messageType").val()), message: {"i": device.nr.toString(),"w":2} });
+    	});
+    	
+    	var $valveCloseButton = $("<button class='apply'>Close</button>");
+	    $valveCloseButton.appendTo($nameAndApply);
+	    $valveCloseButton.button({icons: {primary: "ui-icon-check" } });
+	    $valveCloseButton.click(function(){
+	       $.post('socketmessage.php', {messageType: writeDevice, message: {"i": device.nr.toString(),"w":1} });
+    	});
+		}
 
 
     var $settings = $("<div class='device-all-settings'><div>");
