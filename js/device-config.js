@@ -181,8 +181,13 @@ function addDeviceToDeviceList(device, pinList, addManual){
     	var $valveCloseButton = $("<button class='apply'>Close</button>");
 	    $valveCloseButton.appendTo($nameAndApply);
 	    $valveCloseButton.button({icons: {primary: "ui-icon-bullet" } });
+	    var $sendValue = 2;
+	    if (device.h == 1)
+	    {
+	    	$sendValue = 0;
+	    }
 	    $valveCloseButton.click(function(){
-	       $.post('socketmessage.php', {messageType: String("writeDevice"), message: String('{"i": ' + device.nr.toString() + ',"w":2}') });
+	       $.post('socketmessage.php', {messageType: String("writeDevice"), message: String('{"i": ' + device.nr.toString() + ',"w":' + $sendValue + '}') });
     	});
 		}
 
