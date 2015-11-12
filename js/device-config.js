@@ -168,6 +168,24 @@ function addDeviceToDeviceList(device, pinList, addManual){
         applyDeviceSettings(device.nr);
     });
 
+		// add Valve buttons
+		if(device.t == 5)
+		{
+			var $valveOpenButton = $("<button class='apply'>Open</button>");
+	    $valveOpenButton.appendTo($nameAndApply);
+	    $valveOpenButton.button({icons: {primary: "ui-icon-radio-off" } });
+	    $valveOpenButton.click(function(){
+	       $.post('socketmessage.php', {messageType: String("writeDevice"), message: String('{"i": ' + device.nr.toString() + ',"w":1}') });
+			});
+    	
+    	var $valveCloseButton = $("<button class='apply'>Close</button>");
+	    $valveCloseButton.appendTo($nameAndApply);
+	    $valveCloseButton.button({icons: {primary: "ui-icon-bullet" } });
+	    $valveCloseButton.click(function(){
+	       $.post('socketmessage.php', {messageType: String("writeDevice"), message: String('{"i": ' + device.nr.toString() + ',"w":2}') });
+    	});
+		}
+
 
 
     var $settings = $("<div class='device-all-settings'><div>");
@@ -266,6 +284,15 @@ function addDeviceToDeviceList(device, pinList, addManual){
         var value = device.v;
         if(parseInt(device.t, 10) === 3){
             // Device type is switch actuator
+            if(value === 0){
+                value = "Inactive";
+            }
+            else if(value ===1){
+                value = "Active";
+            }
+        }
+        if(parseInt(device.t, 10) === 5){
+            // Device type is valve/switch actuator
             if(value === 0){
                 value = "Inactive";
             }
@@ -425,7 +452,7 @@ function getLimitedPinList(pinList, pinTypes){
 
 function getDeviceSlotList(){
     "use strict";
-    var maxDevices = 15;
+    var maxDevices = 25;
     var list = [ {val: -1, text: 'Unassigned'}];
     for(var i = 0; i <= maxDevices; i++){
         list.push({val: i, text: i.toString()});
