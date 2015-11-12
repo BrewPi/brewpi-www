@@ -173,14 +173,14 @@ function addDeviceToDeviceList(device, pinList, addManual){
 		{
 			var $valveOpenButton = $("<button class='apply'>Open</button>");
 	    $valveOpenButton.appendTo($nameAndApply);
-	    $valveOpenButton.button({icons: {primary: "ui-icon-check" } });
+	    $valveOpenButton.button({icons: {primary: "ui-icon-radio-off" } });
 	    $valveOpenButton.click(function(){
 	       $.post('socketmessage.php', {messageType: String($("#messageType").val()), message: {"i": device.nr.toString(),"w":2} });
     	});
     	
     	var $valveCloseButton = $("<button class='apply'>Close</button>");
 	    $valveCloseButton.appendTo($nameAndApply);
-	    $valveCloseButton.button({icons: {primary: "ui-icon-check" } });
+	    $valveCloseButton.button({icons: {primary: "ui-icon-bullet" } });
 	    $valveCloseButton.click(function(){
 	       $.post('socketmessage.php', {messageType: writeDevice, message: {"i": device.nr.toString(),"w":1} });
     	});
@@ -283,6 +283,15 @@ function addDeviceToDeviceList(device, pinList, addManual){
         var value = device.v;
         if(parseInt(device.t, 10) === 3){
             // Device type is switch actuator
+            if(value === 0){
+                value = "Inactive";
+            }
+            else if(value ===1){
+                value = "Active";
+            }
+        }
+        if(parseInt(device.t, 10) === 5){
+            // Device type is valve actuator
             if(value === 0){
                 value = "Inactive";
             }
