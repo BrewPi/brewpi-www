@@ -70,6 +70,10 @@ function loadControlPanel(){
                 $controlPanel.tabs( "option", "active", 3);
                 statusMessage("normal","Temperature control disabled");
                 break;
+            case 't':
+                $controlPanel.tabs( "option", "active", 3);
+                statusMessage("normal","Testing mode");
+                break;
             default:
                 statusMessage("error","Invalid mode ("+window.controlSettings.mode+") received");
         }
