@@ -90,6 +90,7 @@ function receiveControlSettings(callback){
                 callback();
             }
 	    }
+    });
 }
 
 function syntaxHighlight(json) {
@@ -121,7 +122,7 @@ function receiveControlVariables(){
         url: 'socketmessage.php',
         data: {messageType: "getControlVariables", message: ""},
         success: function(controlVariablesJSON){
-            var jsonPretty = JSON.stringify(JSON.parse(jsonString),null,2);
+            var jsonPretty = JSON.stringify(JSON.parse(controlVariablesJSON),null,2);
       	    $('#algorithm-json').html(syntaxHighlight(jsonPretty));
         }
      });
