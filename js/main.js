@@ -25,56 +25,71 @@ var controlVariables = {};
 
 function receiveControlConstants(){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "getControlConstants", message: ""}, function(controlConstantsJSON){
-		window.controlConstants = controlConstantsJSON;
-		for (var i in window.controlConstants){
-			if(window.controlConstants.hasOwnProperty(i)){
-				if($('select[name="'+i+'"]').length){
-					$('select[name="'+i+'"]').val(window.controlConstants[i]);
-				}
-				if($('input[name="'+i+'"]').length){
-					$('input[name="'+i+'"]').val(window.controlConstants[i]);
-				}
-				$('.cc.'+i+' .val').text(window.controlConstants[i]);
-			}
+	$.ajax({
+        type: "POST",
+        dataType:"json",
+        cache: false,
+        contentType:"application/x-www-form-urlencoded; charset=utf-8",
+        data: {messageType: "getControlConstants", message: ""},
+        url: 'socketmessage.php',
+        success: function(controlConstantsJSON){
+            window.controlConstants = controlConstantsJSON;
+            for (var i in window.controlConstants){
+                if(window.controlConstants.hasOwnProperty(i)){
+                    if($('select[name="'+i+'"]').length){
+                        $('select[name="'+i+'"]').val(window.controlConstants[i]);
+                    }
+                    if($('input[name="'+i+'"]').length){
+                        $('input[name="'+i+'"]').val(window.controlConstants[i]);
+                    }
+                    $('.cc.'+i+' .val').text(window.controlConstants[i]);
+                }
+            }
         }
-    }, "json");
+    });
 }
 
 function receiveControlSettings(callback){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "getControlSettings", message: ""}, function(controlSettingsJSON){
-		window.controlSettings = controlSettingsJSON;
-        for (var i in controlSettings) {
-			if(controlSettings.hasOwnProperty(i)){
-				if($('select[name="'+i+'"]').length){
-					$('select[name="'+i+'"]').val(window.controlSettings[i]);
-				}
-				if($('input[name="'+i+'"]').length){
-					$('input[name="'+i+'"]').val(window.controlSettings[i]);
-				}
-				$('.cs.'+i+' .val').text(window.controlSettings[i]);
-			}
-		}
-        if(typeof(controlSettings.dataLogging) !== 'undefined'){
-            var $loggingState = $("span.data-logging-state");
-            if(controlSettings.dataLogging === 'paused'){
-                $loggingState.text("(logging paused)");
-                $loggingState.show();
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        cache: false,
+        contentType:"application/x-www-form-urlencoded; charset=utf-8",
+        url: 'socketmessage.php',
+        data: {messageType: "getControlSettings", message: ""},
+        success: function(controlSettingsJSON){
+            window.controlSettings = controlSettingsJSON;
+            for (var i in controlSettings) {
+                if(controlSettings.hasOwnProperty(i)){
+                    if($('select[name="'+i+'"]').length){
+                        $('select[name="'+i+'"]').val(window.controlSettings[i]);
+                    }
+                    if($('input[name="'+i+'"]').length){
+                        $('input[name="'+i+'"]').val(window.controlSettings[i]);
+                    }
+                    $('.cs.'+i+' .val').text(window.controlSettings[i]);
+                }
             }
-            else if (controlSettings.dataLogging === 'stopped'){
-                $loggingState.text("(logging stopped)");
-                $loggingState.show();
+            if(typeof(controlSettings.dataLogging) !== 'undefined'){
+                var $loggingState = $("span.data-logging-state");
+                if(controlSettings.dataLogging === 'paused'){
+                    $loggingState.text("(logging paused)");
+                    $loggingState.show();
+                }
+                else if (controlSettings.dataLogging === 'stopped'){
+                    $loggingState.text("(logging stopped)");
+                    $loggingState.show();
+                }
+                else{
+                    $loggingState.hide();
+                }
             }
-            else{
-                $loggingState.hide();
+            // execute optional callback function
+            if (callback && typeof(callback) === "function") {
+                callback();
             }
-        }
-		// execute optional callback function
-		if (callback && typeof(callback) === "function") {
-			callback();
-		}
-	}, "json");
+	    }
 }
 
 function syntaxHighlight(json) {
@@ -98,10 +113,18 @@ function syntaxHighlight(json) {
 
 function receiveControlVariables(){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "getControlVariables", message: ""}, function(jsonString){
-        var jsonPretty = JSON.stringify(JSON.parse(jsonString),null,2);
-        $('#algorithm-json').html(syntaxHighlight(jsonPretty));
-    }, "text");
+    $.ajax({
+        type: "POST",
+        dataType:"text",
+        cache: false,
+        contentType:"application/x-www-form-urlencoded; charset=utf-8",
+        url: 'socketmessage.php',
+        data: {messageType: "getControlVariables", message: ""},
+        success: function(controlVariablesJSON){
+            var jsonPretty = JSON.stringify(JSON.parse(jsonString),null,2);
+      	    $('#algorithm-json').html(syntaxHighlight(jsonPretty));
+        }
+     });
 }
 
 function loadDefaultControlSettings(){
@@ -150,22 +173,30 @@ function startScript(){
 
 function refreshLcd(){
 	"use strict";
-	$.post('socketmessage.php', {messageType: "lcd", message: ""},
-        function(lcdText){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        cache: false,
+        contentType:"application/x-www-form-urlencoded; charset=utf-8",
+        url: 'socketmessage.php',
+        data: {messageType: "lcd", message: ""}
+        })
+        .done( function(lcdText){
             var $lcdText = $('#lcd .lcd-text');
             for (var i = lcdText.length - 1; i >= 0; i--) {
                 $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
             }
             updateScriptStatus(true);
-        }, "json")
+        })
         .fail(function() {
             var $lcdText = $('#lcd .lcd-text');
-			$lcdText.find('#lcd-line-0').html("Cannot receive");
-			$lcdText.find('#lcd-line-1').html("LCD text from");
-			$lcdText.find('#lcd-line-2').html("Python script");
-			$lcdText.find('#lcd-line-3').html(" ");
+            $lcdText.find('#lcd-line-0').html("Cannot receive");
+            $lcdText.find('#lcd-line-1').html("LCD text from");
+            $lcdText.find('#lcd-line-2').html("Python script");
+            $lcdText.find('#lcd-line-3').html(" ");
             updateScriptStatus(false);
-	    }).always(function() {
+        })
+        .always(function() {
             window.setTimeout(refreshLcd,5000);
         }
     );
