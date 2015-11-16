@@ -168,29 +168,52 @@ function addDeviceToDeviceList(device, pinList, addManual){
         applyDeviceSettings(device.nr);
     });
 
-		// add Valve buttons
-		if(device.t == 5)
-		{
-			var $valveOpenButton = $("<button class='apply'>Open</button>");
-	    $valveOpenButton.appendTo($nameAndApply);
-	    $valveOpenButton.button({icons: {primary: "ui-icon-radio-off" } });
-	    $valveOpenButton.click(function(){
-	       $.post('socketmessage.php', {messageType: String("writeDevice"), message: String('{"i": ' + device.nr.toString() + ',"w":1}') });
-			});
-    	
-    	var $valveCloseButton = $("<button class='apply'>Close</button>");
-	    $valveCloseButton.appendTo($nameAndApply);
-	    $valveCloseButton.button({icons: {primary: "ui-icon-bullet" } });
-	    var $sendValue = 2;
-	    if (device.h == 1)
-	    {
-	    	$sendValue = 0;
-	    }
-	    $valveCloseButton.click(function(){
-	       $.post('socketmessage.php', {messageType: String("writeDevice"), message: String('{"i": ' + device.nr.toString() + ',"w":' + $sendValue + '}') });
-    	});
-		}
+    // add actuator control buttons buttons
+    if(device.t == 5) // manual actuator
+    {
+        if (device.h == 4){ // DS2408, used for values
+            var $valveOpenButton = $("<button class='apply'>Open</button>");
+            $valveOpenButton.appendTo($nameAndApply);
+            $valveOpenButton.button({icons: {primary: "ui-icon-arrowthick-2-e-w"}});
+            $valveOpenButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":1}')
+                });
+            });
 
+            var $valveCloseButton = $("<button class='apply'>Close</button>");
+            $valveCloseButton.appendTo($nameAndApply);
+            $valveCloseButton.button({icons: {primary: "ui-icon-arrowthickstop-1-e"}});
+            $valveCloseButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":2}')
+                });
+            });
+        }
+        if (device.h == 1 || device.h == 3){ // digital pin or DS2413
+            var $onButton = $("<button class='apply'>ON</button>");
+            $onButton.appendTo($nameAndApply);
+            $onButton.button({icons: {primary: "ui-icon-radio-on"}});
+            $onButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":1}')
+                });
+            });
+
+            var $offButton = $("<button class='apply'>OFF</button>");
+            $offButton.appendTo($nameAndApply);
+            $offButton.button({icons: {primary: "ui-icon-radio-off"}});
+            $offButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":0}')
+                });
+            });
+        }
+    }
 
 
     var $settings = $("<div class='device-all-settings'><div>");
