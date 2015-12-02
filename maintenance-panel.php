@@ -225,9 +225,10 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Beer-to-Fridge integral time constant (Ti)</span>
-			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
-			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
-			If you set it too high, it will create overshoot. Be conservative.
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
 			</span>
 			<input type="text" name="beer2fridge_ti" class="cc beer2fridge_ti">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
@@ -273,9 +274,10 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Cooler integral time constant (Ti)</span>
-			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
-			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
-			If you set it too high, it will create overshoot. Be conservative.
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
 			</span>
 			<input type="text" name="cooler_ti" class="cc cooler_ti">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
@@ -330,9 +332,10 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Heater 1 integral time constant (Ti)</span>
-			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
-			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
-			If you set it too high, it will create overshoot. Be conservative.
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
 			</span>
 			<input type="text" name="heater1_ti" class="cc heater1_ti">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
@@ -375,9 +378,10 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Heater 2 integral time constant (Ti)</span>
-			<span class="explanation">The input error is slowly accumulated in the integrator. The integral part of PID is Kp * 1/Ti * integral.
-			A steady state error that is not corrected by Kp, is corrected by the integral in Ti seconds.
-			If you set it too high, it will create overshoot. Be conservative.
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
 			</span>
 			<input type="text" name="heater2_ti" class="cc heater2_ti">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
