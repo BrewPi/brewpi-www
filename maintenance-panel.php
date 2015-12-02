@@ -242,6 +242,14 @@ function echoRotarySelect($optionName){
 			<input type="text" name="beer2fridge_td" class="cc beer2fridge_td">
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
+		<div class="setting-container">
+		    <span class="setting-name">Maximum difference between fridge and beer set point (= output of PID)</span>
+			<span class="explanation">The output of this PID is added to the beer set point to automatically set the fridge set point.
+			You can define the maximum difference between the beer temperature setting and fridge temperature setting here.
+			</span>
+			<input type="text" name="beer2fridge_pidMax" class="cc beer2fridge_pidMax">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+        </div>
 
 		<div class="setting-container">
 			<span class="setting-name">Beer-to-Fridge Input filter delay time</span>
