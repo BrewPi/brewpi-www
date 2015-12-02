@@ -74,6 +74,12 @@ $(document).ready(function(){
 		}
 	});
 
+    $("#advanced-settings").find(".reset-controller-button").button({	icons: {primary: "ui-icon-trash" } }).unbind('click').click(function(){
+        $.post('socketmessage.php', {messageType: "resetController", message: ""});
+        reloadControlConstantsFromArduino();
+        reloadControlSettingsFromArduino();
+    });
+
 	$(".cc.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
 		.unbind('click').click(receiveControlConstants);
 

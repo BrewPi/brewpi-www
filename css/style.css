@@ -455,6 +455,10 @@ button#maintenance{
     float: right;
 }
 
+#advanced-settings .reset-controller-button{
+	text-align: center;
+}
+
 #advanced-settings .setting-container select,
 #advanced-settings .setting-container input,
 #settings .setting-container select,
