@@ -427,6 +427,12 @@ function echoRotarySelect($optionName){
 			<?php echoRotarySelect("hs") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
+
+		<span class="section-explanation">
+			<p>With the button below, you can reset the entire <span class="boardMoniker">controller</span> to factory defaults.</p>
+			<p>This will reset all settings and will remove all installed devices.</p>
+			<button class="reset-controller-button">Reset <span class="boardMoniker">controller</span> to factory defaults</button>
+		</span>
 	</div>
 </div>
 
