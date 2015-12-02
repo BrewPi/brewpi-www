@@ -411,6 +411,13 @@ function echoRotarySelect($optionName){
 			<?php echoFilterSelect("heater2_dfilt") ?>
 			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
+        <div class="setting-container">
+			<span class="setting-name">Dead time when switching between actuators</span>
+			<span class="explanation">Only one can be active at each moment. The dead time is the minimum to wait when switching between one actuator and another.
+			This prevents quickly alternating between heating to cooling.</span>
+			<input type="text" name="deadTime" class="cc deadTime">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
 
 		<span class="section-explanation">
 			<p>With the button below, you can reset the entire <span class="boardMoniker">controller</span> to factory defaults.</p>
