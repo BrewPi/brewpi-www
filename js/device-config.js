@@ -168,6 +168,52 @@ function addDeviceToDeviceList(device, pinList, addManual){
         applyDeviceSettings(device.nr);
     });
 
+    // add actuator control buttons buttons
+    if(device.t == 5) // manual actuator
+    {
+        if (device.h == 4){ // DS2408, used for values
+            var $valveOpenButton = $("<button class='apply'>Open</button>");
+            $valveOpenButton.appendTo($nameAndApply);
+            $valveOpenButton.button({icons: {primary: "ui-icon-arrowthick-2-e-w"}});
+            $valveOpenButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":1}')
+                });
+            });
+
+            var $valveCloseButton = $("<button class='apply'>Close</button>");
+            $valveCloseButton.appendTo($nameAndApply);
+            $valveCloseButton.button({icons: {primary: "ui-icon-arrowthickstop-1-e"}});
+            $valveCloseButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":2}')
+                });
+            });
+        }
+        if (device.h == 1 || device.h == 3){ // digital pin or DS2413
+            var $onButton = $("<button class='apply'>ON</button>");
+            $onButton.appendTo($nameAndApply);
+            $onButton.button({icons: {primary: "ui-icon-radio-on"}});
+            $onButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":1}')
+                });
+            });
+
+            var $offButton = $("<button class='apply'>OFF</button>");
+            $offButton.appendTo($nameAndApply);
+            $offButton.button({icons: {primary: "ui-icon-radio-off"}});
+            $offButton.click(function () {
+                $.post('socketmessage.php', {
+                    messageType: String("writeDevice"),
+                    message: String('{"i": ' + device.i.toString() + ',"w":0}')
+                });
+            });
+        }
+    }
 
 
     var $settings = $("<div class='device-all-settings'><div>");
@@ -258,14 +304,23 @@ function addDeviceToDeviceList(device, pinList, addManual){
 
     if((typeof device.n !== "undefined") ){
         $settings.append(generateDeviceSettingContainer(
-            "DS2413 pin",
-            "ds2413-pin",
-            generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.n)));
+            "Output",
+            "output-nr",
+            generateSelect([{ val: 0, text: 'Output A'}, {val: 1, text: 'Output B'}], device.n)));
     }
     if((typeof device.v !== "undefined") ){
         var value = device.v;
         if(parseInt(device.t, 10) === 3){
             // Device type is switch actuator
+            if(value === 0){
+                value = "Inactive";
+            }
+            else if(value ===1){
+                value = "Active";
+            }
+        }
+        if(parseInt(device.t, 10) === 5){
+            // Device type is valve/switch actuator
             if(value === 0){
                 value = "Inactive";
             }
@@ -296,23 +351,25 @@ function findPinInList(pinList, pinNr){
 function pinTypeToFunctionList(pinType, hwType){
     "use strict";
     var functionList=[];
-    var actFunctions = [2, 3, 4, 7];
+    var actFunctions = [2, 3, 4, 7, 8];
 
     switch(pinType){
         case 'act':
             functionList = actFunctions; // all actuator functions
             break;
         case 'free':
-            functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
+            functionList = [1, 2, 3, 4, 7, 8]; // all actuator functions + door
             break;
         case 'onewire':
-            if (hwType!==3)
+            if (hwType==2)
                 functionList = [5, 6, 9];
-            else
+            else if (hwType == 3)
                 functionList = actFunctions;    // ds2413 actuator
+            else if (hwType==4)
+                functionList = [8]; // ds2408 actuator
             break;
         case 'door':
-            functionList = [1, 2, 3, 4, 7]; // all actuator functions + door
+            functionList = [1, 2, 3, 4, 7, 8]; // all actuator functions + door
             break;
     }
     return functionList;
@@ -324,6 +381,7 @@ function functionToPinTypes(functionType){
     var pinTypes;
     switch(functionType){
         case 0: // none
+        case 8: // Manual actuator
             pinTypes = ['free', 'act', 'onewire', 'door'];
             break;
         case 1: // door
@@ -340,6 +398,7 @@ function functionToPinTypes(functionType){
         case 9: // beer temp
             pinTypes = ['onewire'];
             break;
+
         default: // unknown function
             pinTypes = [];
             break;
@@ -359,7 +418,7 @@ function getDeviceFunctionList(){
         {val : 5, text: 'Chamber Temp'},
         {val : 6, text: 'Room Temp'},
         {val : 7, text: 'Chamber Fan'},
-        /*{val : 8, text: 'Chamber Reserved 1'},*/
+        {val : 8, text: 'Manual Actuator'},
         {val : 9, text: 'Beer Temp'}/*,
          {val : 10, text: 'Beer Temperature 2'},
          {val : 11, text: 'Beer Heater'},
@@ -390,18 +449,21 @@ function getDeviceHwTypeList(){
         {val : 0, text: 'None'},
         {val : 1, text: 'Digital Pin'},
         {val : 2, text: 'Temp Sensor'},
-        {val : 3, text: 'DS2413'}
+        {val : 3, text: 'DS2413'},
+        {val : 4, text: 'DS2408/Valve'},
     ];
 }
 
-function getDeviceTypeList(){
+function getDeviceTypeList() {
     "use strict";
     // currently unsupported/unused devices commented out
     return [
-        {val : 0, text: 'None'},
-        {val : 1, text: 'Temp Sensor'},
-        {val : 2, text: 'Switch Sensor'},
-        {val : 3, text: 'Switch Actuator'}
+        {val: 0, text: 'None'},
+        {val: 1, text: 'Temp Sensor'},
+        {val: 2, text: 'Switch Sensor'},
+        {val: 3, text: 'Switch Actuator'},
+        {val: 4, text: 'PWM Actuator'},
+        {val: 5, text: 'Manual Actuator'}
     ];
 }
 
@@ -418,7 +480,7 @@ function getLimitedPinList(pinList, pinTypes){
 
 function getDeviceSlotList(){
     "use strict";
-    var maxDevices = 15;
+    var maxDevices = 25;
     var list = [ {val: -1, text: 'Unassigned'}];
     for(var i = 0; i <= maxDevices; i++){
         list.push({val: i, text: i.toString()});
@@ -528,7 +590,7 @@ function getDeviceConfigString(deviceNr){
     }
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
-    configString = addToConfigString(configString,"n", $deviceContainer.find(".ds2413-pin select").val());
+    configString = addToConfigString(configString,"n", $deviceContainer.find(".output-nr select").val());
 
     //configString = addToConfigString(configString,"d", 0); // hardwire deactivate for now
     //configString = addToConfigString(configString,"j", 0); // hardwire calibration for now

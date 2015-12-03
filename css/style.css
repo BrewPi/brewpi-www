@@ -380,6 +380,10 @@ button#maintenance{
     color: #555;
 }
 
+#maintenance-panel .ui-widget-content {
+    font-family: Verdana, Arial, sans-serif;
+}
+
 #maintenance-panel .device-container .device-setting-container{
     width: 150px;
     padding: 5px;
@@ -449,6 +453,10 @@ button#maintenance{
 #advanced-settings .send-button{
     position: relative;
     float: right;
+}
+
+#advanced-settings .reset-controller-button{
+	text-align: center;
 }
 
 #advanced-settings .setting-container select,
@@ -780,3 +788,12 @@ button.chart-error-refresh{
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 
 .chart-placeholder{ display: block; margin-top:100px; width: 100%; text-align: center;}
+
+/* css for json syntax highlighting */
+pre.json {outline: 1px solid #ccc; padding: 5px; margin: 5px;
+    background-color: #333; color: #808080; width: auto; height: 550px; overflow: auto;}
+.string { color: #32cd32; }
+.number { color: #ff006a; }
+.boolean { color: #00bfff; }
+.null { color: #ff4500; }
+.key { color: #d3d3d3; }

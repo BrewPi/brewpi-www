@@ -74,6 +74,12 @@ $(document).ready(function(){
 		}
 	});
 
+    $("#advanced-settings").find(".reset-controller-button").button({	icons: {primary: "ui-icon-trash" } }).unbind('click').click(function(){
+        $.post('socketmessage.php', {messageType: "resetController", message: ""});
+        reloadControlConstantsFromArduino();
+        reloadControlSettingsFromArduino();
+    });
+
 	$(".cc.receive-from-script").button({	icons: {primary: "ui-icon-arrowthickstop-1-s" } })
 		.unbind('click').click(receiveControlConstants);
 
@@ -128,8 +134,8 @@ $(document).ready(function(){
 
 });
 
-boardNames = { "spark-core": "Spark Core", "photon": "Photon" };
-programFileType = { "spark-core": "BIN"};
+boardNames = { "core": "Core", "photon": "Photon", "leonardo": "Arduino", "uno": "Arduino" };
+programFileType = { "core": "BIN", "photon": "BIN", "leonardo": "HEX", "uno": "HEX" };
 
 function setBoard(board) {
     $("#reprogram-arduino .boardType").val(board);
@@ -147,10 +153,16 @@ function setControllerVersion(controllerVersion, undefined) {
 }
 
 function updateControllerVersion() {
-	$.post('socketmessage.php', {messageType: "getVersion", message: ""}, function(controllerVersionJSON){
-        setControllerVersion(controllerVersionJSON);
-    }, "json");
-
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        contentType:"application/x-www-form-urlencoded; charset=utf-8",
+        url: 'socketmessage.php',
+        data: {messageType: "getVersion", message: ""},
+        success: function(controllerVersionJSON){
+            setControllerVersion(controllerVersionJSON);
+        }
+    });
 }
 
 function refreshLogs(refreshStdOut, refreshStdErr){

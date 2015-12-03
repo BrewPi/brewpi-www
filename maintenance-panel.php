@@ -63,11 +63,11 @@ function echoRotarySelect($optionName){
 	<li><a href="#control-algorithm"><span>Control Algorithm</span></a></li>
 	<li><a href="#device-config"><span>Device Configuration</span></a></li>
 	<li><a href="#advanced-settings"><span>Advanced Settings</span></a></li>
-	<li><a href="#reprogram-arduino"><span>Reprogram <span class="boardMoniker">Arduino</span></span></a></li>
+	<li><a href="#reprogram-arduino"><span>Reprogram <span class="boardMoniker">controller</span></span></a></li>
 	<!--kinda dirty to have buttons in the ul, but the ul is styled as a nice header by jQuery UI -->
 </ul>
 <div id="reprogram-arduino">
-	<p>Here you can upload a <span class="programFileType">HEX</span> file which will be uploaded to the <span class="boardMoniker">Arduino</span> by the Python script.
+	<p>Here you can upload a <span class="programFileType">firmware</span> file which will be uploaded to the <span class="boardMoniker">controller</span> by the Python script.
 		The script will automatically restart itself after programming.
 		Just hit the back button on your browser to continue running BrewPi.</p>
 	<div id = "program-container">
@@ -114,19 +114,20 @@ function echoRotarySelect($optionName){
 		<div class="setting-container">
 			<span class="setting-name">Log data point every:</span>
 			<select id="interval">
-			  <option value="30">30 Seconds</option>
-			  <option value="60">1 Minute</option>
-			  <option value="120">2 Minutes</option>
-			  <option value="300">5 Minutes</option>
-			  <option value="600">10 Minutes</option>
-			  <option value="1800">30 Minutes</option>
-			  <option value="3600">1 hour</option>
+				<option value="10">10 Seconds</option>
+				<option value="30">30 Seconds</option>
+				<option value="60">1 Minute</option>
+				<option value="120">2 Minutes</option>
+				<option value="300">5 Minutes</option>
+				<option value="600">10 Minutes</option>
+				<option value="1800">30 Minutes</option>
+				<option value="3600">1 hour</option>
 			</select>
 			<button id="apply-interval" class="apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Profile name:</span>
-			<input id="profile-name" value="<?php echo urldecode($profileName) ?>" size=30 type="text">
+			<input id="profile-name" value="<?php echo urldecode($profileName) ?>" size=30 type="text" />
 			<button class="apply-profile-name apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
@@ -141,76 +142,11 @@ function echoRotarySelect($optionName){
 </div>
 <div id="control-algorithm">
 	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<span class='container-title'>PID algorithm for fridge setting</span>
-		<button class="cs update-from-arduino">Update control settings</button>
-		<button class="cv update-from-arduino">Update control variables</button>
-		<button class="cc update-from-arduino">Update control constants</button>
+		<span class='container-title'>Controller state as JSON</span>
+		<button class="cv update-from-arduino">Refresh</button>
 	</div>
 	<div class="algorithm-container ui-widget-content ui-corner-all">
-		<div class="help-panel">
-			<p>
-				The red values are control settings. The beer setting is set by the profile or constant. The fridge setting is set by PID or constant.
-				</br>
-				The orange values are control variables. These are intermediate results of the fridge setting calculation.
-				</br>
-				The blue values are constants, they never change automatically.
-			</p>
-		</div>
-		<div class="equation">
-			<div class="cv beerDiff"><span class="name">Beer temp. error</span><span class="val"></span></div>
-			<span class="operator multiply">*</span>
-			<div class="cc Kp"><span class="name">Kp</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cv p"><span class="name">P</span><span class="val"></span></div>
-		</div>
-		<div class="equation">
-			<div class="cv diffIntegral"><span class="name">Beer temp. error integral</span><span class="val"></span></div>
-			<span class="operator multiply">*</span>
-			<div class="cc Ki"><span class="name">Ki</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cv i"><span class="name">I</span><span class="val"></span></div>
-		</div>
-		<div class="equation">
-			<div class="cv beerSlope"><span class="name">Beer temp. derivative</span><span class="val"></span></div>
-			<span class="operator multiply">*</span>
-			<div class="cc Kd"><span class="name">Kd</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cv d"><span class="name">D</span><span class="val"></span></div>
-		</div>
-		<div class="sum-line"><div class="line"></div><span class="operator plus">+</span></div>
-		<div class="equation">
-			<div class="cs beerSet"><span class="name">Beer Setting</span><span class="val"></span></div>
-			<span class="operator plus">+</span>
-			<div class="cv pid-result"><span class="name">P + I + D</span><span class="val"></span></div>
-			<span class="operator equals">=</span>
-			<div class="cs fridgeSet"><span class="name">FridgeSetting</span><span class="val"></span></div>
-		</div>
-	</div>
-	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<span class='container-title'>Predictive ON/OFF and peak detection</span>
-		<button class="cs update-from-arduino">Update control settings</button>
-		<button class="cv update-from-arduino">Update control variables</button>
-		<button class="cc update-from-arduino">Update control constants</button>
-	</div>
-	<div class="algorithm-container ui-widget-content ui-corner-all">
-		<div class="help-panel">
-			<p>
-				The heater and cooler are controlled by a predictive on-off algorithm.
-				BrewPi estimates the overshoot that would happen when it would go to IDLE. When that lands on the target temperature, it goes to IDLE.
-				The overshoot is estimated as time active in hours * estimator.
-				BrewPi detects the actual peaks and compares them to the prediction to automatically adjusts the estimators.
-				You can change them manually in 'advanced settings' when they are far off.
-			</p>
-		</div>
-		<div class="on-off-parameters">
-			<div class="cv estPeak"><span class="name">Estimated peak</span><span class="val"></span></div>
-			<div class="cv negPeak"><span class="name">Last detected negative peak</span><span class="val"></span></div>
-			<div class="cv negPeakEst"><span class="name">Last target for negative peak</span><span class="val"></span></div>
-			<div class="cv posPeak"><span class="name">Last detected positive peak</span><span class="val"></span></div>
-			<div class="cv posPeakEst"><span class="name">Last target for positive peak</span><span class="val"></span></div>
-			<div class="cs coolEst"><span class="name">Cooling overshoot estimator</span><span class="val"></span></div>
-			<div class="cs heatEst"><span class="name">Heating overshoot estimator</span><span class="val"></span></div>
-		</div>
+		<pre class="json" id="algorithm-json">Click refresh to receive controller from device.</pre>
 	</div>
 </div>
 <div id="advanced-settings">
@@ -218,7 +154,7 @@ function echoRotarySelect($optionName){
 		<span class='container-title'>Control settings</span>
 		<button class="cs load-defaults">Reload defaults</button>
 		<button class="cs receive-from-script">Receive from script</button>
-		<button class="cs update-from-arduino">Update from <span class="boardMoniker">Arduino</span></button>
+		<button class="cs update-from-arduino">Update from <span class="boardMoniker">controller</span></button>
 	</div>
 	<div id="control-settings-container" class="ui-widget-content ui-corner-all">
 		<div class="setting-container">
@@ -231,40 +167,26 @@ function echoRotarySelect($optionName){
 				<option value="o">Off</option>
 				<option value="t">Test mode</option>
 			</select>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Beer Temperature Setting</span>
 			<span class="explanation">Beer temperature setting when in profile or beer constant mode. Use the control panel to adjust.</span>
 			<input type="text" name="beerSet" class="cs beerSet">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Fridge Temperature Setting</span>
 			<span class="explanation">Automatically adjust when in profile/beer constant mode. Use the control panel to adjust.</span>
 			<input type="text" name="fridgeSet" class="cs fridgeSet">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Cooling overshoot estimator</span>
-			<span class="explanation">This is a self learning estimator for the overshoot when turning the cooler off.
-			It is adjusted automatically, but you can set adjust it manually here. This does not stop further automatic adjustment.</span>
-			<input type="text" name="coolEst" class="cs coolEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Heating overshoot estimator</span>
-			<span class="explanation">This is a self learning estimator for the overshoot when turning the heater off.
-			It is adjusted automatically, but you can set adjust it manually here. This does not stop further automatic adjustment.</span>
-			<input type="text" name="heatEst" class="cs heatEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 	</div>
 	<div class = "header ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 		<span class='container-title'>Control constants</span>
 		<button class="cc load-defaults">Reload defaults</button>
 		<button class="cc receive-from-script">Receive from script</button>
-		<button class="cc update-from-arduino">Update from <span class="boardMoniker">Arduino</span></button>
+		<button class="cc update-from-arduino">Update from <span class="boardMoniker">controller</span></button>
 	</div>
 	<div id="control-constants-container" class="ui-widget-content ui-corner-all">
 		<div class="setting-container">
@@ -275,152 +197,237 @@ function echoRotarySelect($optionName){
 				<option value="C">Celsius</option>
 				<option value="F">Fahrenheit</option>
 			</select>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
-		<div class="setting-container">
-			<span class="setting-name">Temperature setting minimum</span>
-			<span class="explanation">The fridge and beer temperatures cannot go below this value.</span>
-			<input type="text" name="tempSetMin" class="cc tempSetMin">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<div class="setting-container">
-			<span class="setting-name">Temperature setting maximum</span>
-			<span class="explanation">The fridge and beer temperatures cannot go above this value.</span>
-			<input type="text" name="tempSetMax" class="cc tempSetMax">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
-		</div>
-		<span class="section-explanation">The fridge temperature is controlled with PID. The fridge setting = beer setting + PID.
-			The proportional part is linear with the temperature error.
-			The integral part slowly increases when an error stays present, this prevents steady state errors.
-			The derivative part is in the opposite direction to the proportional part. This prevents overshoot: it lowers the PID value when there's 'momentum' in the right direction.
+		<span class="section-explanation">
+			<p>
+				This release runs on 3 PIDs (heater 2 is not used right now).
+				The Heater 1 and Cooler PIDs take the fridge temperature as input and each drive a PWM actuator independently.
+				However, only one actuator can be active at any time, with a dead time of 30 minutes for switching.
+				Only the actuator with the highest value is activated, to prevent heating and cooling at the same time.
+			</p>
+			<p>
+				When running in beer constant or profile mode, the Beer-to-Fridge PID determines the fridge setpoint.
+				The PID output is added to the beer setting to give a fridge setting.
+			</p>
+			<p>
+				Actuators are driven with PWM.
+				For the cooler output, the compressor is guarded by minimum ON and OFF times.
+				For PWM values below the minimum ON time, the PWM actuator will start skipping cycles to achieve the correct average.
+			</p>
 		</span>
+
 		<div class="setting-container">
-			<span class="setting-name">PID: Kp</span>
-			<span class="explanation">The beer temperature error is multiplied by Kp to give the proportional part of the PID value.</span>
-			<input type="text" name="Kp" class="cc Kp">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Beer-to-Fridge proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="beer2fridge_kp" class="cc beer2fridge_kp">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: Ki</span>
-			<span class="explanation">When the integral is active, the error is added to the integral every 30 seconds. The result is multiplied by Ki to give the integral part.</span>
-			<input type="text" name="Ki" class="cc Ki">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Beer-to-Fridge integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
+			</span>
+			<input type="text" name="beer2fridge_ti" class="cc beer2fridge_ti">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: Kd</span>
-			<span class="explanation">The derivative of the beer temperature is multiplied by Kd to give the derivative part of the PID value.</span>
-			<input type="text" name="Kd" class="cc Kd">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Beer-to-Fridge derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="beer2fridge_td" class="cc beer2fridge_td">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">PID: maximum</span>
-			<span class="explanation">You can define the maximum difference between the beer temp setting and fridge temp setting here. The fridge setting will be clipped to this range.</span>
-			<input type="text" name="pidMax" class="cc pidMax">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+		    <span class="setting-name">Maximum difference between fridge and beer set point (= output of PID)</span>
+			<span class="explanation">The output of this PID is added to the beer set point to automatically set the fridge set point.
+			You can define the maximum difference between the beer temperature setting and fridge temperature setting here.
+			</span>
+			<input type="text" name="beer2fridge_pidMax" class="cc beer2fridge_pidMax">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+        </div>
+
+		<div class="setting-container">
+			<span class="setting-name">Beer-to-Fridge Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("beer2fridge_infilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Integrator: maximum temp error &deg;<?php echo $tempFormat ?></span>
-			<span class="explanation">The integral is only active when the temperature is close to the target temperature. This is the maximum error for which the integral is active..</span>
-			<input type="text" name="iMaxErr" class="cc iMaxErr">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Beer-to-Fridge Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("beer2fridge_dfilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+
+		<div class="setting-container">
+			<span class="setting-name">Cooler proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="cooler_kp" class="cc cooler_kp">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Temperature idle range top</span>
-			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
-			<input type="text" name="idleRangeH" class="cc idleRangeH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Cooler integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
+			</span>
+			<input type="text" name="cooler_ti" class="cc cooler_ti">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Temperature idle range bottom</span>
-			<span class="explanation">When the fridge temperature is within this range, it won't heat or cool, regardless of other settings.</span>
-			<input type="text" name="idleRangeL" class="cc idleRangeL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Cooler derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="cooler_td" class="cc cooler_td">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Heating target upper bound</span>
-			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="heatTargetH" class="cc heatingTargetH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Cooler PWM period (seconds)</span>
+			<span class="explanation">Each PWM cycle takes this many seconds. A value lower than 4 seconds is not recommended.</span>
+			<input type="text" name="coolerPwmPeriod" class="cc coolerPwmPeriod">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Heating target lower bound</span>
-			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="heatTargetL" class="cc heatingTargetL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Cooler minimum OFF time</span>
+			<span class="explanation">A fridge compressor needs to be OFF for a minimum time to protect it from building up pressure and overheating.</span>
+			<input type="text" name="minCoolIdleTime" class="cc minCoolIdleTime">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooling target upper bound</span>
-			<span class="explanation">When the overshoot lands under this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="coolTargetH" class="cc coolingTargetH">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Cooler minimum ON time</span>
+			<span class="explanation">A minimum ON time is also recommended, because many short cycles limit the compressor lifespan.</span>
+			<input type="text" name="minCoolTime" class="cc minCoolTime">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Cooling target lower bound</span>
-			<span class="explanation">When the overshoot lands above this value, the peak is within target range and the estimator is not adjusted.</span>
-			<input type="text" name="coolTargetL" class="cc coolingTargetL">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Cooler Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("cooler_infilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Maximum time in seconds for heating overshoot estimator</span>
-			<span class="explanation">The time the fridge has been heating is used to estimate overshoot. This is the maximum time that is taken into account.</span>
-			<input type="text" name="maxHeatTimeForEst" class="cc maxHeatTimeForEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Cooler Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("cooler_dfilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+
+		<div class="setting-container">
+			<span class="setting-name">Heater 1 proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="heater1_kp" class="cc heater1_kp">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Maximum time in seconds for cooling overshoot estimator</span>
-			<span class="explanation">The time the fridge has been cooling is used to estimate overshoot. This is the maximum time that is taken into account.</span>
-			<input type="text" name="maxCoolTimeForEst" class="cc maxCoolTimeForEst">
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 1 integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
+			</span>
+			<input type="text" name="heater1_ti" class="cc heater1_ti">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer fast filter delay time</span>
-			<span class="explanation">The beer fast filter is used for display and data logging. More filtering give a smoother line, but also more delay.</span>
-			<?php echoFilterSelect("beerFastFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 1 derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="heater1_td" class="cc heater1_td">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer slow filter delay time</span>
-			<span class="explanation">The beer slow filter is used for the control algorithm. The fridge temperature setting is calculated from this filter.
-				Because a small difference in beer temperature causes a large adjustment in the fridge temperature, more smoothing is needed.</span>
-			<?php echoFilterSelect("beerSlowFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 1 PWM period (seconds)</span>
+            <span class="explanation">Each PWM cycle takes this many seconds. A value lower than 4 seconds is not recommended.</span>
+			<input type="text" name="heater1PwmPeriod" class="cc heater1PwmPeriod">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Beer slope filter delay time</span>
-			<span class="explanation">The slope is calculated every 30 seconds and fed to this filter. More filtering means a smoother fridge setting.</span>
-			<?php echoSlopeFilterSelect("beerSlopeFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 1 Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater1_infilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge fast filter delay time</span>
-			<span class="explanation">The fridge fast filter is used for on-off control, display and logging. It needs to have a small delay.</span>
-			<?php echoFilterSelect("fridgeFastFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 1 Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater1_dfilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 proportional gain (Kp)</span>
+			<span class="explanation">Actuatour output in % = Kp * input error</span>
+			<input type="text" name="heater2_kp" class="cc heater2_kp">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge slow filter delay time</span>
-			<span class="explanation">The fridge slow filter is used for peak detection to adjust the overshoot estimators. More smoothing is needed to prevent small fluctiations to be recognized as peaks.</span>
-			<?php echoFilterSelect("fridgeSlowFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 2 integral time constant (Ti)</span>
+			<span class="explanation">The input error is slowly accumulated in the integrator.
+			A steady state error that is not corrected by Kp, is corrected by the integral.
+			The integral part grows by the proportional part every Ti seconds.
+			If you let it grow to quickly, this can create overshoot. Be careful.
+			</span>
+			<input type="text" name="heater2_ti" class="cc heater2_ti">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Fridge slope filter delay time</span>
-			<span class="explanation">The fridge slope filter is not used in the current version.</span>
-			<?php echoSlopeFilterSelect("fridgeSlopeFilt") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 2 derivative time constant (Td)</span>
+			<span class="explanation">The derivative is the temperature difference per second. The derivative part of PID is -Kp * Td * dT/dt.
+				This can be interpreted as looking Td seconds ahead.
+				For very slow processes (like fermentation), it is recommended to disable the derivative gain by setting it to zero.
+				The limited sensor resolution will make it hard to distinguish bit flips from rises in temperature.
+			</span>
+			<input type="text" name="heater2_td" class="cc heater2_td">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Use light as heater</span>
-			<span class="explanation">If this option is set to 'Yes' the light wil be used as a heater..</span>
-			<?php echoYesNoSelect("lah") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 2 PWM period (seconds)</span>
+			<span class="explanation">Each PWM cycle takes this many seconds. A value lower than 4 seconds is not recommended.</span>
+			<input type="text" name="heater2PwmPeriod" class="cc heater2PwmPeriod">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Trigger rotary encoder at every ...</span>
-			<span class="explanation">When you feel like you have to turn your rotary encoder two steps for every trigger, set this to half step.</span>
-			<?php echoRotarySelect("hs") ?>
-			<button class="send-button">Send to <span class="boardMoniker">Arduino</span></button>
+			<span class="setting-name">Heater 2 Input filter delay time</span>
+			<span class="explanation">Input to the PID is filtered. This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater2_infilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
 		</div>
+		<div class="setting-container">
+			<span class="setting-name">Heater 2 Derivative filter delay time</span>
+			<span class="explanation">Input to the differential gain is filtered, to prevent bit flips from causing a high derivative.
+				This causes a delay, because of the moving average. More delay means more filtering.</span>
+			<?php echoFilterSelect("heater2_dfilt") ?>
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+        <div class="setting-container">
+			<span class="setting-name">Dead time when switching between actuators</span>
+			<span class="explanation">Only one can be active at each moment. The dead time is the minimum to wait when switching between one actuator and another.
+			This prevents quickly alternating between heating to cooling.</span>
+			<input type="text" name="deadTime" class="cc deadTime">
+			<button class="send-button">Send to <span class="boardMoniker">controller</span></button>
+		</div>
+
+		<span class="section-explanation">
+			<p>With the button below, you can reset the entire <span class="boardMoniker">controller</span> to factory defaults.</p>
+			<p>This will reset all settings and will remove all installed devices.</p>
+			<button class="reset-controller-button">Reset <span class="boardMoniker">controller</span> to factory defaults</button>
+		</span>
 	</div>
 </div>
 
@@ -432,7 +439,7 @@ function echoRotarySelect($optionName){
 		<span class='container-title'>Device List</span>
 		<div class="refresh-options-container">
 			<div class="refresh-option">
-				<input type="checkbox" name="read-values" id="read-values"/><label for="read-values">Read values</label>
+				<input type="checkbox" name="read-values" id="read-values" /><label for="read-values">Read values</label>
 			</div>
 		</div>
 		<button class="refresh-device-list">Refresh device list</button>

@@ -21,6 +21,56 @@ function BeerProfileTable(id, config) {
     }
 }
 
+function parseDayString(input)
+{
+	/* Parse a string like "1d2h3m" to a day representation */
+	var day = 0;
+	var hours = 0;
+	var minutes = 0;
+	var tmp;
+	var foundit = false;
+	/* Step 1: Split the string */
+	if(input.search("d"))
+	{
+		// Day found, parse it
+		tmp = parseInt (input.substr(0,input.search("d")));
+		if (!isNaN(tmp))
+		{
+			day = tmp;
+			foundit = true;
+			input = input.substr(input.search("d")+1,input.length);
+		}
+	}
+	if(input.search("h"))
+	{
+		// Day found, parse it
+		tmp = parseInt (input.substr(0,input.search("h")));
+		if (!isNaN(tmp))
+		{
+			hours = tmp;
+			foundit = true;
+			input = input.substr(input.search("h")+1,input.length);
+		}
+	}
+	if(input.search("m"))
+	{
+		// Day found, parse it
+		tmp = parseInt (input.substr(0,input.search("m")));
+		if (!isNaN(tmp))
+		{
+			foundit = true;
+			minutes = tmp;
+		}
+	}
+	/* Step 2: Calculate a day worth value */
+	if (!foundit)
+	{
+		return input;
+	}
+	var returnme = day + hours/24 + minutes/24/60;
+	return returnme;
+}
+
 BeerProfileTable.prototype = {
     init: function(id, config) {
         "use strict";
@@ -180,7 +230,8 @@ BeerProfileTable.prototype = {
         "use strict";
         var me = this;
         if ( this.config.editable ) {
-            $theCell.attr('contenteditable', 'true').focus(function() {
+            $theCell.wrapInner('<span contenteditable="true"></span>');
+            $theCell.first().attr('contenteditable', 'true').focus(function() {
                 me.selectAll(this);
             }).blur(function() {
                 if ( !me.preventFocusEvents) {
@@ -248,8 +299,8 @@ BeerProfileTable.prototype = {
             // get dom table rows and sort them
             var rows = $(this.rowsSelector).get();
             rows.sort(function(a,b) {
-                var v1 = parseFloat($(a).find('td.profileDays').text());
-                var v2 = parseFloat($(b).find('td.profileDays').text());
+                var v1 = parseFloat(parseDayString($(a).find('td.profileDays').text()));
+                var v2 = parseFloat(parseDayString($(b).find('td.profileDays').text()));
                 if ( isNaN(v1) || isNaN(v2) || (v1 === v2) ) {
                     return (parseInt($(a).data('rowIndex'), 10) - parseInt($(b).data('rowIndex'), 10));
                 } else {
@@ -294,7 +345,7 @@ BeerProfileTable.prototype = {
     },
     formatNextDate: function(theDate, strDays) {
         "use strict";
-        var days = parseFloat(strDays);
+        var days = parseFloat(parseDayString(strDays));
         if(isNaN(days)){
             return { raw: '', display: "Invalid 'Days' value" };
         }
@@ -381,7 +432,7 @@ BeerProfileTable.prototype = {
         var points = [];
         var me = this;
         $(this.rowsSelector).each(function() {
-            points[points.length] = { days : $(this).find('td.profileDays').text(), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
+            points[points.length] = { days : ($(this).find('td.profileDays').text()), temperature: $(this).find('td.profileTemp').text(), date: $(this).find('td.profileDate').data('profileDate') };
             if ( me.config.editable && points[points.length-1].days === '' ) {
                 points.pop();  // remove last row if its blank and we are editing
             }
