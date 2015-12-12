@@ -20,6 +20,9 @@ function getDeviceList(){
         url: 'socketmessage.php',
         data: {messageType: "getDeviceList", message: ""},
         success: function(response){
+            if(showErrorsInNotification(response)){
+                return;
+            }
             response = response.replace(/\s/g, ''); //strip all whitespace, including newline.
             var deviceAndPinList;
             var $deviceList = $(".device-list");

@@ -23,6 +23,15 @@ var controlConstants = {};
 var controlSettings = {};
 var controlVariables = {};
 
+function showErrorsInNotification(socketResponse){
+    if(socketResponse.indexOf("ERROR: ") == 0){
+        var errorMessage = socketResponse.replace("ERROR: ", "");
+        ohSnap(errorMessage, {color: 'red'});
+        return true;
+    }
+    return false;
+}
+
 function receiveControlConstants(){
 	"use strict";
 	$.ajax({
@@ -116,12 +125,15 @@ function receiveControlVariables(){
 	"use strict";
     $.ajax({
         type: "POST",
-        dataType:"text",
+        dataType:"text", // do not use json, because it changes the order
         cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getControlVariables", message: ""},
         success: function(controlVariablesJSON){
+            if(showErrorsInNotification(controlVariablesJSON)){
+                return;
+            }
             var jsonPretty = JSON.stringify(JSON.parse(controlVariablesJSON),null,2);
       	    $('#algorithm-json').html(syntaxHighlight(jsonPretty));
         }
