@@ -134,8 +134,8 @@ $(document).ready(function(){
 
 });
 
-boardNames = { "spark-core": "Spark Core", "photon": "Photon" };
-programFileType = { "spark-core": "BIN"};
+boardNames = { "core": "Core", "photon": "Photon", "leonardo": "Arduino", "uno": "Arduino" };
+programFileType = { "core": "BIN", "photon": "BIN", "leonardo": "HEX", "uno": "HEX" };
 
 function setBoard(board) {
     $("#reprogram-arduino .boardType").val(board);

@@ -258,9 +258,9 @@ function addDeviceToDeviceList(device, pinList, addManual){
 
     if((typeof device.n !== "undefined") ){
         $settings.append(generateDeviceSettingContainer(
-            "DS2413 pin",
-            "ds2413-pin",
-            generateSelect([{ val: 0, text: 'pin 0'}, {val: 1, text: 'pin 1'}], device.n)));
+            "Output",
+            "output-nr",
+            generateSelect([{ val: 0, text: 'Output A'}, {val: 1, text: 'Output B'}], device.n)));
     }
     if((typeof device.v !== "undefined") ){
         var value = device.v;
@@ -528,7 +528,7 @@ function getDeviceConfigString(deviceNr){
     }
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
-    configString = addToConfigString(configString,"n", $deviceContainer.find(".ds2413-pin select").val());
+    configString = addToConfigString(configString,"n", $deviceContainer.find(".output-nr select").val());
 
     //configString = addToConfigString(configString,"d", 0); // hardwire deactivate for now
     //configString = addToConfigString(configString,"j", 0); // hardwire calibration for now

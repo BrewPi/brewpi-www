@@ -87,7 +87,8 @@ function echoRotarySelect($optionName){
 						<option value="diecimila">Atmega168 based</option>
 						<option value="mega2560">Mega 2560</option>
 						<option value="mega">Mega 1280</option>
-						<option value="spark-core">Spark Core</option>
+						<option value="core">Spark Core</option>
+						<option value="photon">Particle Photon</option>
 					</select>
 				</div>
 				<div class="program-option">
