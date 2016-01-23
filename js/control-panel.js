@@ -158,6 +158,7 @@ function applySettings(){
 var profileTable;
 var profileEdit;
 var profileSelect;
+var currBeerProfileChart;
 
 function renderProfile(beerProfile) {
     "use strict";
@@ -166,6 +167,7 @@ function renderProfile(beerProfile) {
     $("#profileTableName").text(decodeURIComponent(window.profileName));
     $("button#edit-controls").show();
     $("button#saveas-controls").show();
+    $("button#savepng-controls").show();
     drawProfileChart("profileChartDiv", profileTable );
 }
 
@@ -323,6 +325,7 @@ function drawProfileChart(divId, profileObj) {
         profileObj.toCSV(true, ['date', 'temperature']),
         chartConfig
     );
+    currBeerProfileChart = chart;
 }
 
 function loadProfile(profile, onProfileLoaded) {
@@ -585,6 +588,11 @@ $(document).ready(function(){
         $("#profileEditName").val("copy of " + decodeURIComponent(profileTable.profileName));
         profileEdit.render( profileTable.toJSON() );
         showProfileEditDialog(true, "Save Temperature Profile As", true);
+    }).hide();
+    
+    $("button#savepng-controls").button({  icons: {primary: "ui-icon-copy" } }).click(function() {
+        var img = document.getElementById('hiddenBeerChartImg');
+				Dygraph.Export.asPNG(currBeerProfileChart, img);
     }).hide();
 
     $("button#help-profile").button({  icons: {primary: "ui-icon-help" } }).click(function() {
