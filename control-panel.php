@@ -39,6 +39,7 @@
 		<button id="new-controls">New</button>
 		<button id="edit-controls">Edit</button>
 		<button id="saveas-controls">Save As</button>
+		<button id="savepng-controls">Save as Image</button>
 		<button id="refresh-controls">Refresh</button>
 		<button id="help-profile" class="profile-help">Help</button>
 	</div>
