@@ -80,9 +80,10 @@ Dygraph.Export.asPNG = function (dygraph, img, userOptions) {
     "use strict";
     var canvas = Dygraph.Export.asCanvas(dygraph, userOptions);
     //img.src = canvas.toDataURL();
+    window.open(canvas.toDataURL("image/png"));
     
-    img.download = "chart.png";
-    img.href = canvas.toDataURL("image/png").replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+    //img.download = "chart.png";
+    //img.href = canvas.toDataURL("image/png").replace(/^data:image\/[^;]/, 'data:application/octet-stream');
     
 };
 
