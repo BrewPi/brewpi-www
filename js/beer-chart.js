@@ -439,7 +439,7 @@ function drawBeerChart(beerToDraw, div){
 		
 		$("button.save-curr-beer-chart").button({	icons: {primary: "ui-icon-refresh" }, text: false }).click(function(){
 			var img = document.getElementById('hiddenBeerChartImg');
-			Dygraph.Export.asPNG(beerChart, img);
+			Dygraph.Export.asPNG(currBeerChart, img);
 			
 		});
 	
