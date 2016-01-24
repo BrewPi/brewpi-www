@@ -1,6 +1,6 @@
 <?php
 
-if ($_REQUEST["job"] == "save")
+if ($_REQUEST["job"] == "Submit")
 {
 	$beerProfile = 'data/herms.json';
 	$contents = $_REQUEST["data"];
@@ -18,7 +18,25 @@ if ($_REQUEST["job"] == "get")
 {
 	$beerProfile = 'data/herms.json';
 	if(!file_exists($beerProfile)){
-		return;
+		return "{
+		  "All open": { "11": "1", "12":"1","13":"1", "14": "1", "15":"1","16":"1","17": "1", "18":"1","19":"1","20": "1", "21":"1","22":"1"},
+		  "All closed": { "11": "2", "12":"2","13":"2", "14": "2", "15":"2","16":"2","17": "2", "18":"2","19":"2","20": "2", "21":"2","22":"2"},
+		  "Cold water fill HLT": { "11": "1", "12":"2","13":"2", "14": "2", "15":"2","16":"2","17": "2", "18":"2","19":"2","20": "2", "21":"2","22":"2"},
+		  "Cold water fill BK": { "11": "2", "12":"1","13":"2", "14": "1", "15":"2","16":"1","17": "1", "18":"2","19":"2","20": "2", "21":"2","22":"2"},
+		  "Heat HLT and BK": { "11": "1", "12":"2","13":"2", "14": "2", "15":"2","16":"2","17": "1", "18":"1","19":"1","20": "1", "21":"2","22":"2"},
+		  "Mash In": { "11": "1", "12":"2","13":"2", "14": "1", "15":"1","16":"1","17": "2", "18":"1","19":"1","20": "1", "21":"2","22":"2"},
+		  "Mash": { "11": "1", "12":"2","13":"1", "14": "1", "15":"1","16":"2","17": "2", "18":"2","19":"2","20": "2", "21":"1","22":"1"},
+		  
+		  "Sparge and Transfer": { "11": "2", "12":"1","13":"1", "14": "2", "15":"1","16":"1","17": "1", "18":"2","19":"2","20": "2", "21":"1","22":"1"},
+		  
+		  "Sparge Out": { "11": "2", "12":"2","13":"1", "14": "2", "15":"2","16":"1","17": "1", "18":"2","19":"2","20": "2", "21":"1","22":"1"},
+		  
+		  "Cooling": { "11": "2", "12":"2","13":"2", "14": "2", "15":"2","16":"2","17": "1", "18":"1","19":"1","20": "1", "21":"2","22":"2"},
+		  
+		  "To fermentor": { "11": "2", "12":"2","13":"2", "14": "2", "15":"2","16":"2","17": "2", "18":"2","19":"2","20": "1", "21":"2","22":"2"},
+		  
+		}";
+
 	}
 echo file_get_contents($beerProfile);
 	die();
@@ -191,7 +209,7 @@ function parseAvailSettings()
 		  
 		};
 		
-
+	$tmp = $('#data').val();
 	
 	// Remove all from valveSettings
 	$('#valveSettings').empty();
@@ -259,9 +277,28 @@ function sendToBrewPi(deviceId, data)
 <button id="sendSetting">Set to</button>
 <button class="save">Save Setting</button></div>
 
+
+<form action="" method="post">
+  <p>
+    <label for="data"></label>
+    <textarea name="data" id="data" cols="80" rows="12"></textarea>
+  </p>
+  <p>
+    <input type="submit" name="job" id="job" value="Submit" />
+  </p>
+</form>
 <script>
 $( document ).ready(function() {
     getDeviceList();
+    // Get data from server
+    $.getJSON( "ajax/test.json", function( data ) {
+		  if(data=="")
+		  {
+		  	
+		  } else {
+		  	$('#data').val(data);  
+			}
+	});
 	parseAvailSettings();
 	
 	$('#sendSetting').click(function () {
