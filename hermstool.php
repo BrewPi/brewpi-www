@@ -13,8 +13,8 @@ if ($_REQUEST['job'] == "Submit")
 	}
 	die();
 }
-
-if ($_REQUEST['job'] == "get")
+print_r($_GET);
+if ($_GET['job'] == "get")
 {
 	$beerProfile = 'data/herms.json';
 	if(!file_exists($beerProfile)){
