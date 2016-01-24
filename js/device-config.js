@@ -34,6 +34,7 @@ function getDeviceList(){
                 try
                 {
                     deviceAndPinList = JSON.parse(response);
+					deviceAndPinList = deviceAndPinList.response;
                     deviceList = deviceAndPinList.deviceList;
                     pinList = deviceAndPinList.pinList;
                     jsonParsed = true;
