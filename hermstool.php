@@ -87,7 +87,7 @@ function getDeviceList(){
                 try
                 {
                     deviceAndPinList = JSON.parse(response);
-                    if (typeof response.response === 'object')
+                    if (typeof deviceAndPinList.response === 'object')
                     {
                     	deviceAndPinList = deviceAndPinList.response;
                   	}
