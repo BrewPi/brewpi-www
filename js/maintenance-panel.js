@@ -159,9 +159,9 @@ function updateControllerVersion() {
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getVersion", message: ""},
-        success: function(controllerVersionJSON){
+        success: ajaxSuccessHandler( function(controllerVersionJSON){
             setControllerVersion(controllerVersionJSON);
-        }
+        })
     });
 }
 

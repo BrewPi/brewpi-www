@@ -19,7 +19,7 @@ function getDeviceList(){
         type: 'POST',
         url: 'socketmessage.php',
         data: {messageType: "getDeviceList", message: ""},
-        success: function(response){
+        success: ajaxSuccessHandler( function(response){
             if(showErrorsInNotification(response)){
                 return;
             }
@@ -34,6 +34,7 @@ function getDeviceList(){
                 try
                 {
                     deviceAndPinList = JSON.parse(response);
+					deviceAndPinList = deviceAndPinList.response;
                     deviceList = deviceAndPinList.deviceList;
                     pinList = deviceAndPinList.pinList;
                     jsonParsed = true;
@@ -90,7 +91,7 @@ function getDeviceList(){
             // scroll box down
             var deviceConsole = document.getElementById('device-console');
             deviceConsole.scrollTop = deviceConsole.scrollHeight;
-        },
+        }),
         async:true
     });
 }

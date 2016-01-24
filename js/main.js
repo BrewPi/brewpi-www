@@ -23,6 +23,30 @@ var controlConstants = {};
 var controlSettings = {};
 var controlVariables = {};
 
+
+function ajaxSuccessHandler(func){
+    return function(data) {
+		if (data !== null && typeof data === 'object')
+		{
+       jQuery.each(data.messages, function(i, val) {
+             	switch (val.messageType) {
+             			case 'error': var m_color = "red"; break;
+             			case 'info': var m_color = "green"; break;
+             			case 'warning': var m_color = "orange"; break;
+             		}
+               ohSnap(val.message, {color: m_color, duration: 4000});
+               console.log(val);
+            });
+		// Send the 'response' part on to the original handler
+          func(data.response);
+		} else {
+			// Send the response to the handler
+			func(data);
+		}
+       
+    };
+}
+
 function showErrorsInNotification(socketResponse){
     if(socketResponse.indexOf("ERROR: ") == 0){
         var errorMessage = socketResponse.replace("ERROR: ", "");
@@ -31,6 +55,7 @@ function showErrorsInNotification(socketResponse){
     }
     return false;
 }
+
 
 function receiveControlConstants(){
 	"use strict";
@@ -41,7 +66,7 @@ function receiveControlConstants(){
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         data: {messageType: "getControlConstants", message: ""},
         url: 'socketmessage.php',
-        success: function(controlConstantsJSON){
+        success: ajaxSuccessHandler (function(controlConstantsJSON){
             window.controlConstants = controlConstantsJSON;
             for (var i in window.controlConstants){
                 if(window.controlConstants.hasOwnProperty(i)){
@@ -54,7 +79,7 @@ function receiveControlConstants(){
                     $('.cc.'+i+' .val').text(window.controlConstants[i]);
                 }
             }
-        }
+        })
     });
 }
 
@@ -67,7 +92,7 @@ function receiveControlSettings(callback){
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getControlSettings", message: ""},
-        success: function(controlSettingsJSON){
+        success: ajaxSuccessHandler( function(controlSettingsJSON){
             window.controlSettings = controlSettingsJSON;
             for (var i in controlSettings) {
                 if(controlSettings.hasOwnProperty(i)){
@@ -98,7 +123,7 @@ function receiveControlSettings(callback){
             if (callback && typeof(callback) === "function") {
                 callback();
             }
-	    }
+	    })
     });
 }
 
@@ -130,13 +155,13 @@ function receiveControlVariables(){
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getControlVariables", message: ""},
-        success: function(controlVariablesJSON){
+        success: ajaxSuccessHandler( function(controlVariablesJSON){
             if(showErrorsInNotification(controlVariablesJSON)){
                 return;
             }
             var jsonPretty = JSON.stringify(JSON.parse(controlVariablesJSON),null,2);
       	    $('#algorithm-json').html(syntaxHighlight(jsonPretty));
-        }
+        })
      });
 }
 
@@ -194,13 +219,13 @@ function refreshLcd(){
         url: 'socketmessage.php',
         data: {messageType: "lcd", message: ""}
         })
-        .done( function(lcdText){
+        .done( ajaxSuccessHandler (function(lcdText){
             var $lcdText = $('#lcd .lcd-text');
             for (var i = lcdText.length - 1; i >= 0; i--) {
                 $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
             }
             updateScriptStatus(true);
-        })
+        }))
         .fail(function() {
             var $lcdText = $('#lcd .lcd-text');
             $lcdText.find('#lcd-line-0').html("Cannot receive");
@@ -435,5 +460,6 @@ $(document).ready(function(){
 	receiveControlSettings();
 	receiveControlVariables();
 	refreshLcd(); //will call refreshLcd and alternate between the two
+	
 });
 
