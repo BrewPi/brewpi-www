@@ -23,6 +23,27 @@ var controlConstants = {};
 var controlSettings = {};
 var controlVariables = {};
 
+
+function wrapped_ajax(options) {
+    var success = options.success;
+    options.success = function(data, textStatus, jqXHR) {
+        // Strip out the messages here {'response': data, 'messages': getLogMessages()}
+		jQuery.each(data.messages, function(i, val) {
+             	switch (val.messageType) {
+             			case 'error': var m_color = "red"; break;
+             			case 'info': var m_color = "green"; break;
+             			case 'warning': var m_color = "orange"; break;
+             		}
+               ohSnap(val.message, {color: m_color, duration: 4000});
+               console.log(val);
+            });
+		// Send the 'response' part on to the original handler
+        if(success)
+            success(data.response, textStatus, jqXHR);
+    };
+    return $.ajax(options);
+}
+
 function showErrorsInNotification(socketResponse){
     if(socketResponse.indexOf("ERROR: ") == 0){
         var errorMessage = socketResponse.replace("ERROR: ", "");
@@ -54,11 +75,11 @@ function getMessagesFromServer()
             });
         }
     });
-    window.setTimeout(getMessagesFromServer,20000);
+    //window.setTimeout(getMessagesFromServer,20000);
 }
 function receiveControlConstants(){
 	"use strict";
-	$.ajax({
+	wrapped_ajax({
         type: "POST",
         dataType:"json",
         cache: false,
@@ -84,7 +105,7 @@ function receiveControlConstants(){
 
 function receiveControlSettings(callback){
 	"use strict";
-    $.ajax({
+    wrapped_ajax({
         type: "POST",
         dataType:"json",
         cache: false,
@@ -147,7 +168,7 @@ function syntaxHighlight(json) {
 
 function receiveControlVariables(){
 	"use strict";
-    $.ajax({
+    wrapped_ajax({
         type: "POST",
         dataType:"text", // do not use json, because it changes the order
         cache: false,
@@ -210,7 +231,7 @@ function startScript(){
 
 function refreshLcd(){
 	"use strict";
-    $.ajax({
+    wrapped_ajax({
         type: "POST",
         dataType:"json",
         cache: false,
