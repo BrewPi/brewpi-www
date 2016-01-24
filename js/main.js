@@ -26,6 +26,8 @@ var controlVariables = {};
 
 function ajaxSuccessHandler(func){
     return function(data) {
+		if (data !== null && typeof data === 'object')
+		{
        jQuery.each(data.messages, function(i, val) {
              	switch (val.messageType) {
              			case 'error': var m_color = "red"; break;
@@ -37,6 +39,10 @@ function ajaxSuccessHandler(func){
             });
 		// Send the 'response' part on to the original handler
           func(data.response);
+		} else {
+			// Send the response to the handler
+			func(data);
+		}
        
     };
 }
