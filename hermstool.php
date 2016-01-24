@@ -211,7 +211,7 @@ function parseAvailSettings()
 		  
 		};
 		
-	$tmp = $('#data').val();
+	$tmp = JSON.parse($('#data').val());
 	
 	// Remove all from valveSettings
 	$('#valveSettings').empty();
