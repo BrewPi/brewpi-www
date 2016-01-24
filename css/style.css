@@ -13,6 +13,12 @@ body {
     font-size: 12px;
 }
 
+#ohsnap
+{
+	position: absolute;
+    bottom: 0;
+    right: 0;
+}
 #top-bar button.script-status{
 	margin:10px;
 }

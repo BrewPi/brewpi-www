@@ -66,6 +66,7 @@ function prepareJSON($input) {
 		<title>BrewPi reporting for duty!</title>
 		<link type="text/css" href="css/redmond/jquery-ui-1.10.3.custom.css" rel="stylesheet" />
 		<link type="text/css" href="css/style.css" rel="stylesheet"/>
+		<link type="text/css" href="css/ohsnap.css" rel="stylesheet"/>
 		<link rel="apple-touch-icon" href="touch-icon-iphone.png">
         <link rel="apple-touch-icon" sizes="76x76" href="touch-icon-ipad.png">
         <link rel="apple-touch-icon" sizes="120x120" href="touch-icon-iphone-retina.png">
@@ -88,6 +89,7 @@ function prepareJSON($input) {
 				include 'maintenance-panel.php';
 			?>
 		</div>
+		<div id="ohsnap"></div>
 		<!-- Load scripts after the body, so they don't block rendering of the page -->
 		<!-- <script type="text/javascript" src="js/jquery-1.11.0.js"></script> -->
 		<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
@@ -95,6 +97,7 @@ function prepareJSON($input) {
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="js/spin.js"></script>
 		<script type="text/javascript" src="js/dygraph-combined.js"></script>
+		<script type="text/javascript" src="js/ohsnap.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;

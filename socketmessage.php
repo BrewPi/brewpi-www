@@ -38,7 +38,7 @@ function readFromSocket($sock){
     if($msg == false){
         $errorcode = socket_last_error();
         $errormsg = socket_strerror($errorcode);
-        die("Couldn't read from socket: [$errorcode] $errormsg" . "\nIs the script running?");
+        die("ERROR: Is the BrewPi script running? <br />Couldn't read from socket:<br />[$errorcode] $errormsg");
     }
     else{
     	return $msg;
@@ -50,7 +50,7 @@ function writeToSocket($sock, $msg){
     if($bytesWritten == false){
         $errorcode = socket_last_error();
         $errormsg = socket_strerror($errorcode);
-        die("Couldn't write to socket: [$errorcode] $errormsg" . "\nIs the script running?");
+		die("ERROR: Is the BrewPi script running? <br />Couldn't read from socket:<br />[$errorcode] $errormsg");
     }
 }
 
@@ -59,7 +59,7 @@ if(isset($_POST['messageType'])){
 	$messageType = $_POST['messageType'];
 }
 else{
-	die("messageType not set");
+	die("ERROR: messageType not set");
 }
 
 if(isset($_POST['message'])){
@@ -112,5 +112,5 @@ if($sock !== false){
 	socket_close($sock);
 }
 else{
-    die("Cannot open socket to script");
+    die("ERROR: Cannot open socket to script");
 }
