@@ -290,7 +290,7 @@ function sendToBrewPi(deviceId, data)
 $( document ).ready(function() {
     getDeviceList();
     // Get data from server
-    $.getJSON( "hermstools.php?job=get", function( data ) {
+    $.getJSON( "hermstool.php?job=get", function( data ) {
 		  if(data=="")
 		  {
 		  	
