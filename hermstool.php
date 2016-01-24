@@ -295,7 +295,7 @@ $( document ).ready(function() {
 		  {
 		  	
 		  } else {
-		  	$('#data').val(data);  
+		  	$('#data').val(JSON.stringify(data));  
 			}
 	});
 	parseAvailSettings();
