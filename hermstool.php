@@ -299,9 +299,10 @@ $( document ).ready(function() {
 		  	
 		  } else {
 		  	$('#data').val(data);  
+		  	parseAvailSettings();
 			}
 	});
-	parseAvailSettings();
+	
 	
 	$('#sendSetting').click(function () {
                 executeSettings();
