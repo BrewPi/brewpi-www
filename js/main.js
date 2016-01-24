@@ -99,7 +99,7 @@ function getMessagesFromServer()
 }
 function receiveControlConstants(){
 	"use strict";
-	.ajax({
+	$.ajax({
         type: "POST",
         dataType:"json",
         cache: false,
@@ -125,7 +125,7 @@ function receiveControlConstants(){
 
 function receiveControlSettings(callback){
 	"use strict";
-    .ajax({
+    $.ajax({
         type: "POST",
         dataType:"json",
         cache: false,
@@ -188,7 +188,7 @@ function syntaxHighlight(json) {
 
 function receiveControlVariables(){
 	"use strict";
-    .ajax({
+    $.ajax({
         type: "POST",
         dataType:"text", // do not use json, because it changes the order
         cache: false,
@@ -251,7 +251,7 @@ function startScript(){
 
 function refreshLcd(){
 	"use strict";
-    .ajax({
+    $.ajax({
         type: "POST",
         dataType:"json",
         cache: false,
