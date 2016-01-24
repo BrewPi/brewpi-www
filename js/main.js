@@ -41,29 +41,6 @@ function ajaxSuccessHandler(func){
     };
 }
 
-function wrapped_ajax(options) {
-    var success = options.success;
-	var done = options.done;
-    options.success = function(data, textStatus, jqXHR) {
-        // Strip out the messages here {'response': data, 'messages': getLogMessages()}
-		jQuery.each(data.messages, function(i, val) {
-             	switch (val.messageType) {
-             			case 'error': var m_color = "red"; break;
-             			case 'info': var m_color = "green"; break;
-             			case 'warning': var m_color = "orange"; break;
-             		}
-               ohSnap(val.message, {color: m_color, duration: 4000});
-               console.log(val);
-            });
-		// Send the 'response' part on to the original handler
-		if(done)
-            done(data.response, textStatus, jqXHR);
-        if(success)
-            success(data.response, textStatus, jqXHR);
-    };
-    return $.ajax(options);
-}
-
 function showErrorsInNotification(socketResponse){
     if(socketResponse.indexOf("ERROR: ") == 0){
         var errorMessage = socketResponse.replace("ERROR: ", "");
@@ -73,30 +50,7 @@ function showErrorsInNotification(socketResponse){
     return false;
 }
 
-function getMessagesFromServer()
-{
-	"use strict";
-	$.ajax({
-        type: "POST",
-        dataType:"json",
-        cache: false,
-        contentType:"application/x-www-form-urlencoded; charset=utf-8",
-        data: {messageType: "getMessages", message: ""},
-        url: 'socketmessage.php',
-        success: ajaxSuccessHandler( function(controlConstantsJSON){
-             jQuery.each(controlConstantsJSON.messages, function(i, val) {
-             	switch (val.messageType) {
-             			case 'error': var m_color = "red"; break;
-             			case 'info': var m_color = "green"; break;
-             			case 'warning': var m_color = "orange"; break;
-             		}
-               ohSnap(val.message, {color: m_color, duration: 4000});
-               console.log(val);
-            });
-        })
-    });
-    //window.setTimeout(getMessagesFromServer,20000);
-}
+
 function receiveControlConstants(){
 	"use strict";
 	$.ajax({
@@ -500,6 +454,6 @@ $(document).ready(function(){
 	receiveControlSettings();
 	receiveControlVariables();
 	refreshLcd(); //will call refreshLcd and alternate between the two
-	getMessagesFromServer(); // get Logs from server
+	
 });
 

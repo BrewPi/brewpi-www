@@ -418,7 +418,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
             url: "save_beer_profile.php",
             dataType: "json",
             data: { name: profName, profile: profData },
-            success: function(response) {
+            success: ajaxSuccessHandler( function(response) {
                 if ( response.status !== 'error' ) {
                     loadProfile(profName, renderProfile);
                     $('#profileSaveError').hide();
@@ -431,7 +431,7 @@ function showProfileEditDialog(editableName, dialogTitle, isSaveAs) {
                     console.log("profile save error: " + decodeURIComponent(response.message));
                     $('#profileSaveError').show();
                 }
-            },
+            }),
             error: function(xhr, ajaxOptions, thrownError) {
                 console.log("profile save HTTP error - request status: " + xhr.status + " - error: " + thrownError);
                 $('#profileSaveError').show();
