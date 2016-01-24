@@ -1,4 +1,31 @@
+<?php
 
+if ($_REQUEST["job"] == "save")
+{
+	$beerProfile = 'data/herms.json';
+	$contents = $_REQUEST["data"];
+	
+	if ( file_put_contents($beerProfile, $contents) ) {
+	    $resp = array( "status" => "success", "message" => $beerProfile . " saved successfully");
+	    echo json_encode($resp);
+	} else {
+	    echo json_encode( array( "status" => "error", "message" => "Error saving profile: $profile" ) );
+	}
+	die();
+}
+
+if ($_REQUEST["job"] == "get")
+{
+	$beerProfile = 'data/herms.json';
+	if(!file_exists($beerProfile)){
+		return;
+	}
+echo file_get_contents($beerProfile);
+	die();
+}
+
+
+?>
 
 <!DOCTYPE html >
 <html>
@@ -43,6 +70,7 @@ function getDeviceList(){
                 try
                 {
                     deviceAndPinList = JSON.parse(response);
+                    deviceAndPinList = deviceAndPinList.response;
                     deviceList = deviceAndPinList.deviceList;
                     pinList = deviceAndPinList.pinList;
                     jsonParsed = true;
