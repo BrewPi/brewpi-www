@@ -24,8 +24,26 @@ var controlSettings = {};
 var controlVariables = {};
 
 
+function ajaxSuccessHandler(func){
+    return function(data) {
+       jQuery.each(data.messages, function(i, val) {
+             	switch (val.messageType) {
+             			case 'error': var m_color = "red"; break;
+             			case 'info': var m_color = "green"; break;
+             			case 'warning': var m_color = "orange"; break;
+             		}
+               ohSnap(val.message, {color: m_color, duration: 4000});
+               console.log(val);
+            });
+		// Send the 'response' part on to the original handler
+          func(data.response);
+       
+    };
+}
+
 function wrapped_ajax(options) {
     var success = options.success;
+	var done = options.done;
     options.success = function(data, textStatus, jqXHR) {
         // Strip out the messages here {'response': data, 'messages': getLogMessages()}
 		jQuery.each(data.messages, function(i, val) {
@@ -38,6 +56,8 @@ function wrapped_ajax(options) {
                console.log(val);
             });
 		// Send the 'response' part on to the original handler
+		if(done)
+            done(data.response, textStatus, jqXHR);
         if(success)
             success(data.response, textStatus, jqXHR);
     };
@@ -63,7 +83,7 @@ function getMessagesFromServer()
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         data: {messageType: "getMessages", message: ""},
         url: 'socketmessage.php',
-        success: function(controlConstantsJSON){
+        success: ajaxSuccessHandler( function(controlConstantsJSON){
              jQuery.each(controlConstantsJSON.messages, function(i, val) {
              	switch (val.messageType) {
              			case 'error': var m_color = "red"; break;
@@ -73,20 +93,20 @@ function getMessagesFromServer()
                ohSnap(val.message, {color: m_color, duration: 4000});
                console.log(val);
             });
-        }
+        })
     });
     //window.setTimeout(getMessagesFromServer,20000);
 }
 function receiveControlConstants(){
 	"use strict";
-	wrapped_ajax({
+	.ajax({
         type: "POST",
         dataType:"json",
         cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         data: {messageType: "getControlConstants", message: ""},
         url: 'socketmessage.php',
-        success: function(controlConstantsJSON){
+        success: ajaxSuccessHandler (function(controlConstantsJSON){
             window.controlConstants = controlConstantsJSON;
             for (var i in window.controlConstants){
                 if(window.controlConstants.hasOwnProperty(i)){
@@ -99,20 +119,20 @@ function receiveControlConstants(){
                     $('.cc.'+i+' .val').text(window.controlConstants[i]);
                 }
             }
-        }
+        })
     });
 }
 
 function receiveControlSettings(callback){
 	"use strict";
-    wrapped_ajax({
+    .ajax({
         type: "POST",
         dataType:"json",
         cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getControlSettings", message: ""},
-        success: function(controlSettingsJSON){
+        success: ajaxSuccessHandler( function(controlSettingsJSON){
             window.controlSettings = controlSettingsJSON;
             for (var i in controlSettings) {
                 if(controlSettings.hasOwnProperty(i)){
@@ -143,7 +163,7 @@ function receiveControlSettings(callback){
             if (callback && typeof(callback) === "function") {
                 callback();
             }
-	    }
+	    })
     });
 }
 
@@ -168,20 +188,20 @@ function syntaxHighlight(json) {
 
 function receiveControlVariables(){
 	"use strict";
-    wrapped_ajax({
+    .ajax({
         type: "POST",
         dataType:"text", // do not use json, because it changes the order
         cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
         data: {messageType: "getControlVariables", message: ""},
-        success: function(controlVariablesJSON){
+        success: ajaxSuccessHandler( function(controlVariablesJSON){
             if(showErrorsInNotification(controlVariablesJSON)){
                 return;
             }
             var jsonPretty = JSON.stringify(JSON.parse(controlVariablesJSON),null,2);
       	    $('#algorithm-json').html(syntaxHighlight(jsonPretty));
-        }
+        })
      });
 }
 
@@ -231,7 +251,7 @@ function startScript(){
 
 function refreshLcd(){
 	"use strict";
-    wrapped_ajax({
+    .ajax({
         type: "POST",
         dataType:"json",
         cache: false,
@@ -239,13 +259,13 @@ function refreshLcd(){
         url: 'socketmessage.php',
         data: {messageType: "lcd", message: ""}
         })
-        .done( function(lcdText){
+        .done( ajaxSuccessHandler (function(lcdText){
             var $lcdText = $('#lcd .lcd-text');
             for (var i = lcdText.length - 1; i >= 0; i--) {
                 $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
             }
             updateScriptStatus(true);
-        })
+        }))
         .fail(function() {
             var $lcdText = $('#lcd .lcd-text');
             $lcdText.find('#lcd-line-0').html("Cannot receive");
