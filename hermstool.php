@@ -1,9 +1,9 @@
 <?php
 
-if ($_REQUEST["job"] == "Submit")
+if ($_REQUEST['job'] == "Submit")
 {
 	$beerProfile = 'data/herms.json';
-	$contents = $_REQUEST["data"];
+	$contents = $_REQUEST['data'];
 	
 	if ( file_put_contents($beerProfile, $contents) ) {
 	    $resp = array( "status" => "success", "message" => $beerProfile . " saved successfully");
@@ -14,7 +14,7 @@ if ($_REQUEST["job"] == "Submit")
 	die();
 }
 
-if ($_REQUEST["job"] == "get")
+if ($_REQUEST['job'] == "get")
 {
 	$beerProfile = 'data/herms.json';
 	if(!file_exists($beerProfile)){
@@ -36,7 +36,7 @@ if ($_REQUEST["job"] == "get")
 		  "To fermentor": { "11": "2", "12":"2","13":"2", "14": "2", "15":"2","16":"2","17": "2", "18":"2","19":"2","20": "1", "21":"2","22":"2"},
 		  
 		}";
-
+	die();
 	}
 echo file_get_contents($beerProfile);
 	die();
