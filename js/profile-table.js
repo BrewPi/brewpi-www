@@ -352,38 +352,18 @@ BeerProfileTable.prototype = {
         var t1 = theDate.getTime();
         var t2 = parseInt(this.numMilliSecondsPerDay * days, 10);
         var newDate = new Date( t1 + t2 );
-        return this.formatDate(newDate);
-    },
-    formatDate: function(theDate) {
-        "use strict";
-        var strDate = $.datepicker.formatDate(this.config.dateFormat, theDate);
-        var strDate2 = $.datepicker.formatDate(this.config.dateFormatDisplay, theDate);
-        var h = theDate.getHours();
-        var m = theDate.getMinutes();
-        var s = theDate.getSeconds();
-        var strTime = ( (h<10) ? '0' + h : h ) + ':' + ( (m<10) ? '0' + m : m ) + ':' + ( (s<10) ? '0' + s : s );
-        return { raw: strDate + 'T' + strTime, display: strDate2 + ' ' + strTime };
+        return dateFormatter.formatDate(newDate);
     },
     parseStartDate: function(profile) {
         "use strict";
 
         if ( typeof( profile ) !== "undefined" && profile.length > 0 && typeof( profile[0].date ) !== "undefined" ) {
-            var startDate = this.parseDate(profile[0].date);
+            var startDate = dateFormatter.parseDate(profile[0].date);
             if(startDate){
                 return startDate;
             }
         }
         return (new Date()); // return current date on parse error
-    },
-    parseDate: function(strDate, forDisplay) {
-        "use strict";
-        var dateFormat = (forDisplay === true) ? this.config.dateFormatDisplay : this.config.dateFormat;
-        try {
-            return $.datepicker.parseDateTime(dateFormat, this.config.timeFormat, strDate, null, {separator: "T"});
-        } catch(e) {
-            console.log('Cannot parse date: ' + strDate );
-            return null;
-        }
     },
     getStartDate: function() {
         "use strict";
@@ -402,7 +382,7 @@ BeerProfileTable.prototype = {
     setStartDate: function(theDate) {
         "use strict";
         if ( typeof( this.config.startDateFieldSelector ) !== "undefined" && this.config.startDateFieldSelector !== '' ) {
-            var formattedDates = this.formatDate(theDate);
+            var formattedDates = dateFormatter.formatDate(theDate);
             if ( this.config.editable ) {
                 $(this.config.startDateFieldSelector).val( formattedDates.display ).data('profile-date', formattedDates.raw );
             } else {

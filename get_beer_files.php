@@ -16,6 +16,9 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('auth.php');
+assertAuthenticated();
+
 $beerName = $_POST["beername"];
 $fileNames = array();
 $currentBeerDir = 'data/' . $beerName;

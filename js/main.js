@@ -172,89 +172,6 @@ function startScript(){
 	$.get('start_script.php');
 }
 
-function refreshLcd(){
-	"use strict";
-    $.ajax({
-        type: "POST",
-        dataType:"json",
-        cache: false,
-        contentType:"application/x-www-form-urlencoded; charset=utf-8",
-        url: 'socketmessage.php',
-        data: {messageType: "lcd", message: ""}
-        })
-        .done( function(lcdText){
-            var $lcdText = $('#lcd .lcd-text');
-            for (var i = lcdText.length - 1; i >= 0; i--) {
-                $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
-            }
-            updateScriptStatus(true);
-        })
-        .fail(function() {
-            var $lcdText = $('#lcd .lcd-text');
-            $lcdText.find('#lcd-line-0').html("Cannot receive");
-            $lcdText.find('#lcd-line-1').html("LCD text from");
-            $lcdText.find('#lcd-line-2').html("Python script");
-            $lcdText.find('#lcd-line-3').html(" ");
-            updateScriptStatus(false);
-        })
-        .always(function() {
-            window.setTimeout(refreshLcd,5000);
-        }
-    );
-}
-
-function updateScriptStatus(running){
-	"use strict";
-    if(window.scriptStatus == running){
-        return;
-    }
-    window.scriptStatus = running;
-    var $scriptStatus = $(".script-status");
-    var $scriptStatusIcon = $scriptStatus.find("span.ui-icon");
-    var $scriptStatusButtonText = $scriptStatus.find("span.ui-button-text");
-    if(running){
-        $scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-check");
-        $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-        $scriptStatusButtonText.text("Script running");
-        $scriptStatus.unbind();
-        $scriptStatus.bind({
-            click: function(){
-                stopScript();
-            },
-            mouseenter: function(){
-                $scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-stop");
-                $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-                $scriptStatusButtonText.text("Stop script");
-            },
-            mouseleave: function(){
-                $scriptStatusIcon.removeClass("ui-icon-stop").addClass("ui-icon-check");
-                $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-                $scriptStatusButtonText.text("Script running");
-            }
-        });
-    } else {
-        $scriptStatusIcon.removeClass("ui-icon-check").addClass("ui-icon-alert");
-        $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-        $scriptStatusButtonText.text("Script not running!");
-        $scriptStatus.unbind();
-        $scriptStatus.bind({
-            click: function(){
-                startScript();
-            },
-            mouseenter: function(){
-                $scriptStatusIcon.removeClass("ui-icon-alert").addClass("ui-icon-play");
-                $scriptStatus.removeClass("ui-state-error").addClass("ui-state-default");
-                $scriptStatusButtonText.text("Start script");
-            },
-            mouseleave: function(){
-                $scriptStatusIcon.removeClass("ui-icon-play").addClass("ui-icon-alert");
-                $scriptStatus.removeClass("ui-state-default").addClass("ui-state-error");
-                $scriptStatusButtonText.text("Script not running!");
-            }
-        });
-    }
-}
-
 function beerNameDialogInit(){
     "use strict";
     var $dialog = $("<div class='beer-name-dialog'></div>").dialog( {
@@ -414,14 +331,19 @@ $(document).ready(function(){
 	"use strict";
 	$(".script-status").button({	icons: {primary: "ui-icon-alert" } });
 	$(".script-status span.ui-button-text").text("Checking script..");
-    $("#beer-name").click(beerNameDialogInit);
-
-	loadControlPanel();
+    
+    $("button#login").button().unbind('click').click(function(){
+        window.location = "login.php";
+    });
+    
 	drawBeerChart(window.beerName, 'curr-beer-chart');
 
-	receiveControlConstants();
-	receiveControlSettings();
-	receiveControlVariables();
-	refreshLcd(); //will call refreshLcd and alternate between the two
+    if (window.isAuthenticated) {
+       $("#beer-name").click(beerNameDialogInit);
+	   loadControlPanel();
+       receiveControlConstants();
+       receiveControlSettings();
+       receiveControlVariables();
+    }
 });
 

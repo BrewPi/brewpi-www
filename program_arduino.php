@@ -19,6 +19,9 @@
 // This file is loaded into a hidden iFrame. the javascript functions are defined in maintenance-panel.js
 require_once('socket_open.php');
 
+require_once('auth.php');
+assertAuthenticated();
+
 // Set instance root
 $instanceRoot = str_replace("\\", "/", getcwd());
 

@@ -14,7 +14,7 @@ body {
 }
 
 #top-bar button.script-status{
-	margin:10px;
+	margin: 5px 10px;
 }
 
 button.script-status{
@@ -29,7 +29,23 @@ button#maintenance{
     float: right;
 	clear:right;
     min-height: 25px;
-	margin: 10px 10px 10px 10px;
+	margin: 5px 10px;
+}
+
+button#login{
+	width: 200px;
+    float: right;
+	clear:right;
+    min-height: 25px;
+	margin: 10px;
+}
+
+.user-details{
+    float: right;
+    clear: right;
+    width: 200-x;
+	margin: 5px 10px;
+	color: #000;
 }
 
 /* Control Panel */

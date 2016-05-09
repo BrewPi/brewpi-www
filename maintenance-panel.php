@@ -16,6 +16,9 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('auth.php');
+assertAuthenticated();
+
 function echoFilterSelect($filterName){
 	echo "<select name=" . $filterName . " class=\"cc " . $filterName . "\">";
 	// These values assume a sample frequency of 1 hz and 3 cascaded filters. Delay time below is in nr of samples for a single section

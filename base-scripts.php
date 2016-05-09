@@ -15,12 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
+?>
 
-require_once('auth.php');
-assertAuthenticated();
-
-// Set instance root
-$instanceRoot = getcwd();
-
-# remove do not run file. Cron will start the script within one minute
-unlink("$instanceRoot/do_not_run_brewpi");
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="js/spin.js"></script>
+<script type="text/javascript" src="js/dygraph-combined.js"></script>

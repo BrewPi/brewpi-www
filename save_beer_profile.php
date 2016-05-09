@@ -16,6 +16,9 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('auth.php');
+assertAuthenticated();
+
 $profile = $_REQUEST["name"];
 $beerProfile = 'data/profiles/' . $profile . ".csv";
 $contents = $_REQUEST["profile"];
