@@ -18,6 +18,52 @@ session_start();
 
 require_once('configuration.php');
 
+class LockOutDetails {
+    public $failedAttempts = 0;
+    public $standDownExpiry = 0;
+    
+    public static function addFailure() {
+        
+        $instance = LockOutDetails::load();
+        $instance->failedAttempts = $instance->failedAttempts + 1;
+        
+        $lockedOut = false;
+        if ($instance->failedAttempts >= getConfig("maxLoginAttempts", 3)) {
+            $instance->standDownExpiry = time() + getConfig("standDownSeconds", 30);
+            $instance->failedAttempts = 0;
+            $lockedOut = true;
+        }
+        
+        $instance->save();
+        return $lockedOut;
+    }
+    
+    public static function isLockedOut() {
+        return (LockOutDetails::load()->standDownExpiry) > time();
+    }
+    
+    public static function reset() {
+        if (file_exists("data/lockoutdetails.data")) {
+            unlink("data/lockoutdetails.data");
+        }
+    }
+    
+    function save() {
+        $s = serialize($this);
+        $fp = fopen("data/lockoutdetails.data", "w");
+        fwrite($fp, $s);
+        fclose($fp);
+    }
+    
+    public static function load() {
+        if (!file_exists("data/lockoutdetails.data")) {
+            return new LockOutDetails();
+        }
+        $s = implode("", @file("data/lockoutdetails.data"));
+        return unserialize($s);
+    }
+}
+
 function isValidUser($user, $password) {
     
     if ($user == "admin"
@@ -28,33 +74,24 @@ function isValidUser($user, $password) {
     return false;
 }
 
-
 function loginFailed() {
-    if (!isset($_SESSION["attempts"])) {
-        $_SESSION["attempts"] = 1;
-    }
-    else {
-        $_SESSION["attempts"] = $_SESSION["attempts"] + 1;
-    }
-    
-    if ($_SESSION["attempts"] >= getConfig("maxLoginAttempts", 3)) {
-       $_SESSION["standDownExpiry"] = time() + getConfig("standDownSeconds", 30);
-        header("Location: login.php?stand-down");
+    if (LockOutDetails::addFailure()) {
+        stoodDown();
         exit;
     }
-        
     header("Location: login.php?failed");
+    exit;
+}
+
+function stoodDown() {
+    header("Location: login.php?stand-down");
     exit;
 }
 
 function login($user, $password) {
     
-    if (isset($_SESSION["standDownExpiry"]) && (time() > $_SESSION["standDownExpiry"])) {
-        $_SESSION["attempts"] = 0;
-    }
-    
-    if (isset($_SESSION["attempts"]) && ($_SESSION["attempts"] >= getConfig("maxLoginAttempts", 3))) {
-        loginFailed();
+    if (LockOutDetails::isLockedOut()) {
+        stoodDown();
     }
     
     $username = $_POST["username"];
@@ -64,6 +101,7 @@ function login($user, $password) {
         loginFailed();
     }
 
+    LockOutDetails::reset();
     $_SESSION['user'] = $user;
     header("Location: index.php");
     exit;
