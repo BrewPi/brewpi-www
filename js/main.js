@@ -331,11 +331,7 @@ $(document).ready(function(){
 	"use strict";
 	$(".script-status").button({	icons: {primary: "ui-icon-alert" } });
 	$(".script-status span.ui-button-text").text("Checking script..");
-    
-    $("button#login").button().unbind('click').click(function(){
-        window.location = "login.php";
-    });
-    
+
 	drawBeerChart(window.beerName, 'curr-beer-chart');
 
     if (window.isAuthenticated) {
@@ -344,6 +340,10 @@ $(document).ready(function(){
        receiveControlConstants();
        receiveControlSettings();
        receiveControlVariables();
+    } else {
+        $("button#login").button().unbind('click').click(function(){
+            $("#login-form").submit();
+        });
     }
 });
 

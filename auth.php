@@ -79,12 +79,14 @@ function loginFailed() {
         stoodDown();
         exit;
     }
-    header("Location: login.php?failed");
+    $_SESSION['failed-login'] = 'true';
+    header("Location: index.php");
     exit;
 }
 
 function stoodDown() {
-    header("Location: login.php?stand-down");
+    $_SESSION['locked-out'] = 'true';
+    header("Location: index.php");
     exit;
 }
 
@@ -101,6 +103,8 @@ function login($user, $password) {
         loginFailed();
     }
 
+    unset($_SESSION['failed-login']);
+    unset($_SESSION['locked-out']);
     LockOutDetails::reset();
     $_SESSION['user'] = $user;
     header("Location: index.php");

@@ -42,6 +42,16 @@ if(file_exists('userSettings.json')){
 	}
 }
 
+if(!isAuthenticated() && isset($_POST['btn-login'])) {
+    login($_POST['username'], $_POST['password']);
+}
+
+if(isset($_SESSION["locked-out"])){
+    echo '<span id="login-error">You failed to log in too many times</span>';
+} else if(isset($_SESSION["failed-login"])){
+    echo '<span id="login-error">Invalid username or password</span>';
+}
+
 $beerName = $settingsArray["beerName"];
 $tempFormat = $settingsArray["tempFormat"];
 $profileName = $settingsArray["profileName"];

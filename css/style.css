@@ -40,6 +40,24 @@ button#login{
 	margin: 10px;
 }
 
+input#username{
+	width: 195px;
+    min-height: 20px;
+	margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+input#password{
+	width: 195px;
+    min-height: 20px;
+    margin: 0px 10px;
+}
+
+span#login-error{
+    color: red;
+}
+
 .user-details{
     float: right;
     clear: right;
