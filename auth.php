@@ -66,7 +66,7 @@ class LockOutDetails {
 
 function isValidUser($user, $password) {
     
-    if ($user == "admin"
+    if ($user == getConfig("adminUsername", "admin")
         && $password == getConfig("adminPassword", "admin")) {
         return true;
     }
@@ -118,12 +118,19 @@ function logout() {
     header("Location: index.php");
 }
 
+function requireLogin() {
+    return getConfig("requireLogin", true);
+}
+
 function isAuthenticated(){
+    if (!requireLogin()) {
+        return true;
+    }
     return isset($_SESSION['user']);
 }
 
 function currentUser(){
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() || !requireLogin()) {
         return "";
     }
     return $_SESSION['user'];

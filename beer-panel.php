@@ -30,10 +30,12 @@
 	</div>
     
     <?php if (isAuthenticated() == 'true'){ ?>
-        <span class="user-details">
-            <?php echo currentUser() ?>
-            <a href="logout.php">logout</a>
-        </span>
+        <?php if (requireLogin()){ ?>
+            <span class="user-details">
+                <?php echo currentUser() ?>
+                <a href="logout.php">logout</a>
+            </span>
+        <?php } ?>
         <button class="script-status ui-state-error"></button>
         <button id="maintenance" class="ui-state-default">Maintenance panel</button>
     <?php } else {?>
