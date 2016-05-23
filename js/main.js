@@ -342,7 +342,9 @@ $(document).ready(function(){
        receiveControlVariables();
     } else {
         $("button#login").button().unbind('click').click(function(){
-            $("#login-form").submit();
+            if ($("#login-form").valid()) {
+               $("#login-form").submit();
+            }
         });
     }
 });
