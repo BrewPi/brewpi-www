@@ -6,6 +6,11 @@
 	// Configure the path of the BrewPi script for this instance of the
 	// web interface.  Do not include the trailing / on the path.
 	$scriptPath = '/home/brewpi';
+    $requireLogin = true;
+    $adminUsername = 'admin';
+    $adminPassword = 'admin';
+    $maxLoginAttempts = 3;
+    $standDownSeconds = 30;
 
 	if(file_exists('config_user.php')) {
 		require_once('config_user.php');

@@ -16,6 +16,9 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('auth.php');
+assertAuthenticated();
+
 // Read config settings
 if(file_exists('config.php')) {
 	require_once('config.php');

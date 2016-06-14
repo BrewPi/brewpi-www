@@ -14,7 +14,7 @@ body {
 }
 
 #top-bar button.script-status{
-	margin:10px;
+	margin: 5px 10px;
 }
 
 button.script-status{
@@ -29,7 +29,41 @@ button#maintenance{
     float: right;
 	clear:right;
     min-height: 25px;
-	margin: 10px 10px 10px 10px;
+	margin: 5px 10px;
+}
+
+button#login{
+	width: 200px;
+    float: right;
+	clear:right;
+    min-height: 25px;
+	margin: 10px;
+}
+
+input#username{
+	width: 195px;
+    min-height: 20px;
+	margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+input#password{
+	width: 195px;
+    min-height: 20px;
+    margin: 0px 10px;
+}
+
+span#login-error{
+    color: red;
+}
+
+.user-details{
+    float: right;
+    clear: right;
+    width: 200-x;
+	margin: 5px 10px;
+	color: #000;
 }
 
 /* Control Panel */

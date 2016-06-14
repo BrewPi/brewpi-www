@@ -16,6 +16,8 @@
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('auth.php');
+
 // load default settings from file
 $defaultSettings = file_get_contents('defaultSettings.json');
 if($defaultSettings == false){
@@ -38,6 +40,16 @@ if(file_exists('userSettings.json')){
 	foreach ($userSettingsArray as $key => $value) {
 		$settingsArray[$key] = $userSettingsArray[$key];
 	}
+}
+
+if(!isAuthenticated() && isset($_POST['btn-login'])) {
+    login($_POST['username'], $_POST['password']);
+}
+
+if(isset($_SESSION["locked-out"])){
+    echo '<span id="login-error">You failed to log in too many times</span>';
+} else if(isset($_SESSION["failed-login"])){
+    echo '<span id="login-error">Invalid username or password</span>';
 }
 
 $beerName = $settingsArray["beerName"];
@@ -78,36 +90,46 @@ function prepareJSON($input) {
 				include 'beer-panel.php';
 			?>
 		</div>
-		<div id="control-panel" style="display:none"> <!--// hide while loading -->
-			<?php
-				include 'control-panel.php';
-			?>
-		</div>
-		<div id="maintenance-panel" style="display:none"> <!--// hide while loading -->
-			<?php
-				include 'maintenance-panel.php';
-			?>
-		</div>
+        <div id="control-panel" style="display:none"> <!--// hide while loading -->
+            <?php
+                if (isAuthenticated()) {
+                    include 'control-panel.php';
+                }
+            ?>
+        </div>
+        <div id="maintenance-panel" style="display:none"> <!--// hide while loading -->
+            <?php
+                if (isAuthenticated()) {
+                    include 'maintenance-panel.php';
+                }
+            ?>
+        </div>
 		<!-- Load scripts after the body, so they don't block rendering of the page -->
-		<!-- <script type="text/javascript" src="js/jquery-1.11.0.js"></script> -->
-		<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
-		<script type="text/javascript" src="js/spin.js"></script>
-		<script type="text/javascript" src="js/dygraph-combined.js"></script>
-		<script type="text/javascript">
-			// pass parameters to JavaScript
-			window.tempFormat = <?php echo "'$tempFormat'" ?>;
-			window.beerName = <?php echo "\"$beerName\""?>;
-			window.profileName = <?php echo "\"$profileName\""?>;
-			window.dateTimeFormat = <?php echo "\"$dateTimeFormat\""?>;
-			window.dateTimeFormatDisplay = <?php echo "\"$dateTimeFormatDisplay\""?>;
-		</script>
+        <?php
+            include 'base-scripts.php';
+        ?>
+        
+        <script type="text/javascript">
+            // pass parameters to JavaScript
+            window.isAuthenticated = <?php echo isAuthenticated() ? "true" : "false" ?>;
+            window.tempFormat = <?php echo "'$tempFormat'" ?>;
+            window.beerName = <?php echo "\"$beerName\""?>;
+            window.profileName = <?php echo "\"$profileName\""?>;
+            window.dateTimeFormat = <?php echo "\"$dateTimeFormat\""?>;
+            window.dateTimeFormatDisplay = <?php echo "\"$dateTimeFormatDisplay\""?>;
+        </script>
+        
 		<script type="text/javascript" src="js/main.js"></script>
-		<script type="text/javascript" src="js/device-config.js"></script>
-		<script type="text/javascript" src="js/control-panel.js"></script>
-		<script type="text/javascript" src="js/maintenance-panel.js"></script>
+		<script type="text/javascript" src="js/lcd.js"></script>
 		<script type="text/javascript" src="js/beer-chart.js"></script>
-		<script type="text/javascript" src="js/profile-table.js"></script>
+        <script type="text/javascript" src="js/date-formatter.js"></script>
+        
+        <?php if (isAuthenticated()){ ?>
+		    <script type="text/javascript" src="js/profile-table.js"></script>
+            <script type="text/javascript" src="js/device-config.js"></script>
+            <script type="text/javascript" src="js/control-panel.js"></script>
+            <script type="text/javascript" src="js/maintenance-panel.js"></script>
+        <?php } ?>
+        
 	</body>
 </html>

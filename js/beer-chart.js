@@ -292,7 +292,7 @@ function formatForChartLegend(v) {
 }
 function showChartLegend(e, x, pts, row, g) {
     "use strict";
-    var time = profileTable.formatDate(new Date(x)).display;
+    var time = dateFormatter.formatDate(new Date(x)).display;
     $('#curr-beer-chart-legend .beer-chart-legend-time').text(time);
     $('#curr-beer-chart-legend .beer-chart-legend-row.beerTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 1)) );
     $('#curr-beer-chart-legend .beer-chart-legend-row.beerSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 2)) );

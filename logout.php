@@ -1,6 +1,5 @@
 <?php
-/* Copyright 2012 BrewPi/Elco Jacobs.
- * This file is part of BrewPi.
+/* Copyright 2016 Joel McBreen.
 
  * BrewPi is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +16,12 @@
  */
 
 require_once('auth.php');
-assertAuthenticated();
 
-// Set instance root
-$instanceRoot = getcwd();
+if(!isAuthenticated())
+{
+    header("Location: index.php");
+    exit;
+}
 
-# remove do not run file. Cron will start the script within one minute
-unlink("$instanceRoot/do_not_run_brewpi");
+logout();
+?>

@@ -213,7 +213,7 @@ function drawProfileChart(divId, profileObj) {
         return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
     };
     var dateTimeFormatter = function (x) {
-        return profileTable.formatDate(x).display;
+        return dateFormatter.formatDate(x).display;
     };
 
     var calculateXAxisTicks = function(duration) {
@@ -296,7 +296,7 @@ function drawProfileChart(divId, profileObj) {
         legend: 'always',
         labelsDivStyles: { 'textAlign': 'right' },
         strokeWidth: 1,
-        xValueParser: function(x) { return profileTable.parseDate(x); },
+        xValueParser: function(x) { return dateFormatter.parseDate(x); },
         underlayCallback: updateCurrentDateLine,
         "Temperature" : {},
         axes: {

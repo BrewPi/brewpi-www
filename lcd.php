@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with BrewPi.  If not, see <http://www.gnu.org/licenses/>.
  */
+?>
 
-require_once('auth.php');
-assertAuthenticated();
+<div id="lcd" class="lcddisplay">
+    <span class="lcd-text">
+        <span class="lcd-line" id="lcd-line-0">Live LCD waiting</span>
+        <span class="lcd-line" id="lcd-line-1">for update from</span>
+        <span class="lcd-line" id="lcd-line-2">script...</span>
+        <span class="lcd-line" id="lcd-line-3"></span>
+    </span>
+</div>
 
-// Set instance root
-$instanceRoot = getcwd();
-
-# remove do not run file. Cron will start the script within one minute
-unlink("$instanceRoot/do_not_run_brewpi");

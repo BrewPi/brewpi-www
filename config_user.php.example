@@ -5,3 +5,8 @@
 
 	// Do not include a trailing slash on the path
 	// $scriptPath = '/home/brewpi';
+    // $requireLogin = true;
+    // $adminUsername = 'admin';
+	// $adminPassword = 'admin';
+	// $maxLoginAttempts = 3;
+    // $standDownSeconds = 30;
