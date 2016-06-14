@@ -40,7 +40,7 @@
         <button id="maintenance" class="ui-state-default">Maintenance panel</button>
     <?php } else {?>
         <form id="login-form" action="index.php" method="post">
-            <input id="username" type="text" name="username" placeholder="Your Username" required autofocus />
+            <input id="username" type="text" name="username" placeholder="Your Username" required />
             <input id="password" type="password" name="password" placeholder="Your Password" required />
             <button id='login' name='btn-login' class="ui-state-default">Login</button>
         </form>
