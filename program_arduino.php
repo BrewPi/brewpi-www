@@ -78,22 +78,34 @@ if ($_FILES["file"]["error"] > 0){
 }
 
 $fileName = $_FILES["file"]["name"];
-$tempFileName = $_FILES["file"]["tmp_name"];
-$newFileName = "$instanceRoot/uploads/" . $fileName;
-if(move_uploaded_file($tempFileName, $newFileName)){
-	// succes!
-	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-		chmod($newFileName, '0777'); // set permissions to allow reading by anyone, when apache is running as system service, file will not be readable by script
-	}	
+
+// Prevent from null byte
+$fileName = str_replace(chr(0), '', $fileName);
+// Check if extension is .hex
+if (end(explode('.', $fileName)) == 'hex' && substr_count($fileName, '.') > 0) {
+	$tempFileName = $_FILES["file"]["tmp_name"];
+	$newFileName = "$instanceRoot/uploads/" . $fileName;
+	if(move_uploaded_file($tempFileName, $newFileName)){
+		// succes!
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			chmod($newFileName, '0777'); // set permissions to allow reading by anyone, when apache is running as system service, file will not be readable by script
+		}	
+	}
+	else{
+		$error = "cannot move uploaded file";
+		?>
+		<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
+		<?php
+		die($error);
+	}
 }
-else{
-	$error = "cannot move uploaded file";
+else {
+	$error = "Extension must be .hex";
 	?>
 	<script type="text/javascript">window.top.window.programmingError(<?php echo "\"$error\"" ?>)</script>
 	<?php
-	die($error);
+	die($error);	
 }
-
 $sock = open_socket();
 if($sock !== false){
     $cmd = "programArduino={\"boardType\":\"$boardType\",\"fileName\":\"$instanceRoot/uploads/$fileName\",\"restoreSettings\":$restoreSettings, \"restoreDevices\":$restoreDevices}";
