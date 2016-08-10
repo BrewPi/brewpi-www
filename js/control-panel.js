@@ -86,8 +86,20 @@ function loadControlPanel(){
 		if(isNaN(window.fridgeTemp)){
 			window.fridgeTemp = defaultTemp();
 		}
-		$("#beer-temp").find("input.temperature").val(window.beerTemp.toFixed(1));
-		$("#fridge-temp").find("input.temperature").val(window.fridgeTemp.toFixed(1));
+		// implement fix to allow the display of the temperature on beer or fridge constant mode.
+		if (window.beerTemp === null)
+		{
+				window.beerTemp = defaultTemp();
+		}
+		if (window.fridgeTemp === null)
+		{
+				window.fridgeTemp = defaultTemp();
+		}
+		// HTML now has IDs implemented for the input fields
+		document.getElementById("fridge_temperature").value = window.fridgeTemp.toFixed(1);
+		document.getElementById("beer_temperature").value = window.beerTemp.toFixed(1)
+
+		
 	});
 }
 
