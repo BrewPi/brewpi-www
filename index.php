@@ -92,9 +92,9 @@ function prepareJSON($input) {
 		<!-- <script type="text/javascript" src="js/jquery-1.11.0.js"></script> -->
 		<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
-		<script type="text/javascript" src="js/spin.js"></script>
-		<script type="text/javascript" src="js/dygraph-combined.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.min.js"></script>
+		<script type="text/javascript" src="js/spin.min.js"></script>
+		<script type="text/javascript" src="js/dygraph-combined.min.js"></script>
 		<script type="text/javascript">
 			// pass parameters to JavaScript
 			window.tempFormat = <?php echo "'$tempFormat'" ?>;
@@ -103,11 +103,11 @@ function prepareJSON($input) {
 			window.dateTimeFormat = <?php echo "\"$dateTimeFormat\""?>;
 			window.dateTimeFormatDisplay = <?php echo "\"$dateTimeFormatDisplay\""?>;
 		</script>
-		<script type="text/javascript" src="js/main.js"></script>
-		<script type="text/javascript" src="js/device-config.js"></script>
-		<script type="text/javascript" src="js/control-panel.js"></script>
-		<script type="text/javascript" src="js/maintenance-panel.js"></script>
-		<script type="text/javascript" src="js/beer-chart.js"></script>
-		<script type="text/javascript" src="js/profile-table.js"></script>
+		<script type="text/javascript" src="js/main.min.js"></script>
+		<script type="text/javascript" src="js/device-config.min.js"></script>
+		<script type="text/javascript" src="js/control-panel.min.js"></script>
+		<script type="text/javascript" src="js/maintenance-panel.min.js"></script>
+		<script type="text/javascript" src="js/beer-chart.min.js"></script>
+		<script type="text/javascript" src="js/profile-table.min.js"></script>
 	</body>
 </html>
