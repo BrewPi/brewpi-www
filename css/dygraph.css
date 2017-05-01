@@ -54,7 +54,13 @@ BR.crystal { clear:both; }
 .beer-chart-legend-row.fridgeSet{
     color:rgba(255, 161, 76, 1);
 }
-.beer-chart-legend-row.roomTemp{
+.beer-chart-legend-row.log1Temp{
+    color:rgba(170, 170, 170, 1);
+}
+.beer-chart-legend-row.log2Temp{
+    color:rgba(170, 170, 170, 1);
+}
+.beer-chart-legend-row.log3Temp{
     color:rgba(170, 170, 170, 1);
 }
 .beer-chart-legend-row.annotation .beer-chart-legend-label { padding:2px 5px 0 5px; }
@@ -89,7 +95,15 @@ BR.crystal { clear:both; }
     background-color:rgba(255, 161, 76, 0.5);
     border:1px solid rgba(255, 161, 76, 1);
 }
-.beer-chart-legend-row .toggle.roomTemp{
+.beer-chart-legend-row .toggle.log1Temp{
+    background-color:rgba(170, 170, 170, 0.5);
+    border:1px solid rgba(170, 170, 170, 1);
+}
+.beer-chart-legend-row .toggle.log2Temp{
+    background-color:rgba(170, 170, 170, 0.5);
+    border:1px solid rgba(170, 170, 170, 1);
+}
+.beer-chart-legend-row .toggle.log3Temp{
     background-color:rgba(170, 170, 170, 0.5);
     border:1px solid rgba(170, 170, 170, 1);
 }
