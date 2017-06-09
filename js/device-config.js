@@ -20,7 +20,7 @@ function getDeviceList(){
         url: 'socketmessage.php',
         data: {messageType: "getDeviceList", message: ""},
         success: function(response){
-            response = response.replace(/\s/g, ''); //strip all whitespace, including newline.
+            response = response.replace(/\n/g, ''); //strip newlines.
             var deviceAndPinList;
             var $deviceList = $(".device-list");
             var $deviceConsole = $("#device-console").find("span");
@@ -169,7 +169,7 @@ function addDeviceToDeviceList(device, pinList, addManual){
     });
 
     // add actuator control buttons buttons
-    if(device.t == 5) // manual actuator
+    if(device.t == 3) // switch actuator
     {
         if (device.h == 4){ // DS2408, used for values
             var $valveOpenButton = $("<button class='apply'>Open</button>");
@@ -188,7 +188,7 @@ function addDeviceToDeviceList(device, pinList, addManual){
             $valveCloseButton.click(function () {
                 $.post('socketmessage.php', {
                     messageType: String("writeDevice"),
-                    message: String('{"i": ' + device.i.toString() + ',"w":2}')
+                    message: String('{"i": ' + device.i.toString() + ',"w":0}')
                 });
             });
         }
