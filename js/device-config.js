@@ -311,21 +311,11 @@ function addDeviceToDeviceList(device, pinList, addManual){
     if((typeof device.v !== "undefined") ){
         var value = device.v;
         if(parseInt(device.t, 10) === 3){
-            // Device type is switch actuator
-            if(value === 0){
-                value = "Inactive";
+            if(parseInt(device.h, 10) === 3){
+                value = value ? "Active" : "Inactive";
             }
-            else if(value ===1){
-                value = "Active";
-            }
-        }
-        if(parseInt(device.t, 10) === 5){
-            // Device type is valve/switch actuator
-            if(value === 0){
-                value = "Inactive";
-            }
-            else if(value ===1){
-                value = "Active";
+            else if(parseInt(device.h, 10) === 4){
+                value = value ? "Open" : "Closed";
             }
         }
         if(parseInt(value,10)===-64){
