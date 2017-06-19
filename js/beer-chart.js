@@ -37,7 +37,21 @@ var lineNames = {
     beerSet: 'Beer setting',
     fridgeTemp: 'Fridge temperature',
     fridgeSet: 'Fridge setting',
-    roomTemp: 'Room temp.'};
+    log1Temp: 'Log1 temperature',
+    log2Temp: 'Log2 temperature',
+    log3Temp: 'Log3 temperature',
+};
+var chartColors = [ 
+    'rgb(41,170,41)',
+    'rgb(240, 100, 100)',
+    'rgb(89, 184, 255)',
+    'rgb(255, 161, 76)',
+    '#AAAAAA',
+    '#AAAAAA',
+    '#AAAAAA',
+    'rgb(153,0,153)'
+];
+
 var legendStorageKeyPrefix = "legendLine_";
 
 var TIME_COLUMN = 0;        // time is the first column of data
@@ -281,7 +295,6 @@ function paintBackgroundImpl(canvas, area, g) {
     }
 }
 
-var chartColors = [ 'rgb(41,170,41)', 'rgb(240, 100, 100)', 'rgb(89, 184, 255)',  'rgb(255, 161, 76)', '#AAAAAA', 'rgb(153,0,153)' ];
 function formatForChartLegend(v) {
     "use strict";
     var val = parseFloat(v);
@@ -298,7 +311,9 @@ function showChartLegend(e, x, pts, row, g) {
     $('#curr-beer-chart-legend .beer-chart-legend-row.beerSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 2)) );
     $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 3)) );
     $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 4)) );
-    $('#curr-beer-chart-legend .beer-chart-legend-row.roomTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 5)) );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.log1Temp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 5)) );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.log2Temp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 6)) );
+    $('#curr-beer-chart-legend .beer-chart-legend-row.log3Temp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 7)) );
     var state = parseInt(currentDataSet.getValue(row, STATE_COLUMN));
     if ( !isNaN(state) ) {
         $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text(STATES[state].text);

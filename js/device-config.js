@@ -352,7 +352,7 @@ function pinTypeToFunctionList(pinType, hwType){
             break;
         case 'onewire':
             if (hwType==2)
-                functionList = [5, 6, 9];
+                functionList = [5, 6, 9, 17, 18];
             else if (hwType == 3)
                 functionList = actFunctions;    // ds2413 actuator
             else if (hwType==4)
@@ -384,8 +384,10 @@ function functionToPinTypes(functionType){
             pinTypes = ['free', 'door', 'act'];
             break;
         case 5: // chamber temp
-        case 6: // room temp
+        case 6: // log1 temp
         case 9: // beer temp
+        case 17: // log2 temp
+        case 18: // log3 temp
             pinTypes = ['onewire'];
             break;
 
@@ -406,16 +408,18 @@ function getDeviceFunctionList(){
         {val : 3, text: 'Chamber Cooler'},
         {val : 4, text: 'Chamber Light'},
         {val : 5, text: 'Chamber Temp'},
-        {val : 6, text: 'Room Temp'},
+        {val : 6, text: 'Log1 Temp'},
         {val : 7, text: 'Chamber Fan'},
         {val : 8, text: 'Manual Actuator'},
-        {val : 9, text: 'Beer Temp'}/*,
+        {val : 9, text: 'Beer Temp'}, /*,
          {val : 10, text: 'Beer Temperature 2'},
          {val : 11, text: 'Beer Heater'},
          {val : 12, text: 'Beer Cooler'},
          {val : 13, text: 'Beer S.G.'},
          {val : 14, text: 'Beer Reserved 1'},
          {val : 15, text: 'Beer Reserved 2'}  */
+        {val : 17, text: 'Log2 Temp'}, 
+        {val : 18, text: 'Log3 Temp'}
     ];
 }
 

@@ -78,9 +78,21 @@
 		    		<div class="beer-chart-legend-value">--</div>
 		    		<br class="crystal" />
 		    	</div>
-		    	<div class="beer-chart-legend-row roomTemp">
-					<div class="toggle roomTemp" onClick="toggleLine(this)"></div>
-		    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Room Temp</div>
+		    	<div class="beer-chart-legend-row log1Temp">
+					<div class="toggle log1Temp" onClick="toggleLine(this)"></div>
+		    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Log1 Temp</div>
+		    		<div class="beer-chart-legend-value">--</div>
+		    		<br class="crystal" />
+		    	</div>
+					<div class="beer-chart-legend-row log2Temp">
+					<div class="toggle log2Temp" onClick="toggleLine(this)"></div>
+		    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Log2 Temp</div>
+		    		<div class="beer-chart-legend-value">--</div>
+		    		<br class="crystal" />
+		    	</div>
+					<div class="beer-chart-legend-row log3Temp">
+					<div class="toggle log3Temp" onClick="toggleLine(this)"></div>
+		    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Log3 Temp</div>
 		    		<div class="beer-chart-legend-value">--</div>
 		    		<br class="crystal" />
 		    	</div>
