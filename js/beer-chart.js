@@ -67,12 +67,7 @@ var STATES = [
     { name: "STATE_OFF", color:colorIdle, text: "Off" },
     { name: "DOOR_OPEN", color:"#eee", text: "Door Open", doorOpen:true },
     { name: "HEATING", color:colorHeat, text: "Heating" },
-    { name: "COOLING", color:colorCool, text: "Cooling" },
-    { name: "WAITING_TO_COOL", color:colorWaitingCool, text: "Waiting to Cool", waiting:true  },
-    { name: "WAITING_TO_HEAT", color:colorWaitingHeat, text: "Waiting to Heat", waiting:true  },
-    { name: "WAITING_FOR_PEAK_DETECT", color:colorWaitingPeakDetect, text: "Waiting for Peak", waiting:true },
-    { name: "COOLING_MIN_TIME", color:colorCoolingMinTime, text: "Cooling Min Time", extending:true },
-    { name: "HEATING_MIN_TIME", color:colorHeatingMinTime, text: "Heating Min Time", extending:true }
+    { name: "COOLING", color:colorCool, text: "Cooling" }
 ];
 
 
