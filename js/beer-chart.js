@@ -352,6 +352,7 @@ function drawBeerChart(beerToDraw, div){
     $.post("get_beer_data.php", {"beername": beerToDraw}, function(answer) {
         var combinedJson = {};
 		try{
+            answer = answer.replace('"RoomTemp"', '"Log1Temp"'); // rename RoomTemp in old data for compatibility
             combinedJson = $.parseJSON(answer);
         } catch (e) {
             var $errorMessage = $("<span class='chart-error-text'>Could not parse data for this brew.<br>" +
