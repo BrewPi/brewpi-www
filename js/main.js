@@ -197,11 +197,8 @@ function refreshTemperatures(){
                 State: 'State'
             }
             for (var key of displayOrder) {
-                console.log(key);
                 if (temperatures.hasOwnProperty(key)) {
                     var value = temperatures[key];
-                    console.log(value);
-
                     if(!isNaN(parseFloat(value))){ 
                         var $temperatureName=$('<div />').text(displayName[key]);
                         $temperatureName.addClass('temperature-name');
