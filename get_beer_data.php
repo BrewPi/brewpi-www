@@ -49,6 +49,7 @@ if ( !empty($fileNames) ) {
 
 	// aggregate all json data for the beer
 	$renderedRow = false;
+	$cols = "";
 	echo "{\"rows\":[";
 	foreach ( $fileNames as $fileName ) {
 		$contents = file_get_contents(dirname(__FILE__) . '/' . $fileName);
@@ -59,10 +60,9 @@ if ( !empty($fileNames) ) {
 			echo get_list_between($contents, '"rows":' , ']}]');
 			$renderedRow = true;
 
-			$colsThisFile = get_list_between($contents, '"cols":' , ']');
-			if(strlen($colsThisFile) > strlen($cols)){
+			if($cols == ""){
 			    // use largest column list
-			    $cols = $colsThisFile;
+			    $cols = get_list_between($contents, '"cols":' , ']');
 			}
 		}
 	}

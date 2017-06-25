@@ -161,7 +161,7 @@ function toDygraphArray(jsonData) {
 
     for (i = 0; i < rows.length; i++){
         row = [];
-        for (j = 0; j < rows[i].c.length; j++) {
+        for (j = 0; j < Math.min(rows[i].c.length, handlers.length); j++) {
             handlers[j](j, rows[i].c[j]);
         }
         dataArray.push(row);
