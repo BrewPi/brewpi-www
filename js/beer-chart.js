@@ -53,9 +53,6 @@ var chartColors = [
 ];
 
 var legendStorageKeyPrefix = "legendLine_";
-
-var TIME_COLUMN = 0;        // time is the first column of data
-var STATE_COLUMN = 6;       // state is currently the 6th column of data.
 var STATE_LINE_WIDTH = 15;
 
 /**
@@ -69,7 +66,6 @@ var STATES = [
     { name: "HEATING", color:colorHeat, text: "Heating" },
     { name: "COOLING", color:colorCool, text: "Cooling" }
 ];
-
 
 CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen) {
     "use strict";
@@ -106,7 +102,9 @@ CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen
  */
 function getState(g, row) {
     "use strict";
-    return (row>= g.numRows()) ? 0 : g.getValue(row, STATE_COLUMN);
+    // state is not a series in the chart, so we cannot use indexFromSetName
+    // state is always the last column in the raw data set, so we can use that
+    return (row>= g.numRows()) ? 0 : g.getValue(row, g.numColumns()-1);
 }
 
 /**
@@ -174,7 +172,7 @@ function getTime(g, row) {
     if (row >= g.numRows()) {
         row = g.numRows() - 1;
     }
-    return g.getValue(row, TIME_COLUMN);
+    return g.getValue(row, g.indexFromSetName('Time'));
 }
 
 /**
@@ -231,10 +229,8 @@ function findDataRow(g, time) {
     return low;
 }
 
-var currentDataSet = null;
 function paintBackground(canvas, area, g) {
     "use strict";
-    currentDataSet = g;
     canvas.save();
     try {
         paintBackgroundImpl(canvas, area, g);
@@ -274,18 +270,8 @@ function paintBackgroundImpl(canvas, area, g) {
         if (state === undefined){
             state = STATES[0];
         }
-        //var borderColor = (state.waiting || state.extending) ? setAlphaFactor(state.color, 0.5) : undefined;
-        //var bgColor = (state.waiting) ? bgColor = colorIdle : state.color;
         canvas.fillStyle = state.color;
         canvas.fillRect(startX, area.h-STATE_LINE_WIDTH, endX-startX, area.h);
-/*        if (borderColor!==undefined) {
-            lineWidth = 2;
-            canvas.lineWidth = lineWidth;
-            canvas.strokeStyle = borderColor;
-            if (endX-startX>lineWidth)
-                canvas.strokeRect(startX+lineWidth/2, area.y+lineWidth/2, endX-startX-lineWidth, area.h-lineWidth);
-        }
-  */
         startX = endX;
     }
 }
@@ -301,28 +287,28 @@ function formatForChartLegend(v) {
 function showChartLegend(e, x, pts, row, g) {
     "use strict";
     var time = profileTable.formatDate(new Date(x)).display;
-    $('#curr-beer-chart-legend .beer-chart-legend-time').text(time);
-    $('#curr-beer-chart-legend .beer-chart-legend-row.beerTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 1)) );
-    $('#curr-beer-chart-legend .beer-chart-legend-row.beerSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 2)) );
-    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeTemp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 3)) );
-    $('#curr-beer-chart-legend .beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 4)) );
-    $('#curr-beer-chart-legend .beer-chart-legend-row.log1Temp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 5)) );
-    $('#curr-beer-chart-legend .beer-chart-legend-row.log2Temp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 6)) );
-    $('#curr-beer-chart-legend .beer-chart-legend-row.log3Temp .beer-chart-legend-value').text( formatForChartLegend(currentDataSet.getValue(row, 7)) );
-    var state = parseInt(currentDataSet.getValue(row, STATE_COLUMN));
-    if ( !isNaN(state) ) {
-        $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text(STATES[state].text);
-        $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css( 'background-color', STATES[state].color );
+    $('.beer-chart-legend-time').text(time);
+    $('.beer-chart-legend-row.beerTemp .beer-chart-legend-value').text( formatForChartLegend(g.getValue(row, g.indexFromSetName('beerTemp'))));
+    $('.beer-chart-legend-row.beerSet .beer-chart-legend-value').text( formatForChartLegend(g.getValue(row, g.indexFromSetName('beerSet'))) );
+    $('.beer-chart-legend-row.fridgeTemp .beer-chart-legend-value').text( formatForChartLegend(g.getValue(row, g.indexFromSetName('fridgeTemp'))));
+    $('.beer-chart-legend-row.fridgeSet .beer-chart-legend-value').text( formatForChartLegend(g.getValue(row, g.indexFromSetName('fridgeSet'))) );
+    $('.beer-chart-legend-row.log1Temp .beer-chart-legend-value').text( formatForChartLegend(g.getValue(row, g.indexFromSetName('log1Temp'))) );
+    $('.beer-chart-legend-row.log2Temp .beer-chart-legend-value').text( formatForChartLegend(g.getValue(row, g.indexFromSetName('log2Temp'))) );
+    $('.beer-chart-legend-row.log3Temp .beer-chart-legend-value').text( formatForChartLegend(g.getValue(row, g.indexFromSetName('log3Temp'))) );
+    var state = getState(g, row);
+    if ( state !== undefined && !isNaN(state) ) {
+        $('.beer-chart-legend-row.state .beer-chart-legend-label').text(STATES[state].text);
+        $('.beer-chart-legend-row.state .state-indicator').css( 'background-color', STATES[state].color );
     }
 }
 function hideChartLegend() {
     "use strict";
-    $('#curr-beer-chart-legend .beer-chart-legend-row').each(function() {
+    $('.beer-chart-legend-row').each(function() {
         $(this).find('.beer-chart-legend-value').text('--');
     });
-    $('#curr-beer-chart-legend .beer-chart-legend-time').text('Date/Time');
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state .beer-chart-legend-label').text('State');
-    $('#curr-beer-chart-legend .beer-chart-legend-row.state .state-indicator').css( 'background-color', '' );
+    $('.beer-chart-legend-time').text('Date/Time');
+    $('.beer-chart-legend-row.state .beer-chart-legend-label').text('State');
+    $('.beer-chart-legend-row.state .state-indicator').css( 'background-color', '' );
 }
 function findLineByName(name) {
     "use strict";
@@ -373,7 +359,8 @@ function drawBeerChart(beerToDraw, div){
         var tempFormat = function(y) {
             return parseFloat(y).toFixed(2) + "\u00B0 " + window.tempFormat;
         };
-        var beerChart = new Dygraph(document.getElementById(div),
+        var that = this; // capture scope;
+        this.beerChart = new Dygraph(document.getElementById(div),
                 beerData.values, {
                 labels: beerData.labels,
                 colors: chartColors,
@@ -396,42 +383,39 @@ function drawBeerChart(beerToDraw, div){
                     highlightCircleSize: 5
                 },
                 highlightCallback: function(e, x, pts, row) {
-                    showChartLegend(e, x, pts, row, beerChart);
+                    var chart = that.beerChart;
+                    if(chart !== undefined){
+                        showChartLegend(e, x, pts, row, chart);
+                    }
                 },
                 unhighlightCallback: function(e) {
                     hideChartLegend();
                 },
                 underlayCallback: paintBackground,
-                drawCallback: function(beerChart, is_initial) {
-                    if (is_initial) {
-                        if (beerData.annotations.length > 0) {
-                            beerChart.setAnnotations(beerData.annotations);
-                        }
-                    }
-                }
             }
         );
-        beerChart.setVisibility(beerChart.indexFromSetName('state')-1, 0);  // turn off state line
+        this.beerChart.setAnnotations(beerData.annotations);
+        this.beerChart.setVisibility(this.beerChart.indexFromSetName('state')-1, 0);  // turn off state line
         var $chartContainer = $chartDiv.parent();
         $chartContainer.find('.beer-chart-controls').show();
 
         if(div.localeCompare('curr-beer-chart') === 0){
-            currBeerChart = beerChart;
+            currBeerChart = this.beerChart;
         }
         else if(div.localeCompare('prev-beer-chart') === 0){
-            prevBeerChart = beerChart;
+            prevBeerChart = this.beerChart;
         }
 
         // hide buttons for lines that are not in the chart
         for (var key in lineNames){
             if(lineNames.hasOwnProperty(key)){
                 var $row = $chartContainer.find('.beer-chart-legend-row.' + key);
-                var series = beerChart.getPropertiesForSeries(key);
+                var series = this.beerChart.getPropertiesForSeries(key);
                 if(series === null){
                     $row.hide();
                 } else {
-                    var numRows = beerChart.numRows();
-                    if(isDataEmpty(beerChart, series.column, 0, numRows-1)){
+                    var numRows = this.beerChart.numRows();
+                    if(isDataEmpty(this.beerChart, series.column, 0, numRows-1)){
                         $row.hide();
                     }
                     else{
@@ -443,12 +427,12 @@ function drawBeerChart(beerToDraw, div){
                     updateVisibility(key, $row.find('.toggle'));
                 }
                 if($(div + " .toggleAnnotations ").hasClass("inactive")){
-                    $(beerChart).find('.dygraphDefaultAnnotation').css('visibility', 'hidden');
+                    $(this.beerChart).find('.dygraphDefaultAnnotation').css('visibility', 'hidden');
                 }
             }
         }
         var idx = 0;
-        $('#curr-beer-chart-legend .beer-chart-legend-row').each(function() {
+        $('.beer-chart-legend-row').each(function() {
             if ( ! $(this).hasClass("time") && ! $(this).is(":hidden") ) {
                 $(this).addClass( (idx % 2 === 1) ? 'alt' : '' );
                 idx++;
