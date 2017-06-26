@@ -141,7 +141,7 @@ function toDygraphArray(jsonData) {
                 text: val.v,
                 attachAtBottom: true
             });
-        };
+        };        
 
     // set up handlers for each variable based on cols, use id as Dygraph label
     for (i = 0; i < cols.length; i++){
@@ -394,7 +394,21 @@ function drawBeerChart(beerToDraw, div){
                 underlayCallback: paintBackground,
             }
         );
-        this.beerChart.setAnnotations(beerData.annotations);
+        // combine text of overlapping annotations
+        var processedAnnotations = [];
+        for (var ann of beerData.annotations){
+            var existing = processedAnnotations.find(function(a){
+                // combine if very close to other annotation
+                return Math.abs(a.x - ann.x) < 5000 && a.series.localeCompare(ann.series) === 0;
+            });
+            if(existing !== undefined){
+                existing.text = existing.text + "; " + ann.text;
+            }
+            else{
+                processedAnnotations.push(ann);
+            }
+        }
+        this.beerChart.setAnnotations(processedAnnotations);
         this.beerChart.setVisibility(this.beerChart.indexFromSetName('state')-1, 0);  // turn off state line
         var $chartContainer = $chartDiv.parent();
         $chartContainer.find('.beer-chart-controls').show();
