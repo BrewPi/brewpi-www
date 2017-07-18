@@ -17,14 +17,6 @@
  */
 ?>
 <div id="top-bar" class="ui-widget ui-widget-header ui-corner-all">
-	<div id="lcd" class="lcddisplay">
-        <span class="lcd-text">
-            <span class="lcd-line" id="lcd-line-0">Live LCD waiting</span>
-            <span class="lcd-line" id="lcd-line-1">for update from</span>
-            <span class="lcd-line" id="lcd-line-2">script...</span>
-            <span class="lcd-line" id="lcd-line-3"></span>
-        </span>
-	</div>
 	<div id="logo-container">
 		<img src="brewpi_logo.png">
 		<div id=beer-name-container>
@@ -32,6 +24,7 @@
 			<span class="data-logging-state"></span>
 		</div>
 	</div>
+	<div class="temperatures-container"></div>
 	<button class="script-status ui-state-error"></button>
 	<button id="maintenance" class="ui-state-default">Maintenance panel</button>
 </div>
@@ -79,12 +72,24 @@
 	    		<div class="beer-chart-legend-value">--</div>
 	    		<br class="crystal" />
 	    	</div>
-	    	<div class="beer-chart-legend-row roomTemp">
-				<div class="toggle roomTemp" onClick="toggleLine(this)"></div>
-	    		<div class="beer-chart-legend-label" onClick="toggleLine(this)">Room Temp</div>
-	    		<div class="beer-chart-legend-value">--</div>
-	    		<br class="crystal" />
-	    	</div>
+				<div class="beer-chart-legend-row log1Temp">
+				<div class="toggle log1Temp" onClick="toggleLine(this)"></div>
+					<div class="beer-chart-legend-label" onClick="toggleLine(this)">Log1 Temp</div>
+					<div class="beer-chart-legend-value">--</div>
+					<br class="crystal" />
+				</div>
+				<div class="beer-chart-legend-row log2Temp">
+				<div class="toggle log2Temp" onClick="toggleLine(this)"></div>
+					<div class="beer-chart-legend-label" onClick="toggleLine(this)">Log2 Temp</div>
+					<div class="beer-chart-legend-value">--</div>
+					<br class="crystal" />
+				</div>
+				<div class="beer-chart-legend-row log3Temp">
+				<div class="toggle log3Temp" onClick="toggleLine(this)"></div>
+					<div class="beer-chart-legend-label" onClick="toggleLine(this)">Log3 Temp</div>
+					<div class="beer-chart-legend-value">--</div>
+					<br class="crystal" />
+				</div>
 	    	<div class="beer-chart-legend-row state">
 				<div class="state-indicator"></div>
 	    		<div class="beer-chart-legend-label"></div>

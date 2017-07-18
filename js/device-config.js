@@ -20,7 +20,7 @@ function getDeviceList(){
         url: 'socketmessage.php',
         data: {messageType: "getDeviceList", message: ""},
         success: function(response){
-            response = response.replace(/\s/g, ''); //strip all whitespace, including newline.
+            response = response.replace(/\n/g, ''); //strip newlines.
             var deviceAndPinList;
             var $deviceList = $(".device-list");
             var $deviceConsole = $("#device-console").find("span");
@@ -169,7 +169,7 @@ function addDeviceToDeviceList(device, pinList, addManual){
     });
 
     // add actuator control buttons buttons
-    if(device.t == 5) // manual actuator
+    if(device.t == 3) // switch actuator
     {
         if (device.h == 4){ // DS2408, used for values
             var $valveOpenButton = $("<button class='apply'>Open</button>");
@@ -188,7 +188,7 @@ function addDeviceToDeviceList(device, pinList, addManual){
             $valveCloseButton.click(function () {
                 $.post('socketmessage.php', {
                     messageType: String("writeDevice"),
-                    message: String('{"i": ' + device.i.toString() + ',"w":2}')
+                    message: String('{"i": ' + device.i.toString() + ',"w":0}')
                 });
             });
         }
@@ -311,21 +311,11 @@ function addDeviceToDeviceList(device, pinList, addManual){
     if((typeof device.v !== "undefined") ){
         var value = device.v;
         if(parseInt(device.t, 10) === 3){
-            // Device type is switch actuator
-            if(value === 0){
-                value = "Inactive";
+            if(parseInt(device.h, 10) === 3){
+                value = value ? "Active" : "Inactive";
             }
-            else if(value ===1){
-                value = "Active";
-            }
-        }
-        if(parseInt(device.t, 10) === 5){
-            // Device type is valve/switch actuator
-            if(value === 0){
-                value = "Inactive";
-            }
-            else if(value ===1){
-                value = "Active";
+            else if(parseInt(device.h, 10) === 4){
+                value = value ? "Open" : "Closed";
             }
         }
         if(parseInt(value,10)===-64){
@@ -362,7 +352,7 @@ function pinTypeToFunctionList(pinType, hwType){
             break;
         case 'onewire':
             if (hwType==2)
-                functionList = [5, 6, 9];
+                functionList = [5, 6, 9, 17, 18];
             else if (hwType == 3)
                 functionList = actFunctions;    // ds2413 actuator
             else if (hwType==4)
@@ -394,8 +384,10 @@ function functionToPinTypes(functionType){
             pinTypes = ['free', 'door', 'act'];
             break;
         case 5: // chamber temp
-        case 6: // room temp
+        case 6: // log1 temp
         case 9: // beer temp
+        case 17: // log2 temp
+        case 18: // log3 temp
             pinTypes = ['onewire'];
             break;
 
@@ -416,16 +408,18 @@ function getDeviceFunctionList(){
         {val : 3, text: 'Chamber Cooler'},
         {val : 4, text: 'Chamber Light'},
         {val : 5, text: 'Chamber Temp'},
-        {val : 6, text: 'Room Temp'},
+        {val : 6, text: 'Log1 Temp'},
         {val : 7, text: 'Chamber Fan'},
         {val : 8, text: 'Manual Actuator'},
-        {val : 9, text: 'Beer Temp'}/*,
+        {val : 9, text: 'Beer Temp'}, /*,
          {val : 10, text: 'Beer Temperature 2'},
          {val : 11, text: 'Beer Heater'},
          {val : 12, text: 'Beer Cooler'},
          {val : 13, text: 'Beer S.G.'},
          {val : 14, text: 'Beer Reserved 1'},
          {val : 15, text: 'Beer Reserved 2'}  */
+        {val : 17, text: 'Log2 Temp'}, 
+        {val : 18, text: 'Log3 Temp'}
     ];
 }
 

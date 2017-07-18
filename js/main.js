@@ -172,7 +172,7 @@ function startScript(){
 	$.get('start_script.php');
 }
 
-function refreshLcd(){
+function refreshTemperatures(){
 	"use strict";
     $.ajax({
         type: "POST",
@@ -180,25 +180,53 @@ function refreshLcd(){
         cache: false,
         contentType:"application/x-www-form-urlencoded; charset=utf-8",
         url: 'socketmessage.php',
-        data: {messageType: "lcd", message: ""}
+        data: {messageType: "getTemperatures", message: ""}
         })
-        .done( function(lcdText){
-            var $lcdText = $('#lcd .lcd-text');
-            for (var i = lcdText.length - 1; i >= 0; i--) {
-                $lcdText.find('#lcd-line-' + i).html(lcdText[i]);
+        .done( function(temperatures){
+            $(".temperatures-container").empty();
+            const displayOrder = ['BeerSet', 'BeerTemp', 'FridgeSet', 'FridgeTemp', 'Log1Temp', 'Log2Temp', 'Log3Temp', 'State']
+            const stateNames = ["Idle", "Off", "Door Open", "Heating", "Cooling"];
+            const displayName = {
+                BeerSet: 'Beer Setting',
+                BeerTemp: 'Beer Temp',
+                FridgeSet: 'Fridge Setting',
+                FridgeTemp: 'Fridge Temp',
+                Log1Temp: 'Log 1 Temp',
+                Log2Temp: 'Log 2 Temp',
+                Log3Temp: 'Log 3 Temp',
+                State: 'State'
             }
+            for (var key of displayOrder) {
+                if (temperatures.hasOwnProperty(key)) {
+                    var value = temperatures[key];
+                    if(!isNaN(parseFloat(value))){ 
+                        var $temperatureName=$('<div />').text(displayName[key]);
+                        $temperatureName.addClass('temperature-name');
+                        //temperatureNameSpan.addClass(displayName[key]);
+                        var $temperatureValue=$('<div />')
+                        if(key === 'State'){
+                            $temperatureValue=$('<div />').text(stateNames[value]);
+                        } else{
+                            $temperatureValue.text(value.toFixed(2));
+                        }
+                        $temperatureValue.addClass('temperature-value');
+                        $temperatureValue.addClass('key');
+                        var $temperatureDiv = $("<div />");
+                        $temperatureDiv.append($temperatureName);
+                        $temperatureDiv.append($temperatureValue);
+                        $(".temperatures-container").append($temperatureDiv);
+                    }
+                }
+            }
+            
             updateScriptStatus(true);
         })
         .fail(function() {
-            var $lcdText = $('#lcd .lcd-text');
-            $lcdText.find('#lcd-line-0').html("Cannot receive");
-            $lcdText.find('#lcd-line-1').html("LCD text from");
-            $lcdText.find('#lcd-line-2').html("Python script");
-            $lcdText.find('#lcd-line-3').html(" ");
+            
             updateScriptStatus(false);
         })
         .always(function() {
-            window.setTimeout(refreshLcd,5000);
+            window.setTimeout(refreshTemperatures,5000);
         }
     );
 }
@@ -422,6 +450,6 @@ $(document).ready(function(){
 	receiveControlConstants();
 	receiveControlSettings();
 	receiveControlVariables();
-	refreshLcd(); //will call refreshLcd and alternate between the two
+	refreshTemperatures();
 });
 
