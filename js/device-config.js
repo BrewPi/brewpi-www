@@ -351,12 +351,12 @@ function pinTypeToFunctionList(pinType, hwType){
             functionList = [1, 2, 3, 4, 7, 8]; // all actuator functions + door
             break;
         case 'onewire':
-            if (hwType==2)
+            if (hwType==2){
                 functionList = [5, 6, 9, 17, 18];
-            else if (hwType == 3)
+            }
+            else if (hwType == 3 || hwType == 4){
                 functionList = actFunctions;    // ds2413 actuator
-            else if (hwType==4)
-                functionList = [8]; // ds2408 actuator
+            }
             break;
         case 'door':
             functionList = [1, 2, 3, 4, 7, 8]; // all actuator functions + door
