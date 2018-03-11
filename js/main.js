@@ -196,6 +196,9 @@ function refreshTemperatures(){
                 Log3Temp: 'Log 3 Temp',
                 State: 'State'
             }
+            if(temperatures.Error !== undefined){
+                $(".temperatures-container").append("<div class='temperature-error'>Error: " + temperatures.Error +  "</div>");
+            }
             for (var key of displayOrder) {
                 if (temperatures.hasOwnProperty(key)) {
                     var value = temperatures[key];
@@ -221,8 +224,7 @@ function refreshTemperatures(){
             
             updateScriptStatus(true);
         })
-        .fail(function() {
-            
+        .fail(function() {            
             updateScriptStatus(false);
         })
         .always(function() {

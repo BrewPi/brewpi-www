@@ -151,6 +151,14 @@ button#maintenance{
 	-webkit-column-width: 180px;
 	column-width: 190px;
 }
+.temperatures-container .temperature-error{
+	width: inherit;
+	text-align: center;
+	color: #dd3333;
+	float: left;
+	margin-top: 30px;
+	font-size: 14px;
+}
 
 .temperatures-container .temperature-name{
 	width: 120px;

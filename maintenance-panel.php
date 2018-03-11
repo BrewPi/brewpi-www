@@ -127,17 +127,23 @@ function echoRotarySelect($optionName){
 			<button id="apply-interval" class="apply-button">Apply</button>
 		</div>
 		<div class="setting-container">
-			<span class="setting-name">Profile name:</span>
-			<input id="profile-name" value="<?php echo urldecode($profileName) ?>" size=30 type="text" />
-			<button class="apply-profile-name apply-button">Apply</button>
-		</div>
-		<div class="setting-container">
 			<span class="setting-name">Date format:</span>
 			<select id="datetime-format-display">
 				<option <?php if ($dateTimeFormatDisplay == "mm/dd/yy") echo "selected=\"selected\""; ?>>mm/dd/yy</option>
 				<option <?php if ($dateTimeFormatDisplay == "dd/mm/yy") echo "selected=\"selected\""; ?>>dd/mm/yy</option>
 			</select>
 			<button class="apply-datetime-format-display apply-button">Apply</button>
+		</div>
+		<div class="setting-container">
+			<span class="setting-name">Connection to BrewPi Spark</span>
+			<div class="setting-group">
+			<select id="connection-type">
+				<option value="0">Serial port: </option>
+				<option value="1">IP address:</option>
+			</select>
+			<input id="port-address">
+			</div>
+			<button class="apply-connection apply-button">Apply</button>
 		</div>
 	</div>
 </div>

@@ -46,12 +46,20 @@ $(document).ready(function(){
 		$.post('socketmessage.php', {messageType: "interval", message: String($("select#interval").val())});
 	});
 
-    $("button.apply-profile-name").button({ icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
-        $.post('socketmessage.php', {messageType: "profileName", message: $("input#profile-name").val()});
-    });
-
     $("button.apply-datetime-format-display").button({ icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
         $.post('socketmessage.php', {messageType: "dateTimeFormatDisplay", message: $("#datetime-format-display").val()});
+    });
+
+    $("button.apply-connection").button({ icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
+        const port_address = $("#port-address").val().trim();
+        let message;
+        if($("#connection-type").val() == 1){
+            // ip address selected. Add socket:// and port 6666
+            message = "socket://" + port_address + ":6666";
+        } else {
+            message = port_address;
+        }
+        $.post('socketmessage.php', {messageType: "portAddress", message: message});
     });
 
 	$("#advanced-settings").find(".send-button").button({	icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
