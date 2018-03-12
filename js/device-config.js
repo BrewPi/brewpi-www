@@ -37,7 +37,7 @@ function getDeviceList(){
                 }
                 catch(e)
                 {
-                    $("#device-console").find("span").append("Error while receiving device configuration: " + e + "<br>");
+                    $("#device-console").find("span").append("Error while receiving device configuration: " + response + "<br>");
                 }
                 if(jsonParsed){
                     $deviceList.empty();
