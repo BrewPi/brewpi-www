@@ -38,7 +38,7 @@ function readFromSocket($sock){
     if($msg == false){
         $errorcode = socket_last_error();
         $errormsg = socket_strerror($errorcode);
-        die("Couldn't read from socket: [$errorcode] $errormsg" . "\nIs the script running?");
+        die("Couldn't read from socket: [$errorcode] $errormsg" . " Is the script running?");
     }
     else{
     	return $msg;
@@ -50,7 +50,7 @@ function writeToSocket($sock, $msg){
     if($bytesWritten == false){
         $errorcode = socket_last_error();
         $errormsg = socket_strerror($errorcode);
-        die("Couldn't write to socket: [$errorcode] $errormsg" . "\nIs the script running?");
+        die("Couldn't write to socket: [$errorcode] $errormsg" . " Is the script running?");
     }
 }
 
