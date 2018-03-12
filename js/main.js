@@ -224,7 +224,8 @@ function refreshTemperatures(){
             
             updateScriptStatus(true);
         })
-        .fail(function() {            
+        .fail(function() {
+            $(".temperatures-container").empty();            
             updateScriptStatus(false);
         })
         .always(function() {
