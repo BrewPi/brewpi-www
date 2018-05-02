@@ -433,6 +433,10 @@ button#maintenance{
 	width: 320px;
 }
 
+#connection-type {
+	margin-right: 10px;
+}
+
 #maintenance-panel .apply-button,
 #advanced-settings .send-button{
     position: relative;

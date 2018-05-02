@@ -136,13 +136,12 @@ function echoRotarySelect($optionName){
 		</div>
 		<div class="setting-container">
 			<span class="setting-name">Connection to BrewPi Spark</span>
-			<div class="setting-group">
 			<select id="connection-type">
 				<option value="0">Serial port: </option>
 				<option value="1">IP address:</option>
 			</select>
-			<input id="port-address">
-			</div>
+			<select class="port-address" />
+			<input class="port-address" />
 			<button class="apply-connection apply-button">Apply</button>
 		</div>
 	</div>

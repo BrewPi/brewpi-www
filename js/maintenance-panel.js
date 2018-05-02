@@ -50,8 +50,39 @@ $(document).ready(function(){
         $.post('socketmessage.php', {messageType: "dateTimeFormatDisplay", message: $("#datetime-format-display").val()});
     });
 
+    function update_serial_selector(){
+        if($('#connection-type').val() === '1'){
+            $('select.port-address').hide();
+            $('input.port-address').show();
+        }
+        else {
+            $.ajax({
+                type: "POST",
+                dataType:"json",
+                contentType:"application/x-www-form-urlencoded; charset=utf-8",
+                url: 'socketmessage.php',
+                data: {messageType: "getSerialDevicesAvailable", message: ""},
+                success: function(list){
+                    $('select.port-address').empty();
+                    for(var i=0; i < list.length; i++){
+                        $('select.port-address').append($('<option>').attr('value', list[i]).text(list[i]));
+                    };
+                    $('input.port-address').hide();
+                    $('select.port-address').show();
+                },
+                error: function(){
+                    $('select.port-address').hide();
+                    $('input.port-address').show();
+                }
+            });
+        }
+    }
+
+    $("#connection-type").change(update_serial_selector);
+    update_serial_selector();
+
     $("button.apply-connection").button({ icons: {primary: "ui-icon-check" } }).unbind('click').click(function(){
-        const port_address = $("#port-address").val().trim();
+        const port_address = $(".port-address:visible").val().trim();
         let message;
         if($("#connection-type").val() == 1){
             // ip address selected. Add socket:// and port 6666
@@ -138,8 +169,6 @@ $(document).ready(function(){
         startRefreshLogs(2000, 0, 1, '#reprogram-arduino'); // autorefresh stderr as long as the tab remains open
         $("#program-stderr-header").text("Programming... keep an eye on the output below to see the progress.");
     });
-
-
 });
 
 boardNames = { "core": "Core", "photon": "Photon", "leonardo": "Arduino", "uno": "Arduino" };
