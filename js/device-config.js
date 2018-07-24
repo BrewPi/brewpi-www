@@ -326,6 +326,13 @@ function addDeviceToDeviceList(device, pinList, addManual){
             "device-value",
             "<span class='device-value device-setting'>" + value + "</span>"));
     }
+    if((typeof device.j !== "undefined") ){
+        var value = device.j;
+        $settings.append(generateDeviceSettingContainer(
+            "Calibration Offset",
+            "sensor-calibration",
+            '<input type="number" step="0.01" min="-5" max="5"  class="sensor-calibration device-setting" value="' + value + '">'));
+    }
 }
 
 function findPinInList(pinList, pinNr){
@@ -585,11 +592,12 @@ function getDeviceConfigString(deviceNr){
     configString = addToConfigString(configString,"x", $deviceContainer.find(".pin-type select").val());
     configString = addToConfigString(configString,"a", $deviceContainer.find("span.onewire-address").text());
     configString = addToConfigString(configString,"n", $deviceContainer.find(".output-nr select").val());
+    configString = addToConfigString(configString,"j", $deviceContainer.find("input.sensor-calibration").val());
 
     //configString = addToConfigString(configString,"d", 0); // hardwire deactivate for now
-    //configString = addToConfigString(configString,"j", 0); // hardwire calibration for now
 
     configString += "}";
+    console.log(configString);
     return configString;
 }
 
@@ -602,6 +610,7 @@ function addToConfigString(configString, key, value){
 
         configString += "\"" + key + "\"" + ":" + "\"" + value + "\"";
     }
+    console.log(key);
     return configString;
 }
 

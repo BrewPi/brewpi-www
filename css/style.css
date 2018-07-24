@@ -783,3 +783,7 @@ pre.json {outline: 1px solid #ccc; padding: 5px; margin: 5px;
 .boolean { color: #00bfff; }
 .null { color: #ff4500; }
 .key { color: #d3d3d3; }
+
+input.sensor-calibration {
+	width: 90px;
+}
