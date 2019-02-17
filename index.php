@@ -63,6 +63,7 @@ function prepareJSON($input) {
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="refresh" content="300" />
 		<title>BrewPi reporting for duty!</title>
 		<link type="text/css" href="css/redmond/jquery-ui-1.10.3.custom.css" rel="stylesheet" />
 		<link type="text/css" href="css/style.css" rel="stylesheet"/>
