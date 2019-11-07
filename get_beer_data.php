@@ -44,7 +44,7 @@ $cols = "";
 
 if ( !empty($fileNames) ) {
 
-	sort($fileNames, SORT_NATURAL); // sort files to return them in order from oldest to newest
+	natsort($fileNames); // sort files to return them in order from oldest to newest
 	array_walk($fileNames, function(&$value) { $value .= '.json'; }); // add .json again
 
 	// aggregate all json data for the beer
